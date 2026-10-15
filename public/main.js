@@ -343,14 +343,8 @@ void main() {
   }
 
   function fontsReady() {
-    const link = document.getElementById('fonts');
-    const sheet = new Promise(res => {
-      if (!link || link.media === 'all') return res();
-      link.addEventListener('load', res, { once: true });
-      link.addEventListener('error', res, { once: true });
-    });
     // Metni de veriyoruz ki İ harfini içeren Türkçe karakter seti de yüklensin
-    const load = sheet.then(() => document.fonts && document.fonts.load('600 100px "Geist"', 'NURETTİN ENSAR OCAKÇI'));
+    const load = document.fonts ? document.fonts.load('600 100px "Geist"', 'NURETTİN ENSAR OCAKÇI') : null;
     return Promise.race([load, new Promise(r => setTimeout(r, 1800))]).catch(() => {});
   }
 
