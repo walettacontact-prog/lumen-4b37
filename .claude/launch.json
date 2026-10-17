@@ -3,8 +3,8 @@
   "configurations": [
     {
       "name": "site",
-      "runtimeExecutable": "python3",
-      "runtimeArgs": ["-m", "http.server", "4321", "--directory", "public"],
+      "runtimeExecutable": "sh",
+      "runtimeArgs": ["-c", "node build.mjs && python3 -m http.server 4321 --directory dist"],
       "port": 4321
     }
   ]

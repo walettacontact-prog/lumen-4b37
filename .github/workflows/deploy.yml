@@ -1,4 +1,4 @@
-# main dalına gelen her değişiklik public/ klasörünü GitHub Pages'e yayınlar.
+# main dalına gelen her değişiklikte site derlenir ve dist/ klasörü GitHub Pages'e yayınlanır.
 name: Yayınla
 
 on:
@@ -23,9 +23,13 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: node build.mjs
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: public
+          path: dist
       - id: deployment
         uses: actions/deploy-pages@v4
