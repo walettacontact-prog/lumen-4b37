@@ -1,7 +1,7 @@
 ---
-baslik: Yapay Zekâ Çözümleri
+baslik: Yapay Zekâ Uygulamaları
 seo: İşletmeler için Yapay Zekâ: Asistan ve Otomasyon
-aciklama: Müşteri sorularını yanıtlayan asistanlar, belge ve veri işleme, tekrar eden işlerin otomasyonu: işletmelere uyarlanmış yapay zekâ çözümleri.
+aciklama: Müşteri sorularını yanıtlayan asistanlar, belge ve veri işleme, tekrar eden işlerin otomasyonu: işletmelere uyarlanmış yapay zekâ uygulamaları.
 kisa: Müşteri sorularını yanıtlayan asistanlar, belge ve veri işleme, tekrar eden işlerin otomasyonu.
 ikon: yz
 one: Müşteri soruları için asistan | Belge ve veri işleme | Tekrar eden işlerin otomasyonu
@@ -30,7 +30,7 @@ Yapay zekâ modelleri bazen yanlış ama ikna edici cevaplar üretebilir. Bu yü
 
 ## Sık sorulan sorular
 
-### Yapay zekâ çözümü pahalı mı?
+### Yapay zekâ uygulaması pahalı mı?
 
 Çoğu kullanımda hazır yapay zekâ servisleri kullanılır ve maliyet kullanım miktarına göre değişir. Küçük ölçekli denemeler genellikle düşük maliyetlidir; bu yüzden küçük başlamak mantıklıdır.
 

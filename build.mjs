@@ -2,7 +2,7 @@
 import { readFileSync, writeFileSync, mkdirSync, readdirSync, cpSync, rmSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { HERO_SITE, HERO_PHONE, SERVICE_ART } from './art.mjs';
+import { SERVICE_ART } from './art.mjs';
 
 const ROOT = dirname(fileURLToPath(import.meta.url));
 const OUT = join(ROOT, 'dist');
@@ -108,9 +108,11 @@ const load = dir => readdirSync(join(ROOT, 'content', dir))
 
 const services = load('hizmetler').sort((a, b) => Number(a.sira) - Number(b.sira));
 const posts = load('yazilar').sort((a, b) => b.tarih.localeCompare(a.tarih) || (Number(a.sira) || 99) - (Number(b.sira) || 99));
+const projects = load('projeler').sort((a, b) => (Number(a.sira) || 99) - (Number(b.sira) || 99) || b.tarih.localeCompare(a.tarih));
 const pages = load('sayfalar').map(p => ({ ...p, path: `/${p.name}/` }));
 const modified = x => x.guncelleme || x.tarih || today;
-const latest = [...services, ...posts, ...pages].map(modified).sort().pop() || today;
+const latest = [...services, ...posts, ...projects, ...pages].map(modified).sort().pop() || today;
+const trMonth = d => new Date(d + 'T12:00:00Z').toLocaleDateString('tr-TR', { month: 'long', year: 'numeric' });
 
 // ---------- Simgeler ----------
 
@@ -124,17 +126,13 @@ const ICONS = {
   mesaj: svg('<path d="M20 11.5a8 8 0 0 1-11.6 7.1L4 20l1.4-4.2A8 8 0 1 1 20 11.5Z"/>'),
   tel: svg('<path d="M5 4h3.5l2 5-2.4 1.5a11 11 0 0 0 5.4 5.4L15 13.5l5 2V19a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2Z"/>'),
   ok: svg('<path d="M5 12h14M13 6l6 6-6 6"/>'),
-  ara: svg('<circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.2-4.2"/>'),
-  hiz: svg('<path d="M4.5 16a7.5 7.5 0 1 1 15 0"/><path d="m12 16 3.5-4.5"/>'),
-  sade: svg('<rect x="4" y="4" width="16" height="16" rx="2.5"/><path d="M4 10h16M10 10v10"/>'),
 };
 
 // ---------- Logo ----------
 
-// NEO monogramı: Nurettin Ensar Ocakçı'nın baş harfleri, o turuncu. Yazıda ç'nin çengeli turuncu.
-const LOGO_MARK = '<svg class="logo-mark" viewBox="0 0 48 48" aria-hidden="true"><rect class="lm-bg" width="48" height="48" rx="12"/><g fill="none" stroke-width="3"><path class="lm-l" d="M7 29.5V18.5M7 23.5a3.8 3.8 0 0 1 7.6 0v6M19.3 24h8.6A4.3 4.3 0 1 0 26.9 26.8"/><circle cx="37" cy="24" r="4.3" stroke="#ff5a1f"/></g></svg>';
-const CED = 'Ensar Ocak<span class="ced">ç</span>ı';
-const LOGO = `${LOGO_MARK}<span class="logo-t"><small>NURETTİN</small><span>${CED}</span></span>`;
+// İşaret: "neo." (Nurettin Ensar Ocakçı). Ayrı bir çizim değil, yazı tipiyle yazılır; siyah-beyaz.
+const MARK = '<span class="neo" aria-hidden="true">neo.</span>';
+const LOGO = `${MARK}<span class="brand-name">${NAME}</span>`;
 
 // ---------- Yapılandırılmış veri ----------
 
@@ -150,14 +148,14 @@ const PERSON = {
   url: SITE + '/',
   image: SITE + '/og.jpg',
   telephone: PHONE.intl,
-  description: 'Web tasarım, yazılım, mobil uygulama ve yapay zekâ alanlarında işletmelerle çalışıyor.',
+  description: 'Tasarım, yazılım ve yapay zekâ üzerine çalışıyor. Kişisel sitesi neo\'da projelerini, yazılarını ve işletmelere verdiği hizmetleri paylaşıyor.',
   knowsAbout: ['Web tasarım', 'Kurumsal web sitesi', 'Yazılım geliştirme', 'Mobil uygulama geliştirme', 'Yapay zekâ', 'Arama motoru optimizasyonu'],
   makesOffer: services.map(s => ({ '@type': 'Offer', itemOffered: { '@type': 'Service', name: s.baslik, url: SITE + s.path } })),
   // sameAs: profil bağlantıları (Instagram, LinkedIn, GitHub) açıldıkça buraya eklenecek
 };
 const WEBSITE = {
   '@type': 'WebSite', '@id': SITE_ID, url: SITE + '/', name: NAME,
-  alternateName: [SHORT, 'ensarocakci.com'], inLanguage: 'tr-TR', publisher: { '@id': PERSON_ID },
+  alternateName: ['neo', SHORT, 'ensarocakci.com'], inLanguage: 'tr-TR', publisher: { '@id': PERSON_ID },
 };
 const crumbsLd = items => ({
   '@type': 'BreadcrumbList',
@@ -173,7 +171,7 @@ const faqLd = faq => faq.length ? [{
 const CSS = readFileSync(join(ROOT, 'site.css'), 'utf8')
   .replace(/\/\*[\s\S]*?\*\//g, '').replace(/\s*\n\s*/g, '').replace(/\s*([{}:;,])\s*/g, '$1').replace(/;}/g, '}');
 
-const NAV = [['/hizmetler/', 'Hizmetler'], ['/yazilar/', 'Yazılar'], ['/hakkinda/', 'Hakkında']];
+const NAV = [['/projeler/', 'Projeler'], ['/yazilar/', 'Yazılar'], ['/hizmetler/', 'Hizmetler'], ['/hakkinda/', 'Hakkında']];
 
 function layout({ path, title, description, body, ld = [], type = 'website', noindex = false, script = '' }) {
   const url = SITE + path;
@@ -192,7 +190,7 @@ ${noindex ? '<meta name="robots" content="noindex">' : `<meta name="robots" cont
 <meta name="author" content="${NAME}">
 <meta name="theme-color" content="#ffffff">
 <meta property="og:type" content="${type}">
-<meta property="og:site_name" content="${NAME}">
+<meta property="og:site_name" content="neo · ${NAME}">
 <meta property="og:title" content="${esc(title)}">
 <meta property="og:description" content="${esc(description)}">
 <meta property="og:url" content="${url}">
@@ -201,8 +199,7 @@ ${noindex ? '<meta name="robots" content="noindex">' : `<meta name="robots" cont
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
-<link rel="icon" href="/favicon.ico" sizes="48x48">
-<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon.ico" sizes="16x16 32x32 48x48">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="alternate" type="application/rss+xml" title="Yazılar" href="${SITE}/yazilar/feed.xml">
 <link rel="preload" href="/fonts/geist-latin.woff2" as="font" type="font/woff2" crossorigin>
@@ -238,8 +235,8 @@ function contact() {
   return `<section class="cta" id="iletisim" aria-labelledby="iletisim-baslik">
   <div class="wrap cta-in">
     <div>
-      <h2 id="iletisim-baslik">Bir projeniz mi var?</h2>
-      <p>WhatsApp'tan yazabilir ya da arayabilirsiniz. Kısa bir görüşmeyle neye ihtiyacınız olduğunu birlikte netleştirelim.</p>
+      <h2 id="iletisim-baslik">İletişim</h2>
+      <p>Bir iş, soru ya da öneri için doğrudan yazabilirsiniz. WhatsApp ve telefon; başka bir form yok.</p>
     </div>
     <div class="actions">
       <a class="btn" href="${WA}" rel="noopener" target="_blank">${ICONS.mesaj}WhatsApp'tan yazın</a>
@@ -256,14 +253,14 @@ function footer() {
     <div class="foot-grid">
       <div class="foot-about">
         <a class="brand" href="/" aria-label="${NAME}, ana sayfa">${LOGO}</a>
-        <p>İşletmeler için web tasarım, yazılım, mobil uygulama ve yapay zekâ çözümleri.</p>
+        <p>neo, Nurettin Ensar Ocakçı'nın kişisel sitesi: projeler, yazılar ve işletmelere verdiği hizmetler.</p>
       </div>
       <div><h2>Hizmetler</h2><ul>${li(services.map(s => [s.path, s.baslik]))}</ul></div>
       <div><h2>Site</h2><ul>${li([['/', 'Ana sayfa'], ...NAV])}</ul></div>
       <div><h2>İletişim</h2><ul>${li([[WA, 'WhatsApp'], ['tel:' + PHONE.tel, PHONE.display]])}</ul></div>
     </div>
-    <div class="foot-mark" aria-hidden="true">${CED}</div>
-    <div class="foot-bottom"><span>© ${new Date().getFullYear()} ${NAME}</span><span>ensarocakci.com</span></div>
+    <div class="foot-mark" aria-hidden="true">${SHORT}</div>
+    <div class="foot-bottom"><span>© ${new Date().getFullYear()} ${NAME}</span><span>neo · ensarocakci.com</span></div>
   </div>
 </footer>`;
 }
@@ -273,18 +270,22 @@ const crumbs = items => `<nav aria-label="Konum"><ol class="crumbs">${items.slic
   `<li><a href="${path}">${name}</a></li>`).join('')}</ol></nav>`;
 
 const serviceCard = s => `<a class="card" href="${s.path}">
-  <span class="ico">${ICONS[s.ikon] || ''}</span>
+  <span class="card-art" aria-hidden="true">${SERVICE_ART[s.ikon] || ''}</span>
   <h3>${esc(s.baslik)}</h3>
   <p>${esc(s.kisa)}</p>
   <span class="go">Detaylı bilgi${ICONS.ok}</span>
 </a>`;
 
-const postCard = p => `<a class="card" href="${p.path}">
-  <time class="date" datetime="${p.tarih}">${trDate(p.tarih)}</time>
-  <h3>${esc(p.baslik)}</h3>
-  <p>${esc(p.aciklama)}</p>
-  <span class="go">Yazıyı oku${ICONS.ok}</span>
-</a>`;
+// Dizin satırı: projeler, yazılar ve hizmetler aynı liste biçiminde gösterilir
+const row = ({ href, n, meta = [], title, desc }) => `<li><a href="${href}">
+  <span class="n">${String(n).padStart(2, '0')}</span>
+  <div>${meta.length ? `<div class="meta">${meta.map(m => `<span>${m}</span>`).join('')}</div>` : ''}<h3>${esc(title)}</h3><p>${esc(desc)}</p></div>
+  <span class="go" aria-hidden="true">${ICONS.ok}</span>
+</a></li>`;
+const rows = items => `<ol class="feed">${items.join('')}</ol>`;
+const postRows = list => list.map((p, i) => row({ href: p.path, n: i + 1, meta: [`<time datetime="${p.tarih}">${trDate(p.tarih)}</time>`, `${p.minutes} dk okuma`], title: p.baslik, desc: p.aciklama }));
+const projectRows = list => list.map((p, i) => row({ href: p.path, n: i + 1, meta: [p.etiket, p.durum].filter(Boolean).map(esc), title: p.baslik, desc: p.aciklama }));
+const serviceRows = list => list.map((s, i) => row({ href: s.path, n: i + 1, title: s.baslik, desc: s.kisa }));
 
 const STEPS = [
   ['Tanışma', 'İşinizi, hedefinizi ve ihtiyacınızı kısa bir görüşmede konuşuyoruz.'],
@@ -296,8 +297,8 @@ const steps = () => `<ol class="steps">${STEPS.map(([t, d], i) =>
   `<li><span class="n">0${i + 1}</span><h3>${t}</h3><p>${d}</p></li>`).join('')}</ol>`;
 
 const contactBox = () => `<div class="box contact-box">
-  <p class="box-title">Hızlı iletişim</p>
-  <p>Sorunuz ya da projeniz için doğrudan yazabilirsiniz.</p>
+  <p class="box-title">İletişim</p>
+  <p>Bir iş ya da sorunuz için doğrudan yazabilirsiniz.</p>
   <a class="btn" href="${WA}" rel="noopener" target="_blank">${ICONS.mesaj}WhatsApp</a>
   <a class="btn btn-ghost" href="tel:${PHONE.tel}">${ICONS.tel}Ara</a>
 </div>`;
@@ -309,52 +310,15 @@ const tocBox = toc => toc.length >= 3 ? `<nav class="box" aria-label="İçindeki
 
 // ---------- Sayfalar ----------
 
-const HOME_FAQ = [
+const SERVICE_FAQ = [
   ['Web sitesi fiyatları nasıl belirleniyor?', 'Fiyat; sayfa sayısına, tasarım ihtiyacına ve eklenecek özelliklere (randevu, ödeme, yönetim paneli gibi) göre değişir. Kısa bir görüşmeden sonra kapsamı netleştirip yazılı teklif veriyorum.'],
   ['Bir web sitesi ne kadar sürede hazır olur?', 'Kapsama bağlıdır. Birkaç sayfalık bir tanıtım sitesi, içerikler hazırsa kısa sürede tamamlanır; yazılım ve uygulama projeleri daha uzun sürer. Süre, teklifte açıkça yazılır.'],
   ['Alan adı ve barındırma kimin adına olur?', 'Alan adı sizin adınıza kaydedilir ve tüm erişim bilgileri size teslim edilir. Kurulum aşamasında yardımcı oluyorum.'],
   ['Site yayına çıktıktan sonra değişiklik yapılabilir mi?', 'Evet. Metin, görsel, fiyat ya da yeni sayfa gibi değişiklikler için ulaşabilirsiniz. İsterseniz içerikleri kendiniz güncelleyebileceğiniz bir panel de kurulabilir.'],
 ];
 
-const PRINCIPLES = [
-  ['hiz', 'Hız', 'Yavaş açılan bir sayfayı ziyaretçi beklemeden kapatır. Sayfalar gereksiz yükten arındırılır, görseller sıkıştırılır.'],
-  ['ara', 'Bulunabilirlik', 'Başlıklar, açıklamalar, site haritası ve yapılandırılmış veri baştan doğru kurulur; site Google\'a tanıtılır.'],
-  ['sade', 'Sadelik', 'Ziyaretçi aradığını birkaç saniyede bulmalı. Kalabalık ve gösterişli efektler yerine net içerik.'],
-];
-
-// Giriş bölümündeki çizim: aynı işletmenin web sitesi, randevu uygulaması, arama sonucu ve asistanı
-const stage = () => `<div class="stage" aria-hidden="true">
-  <div class="win"><div class="win-bar"><i></i><i></i><i></i><span>isletmeniz.com</span></div>${HERO_SITE}</div>
-  <div class="serp">
-    <div class="serp-q">${ICONS.ara}kuaför randevu</div>
-    <span class="serp-u"><i></i>isletmeniz.com</span>
-    <strong>İşletmeniz | Online randevu al</strong>
-    <span class="serp-d"></span><span class="serp-d"></span>
-  </div>
-  <div class="phone">${HERO_PHONE}</div>
-  <div class="chat">
-    <div class="chat-h">${ICONS.yz}Yapay zekâ asistanı<b></b></div>
-    <p class="msg me">Cumartesi açık mısınız?</p>
-    <div class="reply"><span class="msg typing"><i></i><i></i><i></i></span><p class="msg bot">Evet, cumartesi 10.00–18.00 arası açığız. Randevu oluşturayım mı?</p></div>
-  </div>
-</div>`;
-
-const explorer = () => `<div class="svc">
-  <div class="svc-tabs" role="tablist" aria-label="Hizmetler">${services.map((s, i) =>
-    `<button class="svc-tab" type="button" role="tab" id="sekme-${s.name}" aria-controls="panel-${s.name}" aria-selected="${i === 0}"><span class="n">0${i + 1}</span>${esc(s.baslik)}</button>`).join('')}</div>
-  <div class="svc-panels">${services.map((s, i) => `<div class="svc-panel${i === 0 ? ' on' : ''}" id="panel-${s.name}" role="tabpanel" aria-labelledby="sekme-${s.name}">
-    <div class="svc-art">${SERVICE_ART[s.ikon] || ''}</div>
-    <div class="svc-body">
-      <div><h3>${esc(s.baslik)}</h3><p>${esc(s.kisa)}</p></div>
-      <ul class="svc-list">${(s.one || '').split('|').filter(Boolean).map(x => `<li>${ICONS.check}${esc(x.trim())}</li>`).join('')}</ul>
-      <a class="more" href="${s.path}">${esc(s.baslik)} hakkında detaylı bilgi${ICONS.ok}</a>
-    </div>
-  </div>`).join('')}</div>
-</div>`;
-
-// Hizmet sekmeleri ve canlı ölçüm. Çerez ya da takip kodu eklenirse "Yok" ifadesi de güncellenmeli.
+// Canlı ölçüm: tarayıcının kendi ölçümü, hiçbir yere gönderilmez. Çerez ya da takip kodu eklenirse "Yok" ifadesi de güncellenmeli.
 const HOME_JS = `
-document.querySelectorAll('.svc-tab').forEach(function(t,_,all){t.addEventListener('click',function(){all.forEach(function(o){var on=o===t;o.setAttribute('aria-selected',on);document.getElementById(o.getAttribute('aria-controls')).classList.toggle('on',on)})})});
 addEventListener('load',function(){setTimeout(function(){
   var n=performance.getEntriesByType&&performance.getEntriesByType('navigation')[0];if(!n)return;
   var ms=n.loadEventStart||n.domContentLoadedEventEnd,kb=[n].concat(performance.getEntriesByType('resource')).reduce(function(s,e){return s+(e.encodedBodySize||0)},0)/1024;
@@ -363,31 +327,49 @@ addEventListener('load',function(){setTimeout(function(){
 },0)});
 `;
 
+// Kapak kartı: sitenin künyesi; sayılar ve tarihler derlemede hesaplanır
+function cover() {
+  const last = posts[0];
+  const spec = [
+    ['Projeler', `<a href="/projeler/">${projects.length} proje</a>`],
+    ['Yazılar', `<a href="/yazilar/">${posts.length} yazı</a>`],
+    ['Hizmetler', `<a href="/hizmetler/">${services.length} hizmet</a>`],
+    last && ['Son yazı', `<a href="${last.path}">${esc(last.baslik)}</a>`],
+    ['Güncelleme', trDate(latest)],
+    ['İletişim', `<a href="${WA}" rel="noopener" target="_blank">WhatsApp</a> · <a href="tel:${PHONE.tel}">${PHONE.display}</a>`],
+  ].filter(Boolean);
+  return `<aside class="cover" aria-label="Site künyesi">
+  <div>
+    <div class="cover-top">${MARK}<span class="cover-issue">${trMonth(latest)}</span></div>
+    <p class="cover-name">${NAME}</p>
+    <p class="cover-sub">Kişisel site · Tasarım, yazılım ve yapay zekâ</p>
+  </div>
+  <dl class="spec">${spec.map(([k, v]) => `<div><dt>${k}</dt><dd>${v}</dd></div>`).join('')}</dl>
+</aside>`;
+}
+
 function home() {
   return layout({
     path: '/',
-    title: `${NAME} | Web Tasarım, Yazılım ve Yapay Zekâ`,
-    description: `İşletmeler için web tasarım, kurumsal web sitesi, yazılım, mobil uygulama ve yapay zekâ çözümleri. Hızlı, mobil uyumlu ve arama motorlarına uygun.`,
+    title: `${NAME} | neo: Tasarım, Yazılım ve Yapay Zekâ`,
+    description: `neo, Nurettin Ensar Ocakçı'nın kişisel sitesi. Tasarım, yazılım ve yapay zekâ üzerine projeler, yazılar ve işletmelere verdiği hizmetler.`,
     script: HOME_JS,
-    ld: [
-      { '@type': 'WebPage', '@id': SITE + '/#webpage', url: SITE + '/', name: NAME, isPartOf: { '@id': SITE_ID }, about: { '@id': PERSON_ID }, inLanguage: 'tr-TR' },
-      ...faqLd(HOME_FAQ.map(([q, a]) => ({ q, a }))),
-    ],
+    ld: [{ '@type': 'WebPage', '@id': SITE + '/#webpage', url: SITE + '/', name: 'neo · ' + NAME, isPartOf: { '@id': SITE_ID }, about: { '@id': PERSON_ID }, inLanguage: 'tr-TR' }],
     body: `<section class="hero">
   <div class="hero-main">
   <div class="wrap hero-grid">
     <div>
-      <p class="eyebrow">Tasarım · Yazılım · Yapay zekâ</p>
-      <h1>İşletmeler için web tasarım, yazılım ve yapay zekâ çözümleri</h1>
-      <p class="lead">Hızlı açılan ve Google'da bulunabilen web siteleri, işinize göre geliştirilen yazılımlar, mobil uygulamalar ve iş süreçlerine uyarlanan yapay zekâ araçları.</p>
+      <p class="eyebrow">Nurettin Ensar Ocakçı'nın kişisel sitesi</p>
+      <h1>Tasarım, yazılım ve yapay zekâ üzerine projeler, yazılar ve hizmetler.</h1>
+      <p class="lead">Kendi projelerim, yazdıklarım ve işletmelere verdiğim hizmetler tek yerde. Ne yaptığımı anlatmak yerine gösteriyorum.</p>
       <div class="actions">
-        <a class="btn" href="${WA}" rel="noopener" target="_blank">${ICONS.mesaj}WhatsApp'tan yazın</a>
-        <a class="btn btn-ghost" href="#hizmetler">Hizmetleri inceleyin</a>
+        <a class="btn" href="/yazilar/">Yazıları okuyun</a>
+        <a class="btn btn-ghost" href="/hizmetler/">Hizmetler</a>
       </div>
     </div>
-    ${stage()}
+    ${cover()}
   </div>
-  <div class="hero-mark" aria-hidden="true">${CED}</div>
+  <div class="hero-mark" aria-hidden="true">${SHORT}</div>
   </div>
   <div class="live">
     <div class="wrap live-in">
@@ -401,42 +383,91 @@ function home() {
   </div>
 </section>
 
+<section class="section" id="yazilar">
+  <div class="wrap">
+    <div class="sec-head">
+      <div><h2 class="h2">Son yazılar</h2><p>Web siteleri, yazılım ve yapay zekâ üzerine; çoğu işletmelerin işine yarayacak pratik yazılar.</p></div>
+      <a class="more" href="/yazilar/">Tüm yazılar${ICONS.ok}</a>
+    </div>
+    ${rows(postRows(posts.slice(0, 4)))}
+  </div>
+</section>
+
+${projects.length ? `<section class="section alt" id="projeler">
+  <div class="wrap">
+    <div class="sec-head">
+      <div><h2 class="h2">Projeler</h2><p>Kendim için yaptıklarım; ne için yapıldığı ve nasıl çalıştığıyla birlikte.</p></div>
+      <a class="more" href="/projeler/">Tüm projeler${ICONS.ok}</a>
+    </div>
+    ${rows(projectRows(projects.slice(0, 3)))}
+  </div>
+</section>` : ''}
+
 <section class="section" id="hizmetler">
   <div class="wrap">
     <div class="sec-head">
-      <div>
-        <h2 class="h2">Hizmetler</h2>
-        <p>Tanıtım sitesinden işletmeye özel yazılıma kadar, ihtiyaca göre şekillenen çözümler.</p>
-      </div>
+      <div><h2 class="h2">Hizmetler</h2><p>İşletmelere verdiğim hizmetler. Kapsam, süreç ve sık sorulan sorular her birinin kendi sayfasında.</p></div>
       <a class="more" href="/hizmetler/">Tüm hizmetler${ICONS.ok}</a>
     </div>
-    ${explorer()}
-  </div>
-</section>
-
-<section class="section alt">
-  <div class="wrap">
-    <div class="sec-head"><div><h2 class="h2">Her projede üç ölçüt</h2><p>Bir sitenin işe yaraması için güzel görünmesi yetmez.</p></div></div>
-    <div class="grid g3">${PRINCIPLES.map(([i, t, d]) => `<div class="card"><span class="ico">${ICONS[i]}</span><h3>${t}</h3><p>${d}</p></div>`).join('')}</div>
-  </div>
-</section>
-
-<section class="section">
-  <div class="wrap">
-    <div class="sec-head">
-      <div><h2 class="h2">Yazılar</h2><p>Web siteleri, yazılım ve yapay zekâ üzerine işletmeler için pratik yazılar.</p></div>
-      <a class="more" href="/yazilar/">Tüm yazılar${ICONS.ok}</a>
-    </div>
-    <div class="grid g3">${posts.slice(0, 3).map(postCard).join('')}</div>
-  </div>
-</section>
-
-<section class="section alt">
-  <div class="wrap split">
-    <div><h2 class="h2">Sık sorulan sorular</h2></div>
-    <div class="faq">${HOME_FAQ.map(([q, a]) => `<details><summary>${q}</summary><p>${a}</p></details>`).join('')}</div>
+    ${rows(serviceRows(services))}
   </div>
 </section>`,
+  });
+}
+
+function projectsIndex() {
+  const items = [['Ana sayfa', '/'], ['Projeler', '/projeler/']];
+  return layout({
+    path: '/projeler/',
+    title: `Projeler | ${SHORT}`,
+    description: `Nurettin Ensar Ocakçı'nın kendi projeleri: ne için yapıldı, nasıl çalışıyor, hangi kararlar alındı.`,
+    ld: [{
+      '@type': 'CollectionPage', url: SITE + '/projeler/', name: 'Projeler', isPartOf: { '@id': SITE_ID }, inLanguage: 'tr-TR',
+      mainEntity: { '@type': 'ItemList', itemListElement: projects.map((p, i) => ({ '@type': 'ListItem', position: i + 1, url: SITE + p.path, name: p.baslik })) },
+    }, crumbsLd(items)],
+    body: `<section class="page-head">
+  <div class="wrap">
+    ${crumbs(items)}
+    <h1>Projeler</h1>
+    <p class="lead">Kendim için yaptıklarım. Her projede ne için yapıldığı, nasıl çalıştığı ve alınan kararlar yazılı.</p>
+  </div>
+</section>
+<section class="section">
+  <div class="wrap">${rows(projectRows(projects))}</div>
+</section>`,
+  });
+}
+
+function projectPage(p) {
+  const items = [['Ana sayfa', '/'], ['Projeler', '/projeler/'], [p.baslik, p.path]];
+  const others = projects.filter(o => o !== p);
+  return layout({
+    path: p.path,
+    title: `${p.seo || p.baslik} | ${SHORT}`,
+    description: p.aciklama,
+    ld: [
+      { '@type': 'CreativeWork', '@id': SITE + p.path + '#proje', name: p.baslik, description: p.aciklama, url: SITE + p.path, author: { '@id': PERSON_ID }, dateCreated: p.tarih, dateModified: modified(p), inLanguage: 'tr-TR', keywords: p.etiket },
+      { '@type': 'WebPage', url: SITE + p.path, name: p.baslik, isPartOf: { '@id': SITE_ID }, mainEntity: { '@id': SITE + p.path + '#proje' }, inLanguage: 'tr-TR' },
+      crumbsLd(items), ...faqLd(p.faq),
+    ],
+    body: `<section class="page-head">
+  <div class="wrap">
+    ${crumbs(items)}
+    <h1>${esc(p.baslik)}</h1>
+    <p class="lead">${esc(p.aciklama)}</p>
+    <div class="meta">${[p.etiket, p.durum, trDate(p.tarih)].filter(Boolean).map(m => `<span>${esc(m)}</span>`).join('')}</div>
+  </div>
+</section>
+<div class="wrap article">
+  <div class="prose">${p.html}</div>
+  <aside class="side"><div class="side-in">${tocBox(p.toc)}${contactBox()}</div></aside>
+</div>
+${others.length ? `<section class="section alt">
+  <div class="wrap">
+    <div class="sec-head"><div><h2 class="h2">Diğer projeler</h2></div></div>
+    ${rows(projectRows(others))}
+  </div>
+</section>` : ''}`,
   });
 }
 
@@ -444,14 +475,14 @@ function servicesIndex() {
   const items = [['Ana sayfa', '/'], ['Hizmetler', '/hizmetler/']];
   return layout({
     path: '/hizmetler/',
-    title: `Hizmetler: Web Tasarım, Yazılım, Mobil Uygulama | ${SHORT}`,
-    description: 'Kurumsal web sitesi ve web tasarım, işletmeye özel yazılım, iOS ve Android mobil uygulama ve yapay zekâ çözümleri.',
-    ld: [{ '@type': 'CollectionPage', url: SITE + '/hizmetler/', name: 'Hizmetler', isPartOf: { '@id': SITE_ID }, inLanguage: 'tr-TR' }, crumbsLd(items)],
+    title: `Hizmetler: Web Tasarım, Yazılım, Mobil Uygulama, Yapay Zekâ | ${SHORT}`,
+    description: `Nurettin Ensar Ocakçı'nın işletmelere verdiği hizmetler: web tasarım ve kurumsal web sitesi, işletmeye özel yazılım, iOS ve Android mobil uygulama, yapay zekâ uygulamaları.`,
+    ld: [{ '@type': 'CollectionPage', url: SITE + '/hizmetler/', name: 'Hizmetler', isPartOf: { '@id': SITE_ID }, inLanguage: 'tr-TR' }, crumbsLd(items), ...faqLd(SERVICE_FAQ.map(([q, a]) => ({ q, a })))],
     body: `<section class="page-head">
   <div class="wrap">
     ${crumbs(items)}
     <h1>Hizmetler</h1>
-    <p class="lead">Web sitesinden işletmeye özel yazılıma, mobil uygulamadan yapay zekâ araçlarına kadar; ihtiyaca göre şekillenen, sade ve hızlı çözümler.</p>
+    <p class="lead">İşletmelere verdiğim hizmetler. Her birinde neyin dahil olduğu, sürecin nasıl ilerlediği ve sık sorulan sorular kendi sayfasında yazılı.</p>
   </div>
 </section>
 <section class="section">
@@ -459,8 +490,14 @@ function servicesIndex() {
 </section>
 <section class="section alt">
   <div class="wrap">
-    <div class="sec-head"><div><h2 class="h2">Nasıl çalışıyorum</h2></div></div>
+    <div class="sec-head"><div><h2 class="h2">Nasıl çalışıyorum</h2><p>Her iş aynı dört adımla ilerler; ne zaman ne olacağı baştan bellidir.</p></div></div>
     ${steps()}
+  </div>
+</section>
+<section class="section">
+  <div class="wrap split">
+    <div><h2 class="h2">Sık sorulan sorular</h2></div>
+    <div class="faq">${SERVICE_FAQ.map(([q, a]) => `<details><summary>${q}</summary><p>${a}</p></details>`).join('')}</div>
   </div>
 </section>`,
   });
@@ -479,10 +516,13 @@ function servicePage(s) {
       crumbsLd(items), ...faqLd(s.faq),
     ],
     body: `<section class="page-head">
-  <div class="wrap">
-    ${crumbs(items)}
-    <h1>${esc(s.baslik)}</h1>
-    <p class="lead">${esc(s.aciklama)}</p>
+  <div class="wrap head-grid">
+    <div>
+      ${crumbs(items)}
+      <h1>${esc(s.baslik)}</h1>
+      <p class="lead">${esc(s.aciklama)}</p>
+    </div>
+    <div class="head-art" aria-hidden="true">${SERVICE_ART[s.ikon] || ''}</div>
   </div>
 </section>
 <div class="wrap article">
@@ -512,11 +552,11 @@ function postsIndex() {
   <div class="wrap">
     ${crumbs(items)}
     <h1>Yazılar</h1>
-    <p class="lead">Web siteleri, arama motorları, yazılım ve yapay zekâ üzerine; işletmelerin işine yarayacak pratik rehberler.</p>
+    <p class="lead">Web siteleri, arama motorları, yazılım ve yapay zekâ üzerine; çoğu işletmelerin işine yarayacak pratik yazılar.</p>
   </div>
 </section>
 <section class="section">
-  <div class="wrap"><div class="grid g3">${posts.map(postCard).join('')}</div></div>
+  <div class="wrap">${rows(postRows(posts))}</div>
 </section>`,
   });
 }
@@ -545,14 +585,14 @@ function postPage(p) {
 <div class="wrap article">
   <article class="prose">
     ${p.html}
-    <div class="author">${LOGO_MARK}<div><strong>${NAME}</strong><p>Web tasarım, yazılım ve yapay zekâ alanlarında işletmelerle çalışıyor. <a href="/hakkinda/">Hakkında</a></p></div></div>
+    <div class="author">${MARK}<div><strong>${NAME}</strong><p>Tasarım, yazılım ve yapay zekâ üzerine çalışıyor; neo, kişisel sitesi. <a href="/hakkinda/">Hakkında</a></p></div></div>
   </article>
   <aside class="side"><div class="side-in">${tocBox(p.toc)}${contactBox()}</div></aside>
 </div>
 ${others.length ? `<section class="section alt">
   <div class="wrap">
     <div class="sec-head"><div><h2 class="h2">Diğer yazılar</h2></div><a class="more" href="/yazilar/">Tüm yazılar${ICONS.ok}</a></div>
-    <div class="grid g3">${others.map(postCard).join('')}</div>
+    ${rows(postRows(others))}
   </div>
 </section>` : ''}`,
   });
@@ -636,6 +676,8 @@ const write = (path, html) => {
 };
 
 write('/', home());
+write('/projeler/', projectsIndex());
+projects.forEach(p => write(p.path, projectPage(p)));
 write('/hizmetler/', servicesIndex());
 services.forEach(s => write(s.path, servicePage(s)));
 write('/yazilar/', postsIndex());
@@ -645,6 +687,8 @@ write('/404.html', notFound());
 write('/yazilar/feed.xml', feed());
 write('/sitemap.xml', sitemap([
   ['/', latest],
+  ['/projeler/', projects.map(modified).sort().pop() || latest],
+  ...projects.map(p => [p.path, modified(p)]),
   ['/hizmetler/', services.map(modified).sort().pop()],
   ...services.map(s => [s.path, modified(s)]),
   ['/yazilar/', posts.map(modified).sort().pop()],
@@ -652,4 +696,4 @@ write('/sitemap.xml', sitemap([
   ...pages.map(p => [p.path, modified(p)]),
 ]));
 
-console.log(`dist/ hazır: ${services.length} hizmet, ${posts.length} yazı, ${pages.length} sayfa`);
+console.log(`dist/ hazır: ${projects.length} proje, ${posts.length} yazı, ${services.length} hizmet, ${pages.length} sayfa`);

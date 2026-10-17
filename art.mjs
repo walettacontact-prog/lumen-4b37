@@ -3,35 +3,6 @@
 
 const svg = (box, body) => `<svg class="art" viewBox="${box}" aria-hidden="true">${body}</svg>`;
 
-// Bir kuaför sitesinin masaüstü görünümü (giriş bölümündeki tarayıcı penceresi)
-export const HERO_SITE = svg('0 0 520 300', `
-<rect class="k" x="28" y="21" width="20" height="20" rx="6"/><rect class="a" x="35" y="28" width="6" height="6" rx="3"/>
-<text class="t" x="56" y="36" font-size="13">İşletmeniz</text>
-<text class="tm" x="262" y="35" font-size="10.5">Hizmetler</text>
-<text class="tm" x="324" y="35" font-size="10.5">Hakkımızda</text>
-<rect class="k" x="404" y="20" width="88" height="24" rx="12"/><text class="tw" x="448" y="36" font-size="10.5" text-anchor="middle">Randevu al</text>
-<rect class="s" x="28" y="62" width="214" height="146" rx="12"/>
-<circle class="al" cx="196" cy="104" r="24"/>
-<path class="l" d="M28 190l50-44 38 28 42-34 84 56a12 12 0 0 1-12 12H40a12 12 0 0 1-12-12z"/>
-<text class="t" x="268" y="98" font-size="28" letter-spacing="-1.2">Saçınız için</text>
-<text class="t" x="268" y="130" font-size="28" letter-spacing="-1.2">doğru adres.</text>
-<rect class="l" x="268" y="148" width="196" height="6" rx="3"/><rect class="l" x="268" y="160" width="150" height="6" rx="3"/>
-<rect class="a" x="268" y="180" width="94" height="28" rx="14"/><text class="tw" x="315" y="198" font-size="10.5" text-anchor="middle">Randevu al</text>
-<rect class="w st" x="370" y="180" width="80" height="28" rx="14"/><text class="tm" x="410" y="198" font-size="10.5" text-anchor="middle">Fiyatlar</text>
-<rect class="s" x="28" y="226" width="146" height="54" rx="10"/><text class="t" x="42" y="248" font-size="11.5">Saç kesimi</text><rect class="l" x="42" y="258" width="56" height="6" rx="3"/>
-<rect class="s" x="187" y="226" width="146" height="54" rx="10"/><text class="t" x="201" y="248" font-size="11.5">Boya</text><rect class="l" x="201" y="258" width="70" height="6" rx="3"/>
-<rect class="s" x="346" y="226" width="146" height="54" rx="10"/><text class="t" x="360" y="248" font-size="11.5">Bakım</text><rect class="l" x="360" y="258" width="48" height="6" rx="3"/>`);
-
-// Aynı işletmenin randevu uygulaması (giriş bölümündeki telefon)
-export const HERO_PHONE = svg('0 0 200 400', `
-<rect class="k" width="200" height="400" rx="34"/><rect class="w" x="8" y="8" width="184" height="384" rx="27"/>
-<rect class="k" x="74" y="18" width="52" height="15" rx="7.5"/>
-<text class="tm" x="22" y="64" font-size="10.5">Bugün</text>
-<text class="t" x="22" y="86" font-size="19" letter-spacing="-.5">Randevular</text>
-${[14, 15, 16, 17, 18].map((d, i) => `<rect class="${i === 2 ? 'k' : 's'}" x="${22 + i * 32}" y="102" width="26" height="38" rx="10"/><text class="${i === 2 ? 'tw' : 'tm'}" x="${35 + i * 32}" y="126" font-size="11" text-anchor="middle">${d}</text>`).join('')}
-${[['09:30', 'Saç kesimi', 's'], ['11:00', 'Boya ve bakım', 'al'], ['14:30', 'Fön', 's']].map(([h, n, c], i) => `<rect class="${c}" x="22" y="${156 + i * 56}" width="156" height="46" rx="12"/>${c === 'al' ? `<rect class="a" x="22" y="${166 + i * 56}" width="4" height="26" rx="2"/>` : ''}<text class="tm" x="36" y="${175 + i * 56}" font-size="9.5">${h}</text><text class="t" x="36" y="${191 + i * 56}" font-size="11.5">${n}</text><circle class="${c === 'al' ? 'a' : 'l'}" cx="160" cy="${179 + i * 56}" r="6"/>`).join('')}
-<rect class="a" x="22" y="334" width="156" height="38" rx="19"/><text class="tw" x="100" y="357" font-size="11.5" text-anchor="middle">Yeni randevu</text>`);
-
 // Hizmet bölümündeki çizimler
 export const SERVICE_ART = {
   web: svg('0 0 480 300', `

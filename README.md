@@ -4,11 +4,13 @@ Bağımlılık yok. `node build.mjs`, `content/` ve `static/` klasörlerinden si
 klasörüne üretir. `main` dalına yapılan her push GitHub Actions ile derlenip GitHub
 Pages'e çıkar.
 
+- `content/projeler/` – projeler
+- `content/yazilar/` – yazılar
 - `content/hizmetler/` – hizmet sayfaları
-- `content/yazilar/` – blog yazıları
 - `content/sayfalar/` – diğer sayfalar
 - `static/` – yazı tipleri, simgeler ve doğrulama dosyaları (olduğu gibi kopyalanır)
 - `site.css` – tüm sayfalara gömülen stil
+- `art.mjs` – hizmet sayfalarındaki çizimler
 
 ## Yeni yazı eklemek
 
@@ -30,7 +32,10 @@ Metin, **kalın**, [bağlantı](https://ornek.com) ve listeler:
 - madde
 ```
 
-Site haritası, RSS, yazı listesi ve ana sayfa kendiliğinden güncellenir.
+Projeler için aynı biçim `content/projeler/` altında kullanılır; ek olarak `etiket`
+(örn. `Web · Statik site`) ve `durum` (örn. `Yayında`) alanları vardır.
+
+Site haritası, RSS, listeler ve ana sayfadaki sayılar kendiliğinden güncellenir.
 
 ## Yerelde çalıştırma
 
