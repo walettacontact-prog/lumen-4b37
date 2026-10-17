@@ -129,6 +129,13 @@ const ICONS = {
   sade: svg('<rect x="4" y="4" width="16" height="16" rx="2.5"/><path d="M4 10h16M10 10v10"/>'),
 };
 
+// ---------- Logo ----------
+
+// EO monogramı: Ensar'ın E'si ve Ocakçı'nın O'su. Yazıda ç'nin çengeli turuncu.
+const LOGO_MARK = '<svg class="logo-mark" viewBox="0 0 48 48" aria-hidden="true"><rect class="lm-bg" width="48" height="48" rx="12"/><path class="lm-e" d="M8.3 15h11v4h-7v3h6v4h-6v3h7v4h-11z"/><circle cx="30.7" cy="24" r="7" fill="none" stroke="#ff5a1f" stroke-width="4"/></svg>';
+const CED = 'Ensar Ocak<span class="ced">ç</span>ı';
+const LOGO = `${LOGO_MARK}<span class="logo-t"><small>NURETTİN</small><span>${CED}</span></span>`;
+
 // ---------- Yapılandırılmış veri ----------
 
 const PERSON_ID = SITE + '/#ensar';
@@ -207,7 +214,7 @@ ${noindex ? '<meta name="robots" content="noindex">' : `<meta name="robots" cont
 <a class="skip" href="#icerik">İçeriğe geç</a>
 <header class="top">
   <div class="wrap top-in">
-    <a class="brand" href="/"><span class="mark" aria-hidden="true"></span>${NAME}</a>
+    <a class="brand" href="/" aria-label="${NAME}, ana sayfa">${LOGO}</a>
     <button class="menu-btn" type="button" aria-expanded="false" aria-controls="nav" aria-label="Menü"><span></span><span></span></button>
     <nav id="nav" class="nav" aria-label="Ana menü">${nav}<a class="btn btn-sm" href="#iletisim">İletişim</a></nav>
   </div>
@@ -248,14 +255,14 @@ function footer() {
   <div class="wrap">
     <div class="foot-grid">
       <div class="foot-about">
-        <a class="brand" href="/"><span class="mark" aria-hidden="true"></span>${NAME}</a>
+        <a class="brand" href="/" aria-label="${NAME}, ana sayfa">${LOGO}</a>
         <p>İşletmeler için web tasarım, yazılım, mobil uygulama ve yapay zekâ çözümleri.</p>
       </div>
       <div><h2>Hizmetler</h2><ul>${li(services.map(s => [s.path, s.baslik]))}</ul></div>
       <div><h2>Site</h2><ul>${li([['/', 'Ana sayfa'], ...NAV])}</ul></div>
       <div><h2>İletişim</h2><ul>${li([[WA, 'WhatsApp'], ['tel:' + PHONE.tel, PHONE.display]])}</ul></div>
     </div>
-    <div class="foot-mark" aria-hidden="true">${SHORT}</div>
+    <div class="foot-mark" aria-hidden="true">${CED}</div>
     <div class="foot-bottom"><span>© ${new Date().getFullYear()} ${NAME}</span><span>ensarocakci.com</span></div>
   </div>
 </footer>`;
@@ -367,9 +374,10 @@ function home() {
       ...faqLd(HOME_FAQ.map(([q, a]) => ({ q, a }))),
     ],
     body: `<section class="hero">
+  <div class="hero-main">
   <div class="wrap hero-grid">
     <div>
-      <p class="eyebrow">${NAME}</p>
+      <p class="eyebrow">Tasarım · Yazılım · Yapay zekâ</p>
       <h1>İşletmeler için web tasarım, yazılım ve yapay zekâ çözümleri</h1>
       <p class="lead">Hızlı açılan ve Google'da bulunabilen web siteleri, işinize göre geliştirilen yazılımlar, mobil uygulamalar ve iş süreçlerine uyarlanan yapay zekâ araçları.</p>
       <div class="actions">
@@ -378,6 +386,8 @@ function home() {
       </div>
     </div>
     ${stage()}
+  </div>
+  <div class="hero-mark" aria-hidden="true">${CED}</div>
   </div>
   <div class="live">
     <div class="wrap live-in">
@@ -535,7 +545,7 @@ function postPage(p) {
 <div class="wrap article">
   <article class="prose">
     ${p.html}
-    <div class="author"><span class="mark" aria-hidden="true"></span><div><strong>${NAME}</strong><p>Web tasarım, yazılım ve yapay zekâ alanlarında işletmelerle çalışıyor. <a href="/hakkinda/">Hakkında</a></p></div></div>
+    <div class="author">${LOGO_MARK}<div><strong>${NAME}</strong><p>Web tasarım, yazılım ve yapay zekâ alanlarında işletmelerle çalışıyor. <a href="/hakkinda/">Hakkında</a></p></div></div>
   </article>
   <aside class="side"><div class="side-in">${tocBox(p.toc)}${contactBox()}</div></aside>
 </div>
