@@ -108,6 +108,13 @@ p{margin:0}
 .feed a:hover .go{transform:translateX(4px)}
 @media (max-width:640px){.feed a{grid-template-columns:36px minmax(0,1fr)}.feed .go{display:none}}
 
+/* Vitrin çizimi */
+.showcase{position:relative;margin-bottom:16px;padding:clamp(12px,2.4vw,32px);border:1px solid var(--line);border-radius:20px;background:var(--soft);overflow:hidden}
+.showcase .art{display:block;width:100%;height:auto}
+.badge{position:absolute;top:14px;right:14px;display:inline-flex;align-items:center;gap:8px;padding:7px 12px;border:1px solid var(--line);border-radius:999px;background:#fff;color:var(--ink);font-size:13px;font-weight:500}
+.badge .pulse{width:7px;height:7px}
+@media (max-width:640px){.badge{top:8px;right:8px;padding:5px 9px;font-size:11.5px}}
+
 /* Sektör kutuları ve katalog notu */
 .tiles{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
 .tile{display:flex;flex-direction:column;gap:6px;padding:18px;border:1px solid var(--line);border-radius:var(--r);background:#fff}
@@ -138,7 +145,7 @@ p{margin:0}
 .art .wl{fill:none;stroke:#fff;stroke-width:1.8;stroke-linecap:round}
 .art .stk{fill:none;stroke:var(--ink);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .art text{font-family:var(--sans)}
-.art .t{fill:var(--ink);font-weight:600}.art .tm{fill:var(--mute)}.art .tw{fill:#fff;font-weight:500}.art .ta{fill:var(--ink);font-weight:500}
+.art .t{fill:var(--ink);font-weight:600}.art .tn{fill:var(--ink)}.art .tm{fill:var(--mute)}.art .tw{fill:#fff;font-weight:500}.art .ta{fill:var(--ink);font-weight:500}
 
 /* Bölümler */
 .section{padding:clamp(64px,9vw,112px) 0}

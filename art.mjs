@@ -75,59 +75,94 @@ ${[0, 1, 2, 3, 4].map(i => `${i ? `<path class="stl" d="M272 ${64 + i * 30}h184"
 <text class="tw" x="310" y="256" font-size="10.5">Fatura tabloya eklendi.</text>`),
 };
 
-// Projeler bölümündeki sektör çizimleri (160x100). Müşteri işleri gösterilmez; sektörü temsil eder.
-export const SECTOR_ART = {
-  mobilya: svg('0 0 160 100', `
-<rect class="w st" x="30" y="26" width="54" height="28" rx="8"/>
-<rect class="w st" x="20" y="44" width="74" height="30" rx="8"/><path class="stl" d="M20 60h74"/>
-<path class="stk" d="M28 74v8M86 74v8"/>
-<path class="stk" d="M126 80V42"/><path class="k" d="M110 42h32l-7-18h-18z"/><rect class="l" x="114" y="80" width="24" height="4" rx="2"/>
-<rect class="l" x="14" y="88" width="132" height="4" rx="2"/>`),
+// ---------- Projeler: sektör parçaları ----------
+// Parçalar 160x100 düzleminde çizilir; hem küçük sektör kutularında hem büyük vitrinde (taşınıp ölçeklenerek) kullanılır.
 
-  beyaz: svg('0 0 160 100', `
-<rect class="w st" x="20" y="20" width="58" height="66" rx="6"/>
-<rect class="l" x="27" y="27" width="22" height="5" rx="2.5"/><circle class="k" cx="68" cy="29.5" r="3"/>
-<circle class="stn" cx="49" cy="58" r="17"/><circle class="s" cx="49" cy="58" r="10"/>
-<rect class="w st" x="96" y="12" width="44" height="74" rx="6"/><path class="stl" d="M96 40h44"/>
-<rect class="k" x="104" y="22" width="3" height="10" rx="1.5"/><rect class="k" x="104" y="48" width="3" height="16" rx="1.5"/>
-<rect class="l" x="14" y="88" width="132" height="4" rx="2"/>`),
-
-  tekstil: svg('0 0 160 100', `
-<path class="stk" d="M60 14a5 5 0 1 1 5 5v5"/>
-<path class="w st" d="M44 36l16-10h10l16 10 8 14-12 6v30H48V56l-12-6z"/><path class="stl" d="M58 26a7 7 0 0 0 14 0"/>
-<rect class="w st" x="104" y="40" width="40" height="12" rx="3"/><rect class="w st" x="100" y="52" width="48" height="12" rx="3"/><rect class="w st" x="96" y="64" width="56" height="12" rx="3"/>
-<rect class="k" x="112" y="30" width="24" height="6" rx="3"/>
-<rect class="l" x="14" y="88" width="132" height="4" rx="2"/>`),
-
-  eticaret: svg('0 0 160 100', `
-<rect class="w st" x="20" y="12" width="72" height="76" rx="8"/><rect class="s" x="28" y="20" width="56" height="36" rx="5"/><circle class="l" cx="56" cy="38" r="9"/>
-<rect class="k" x="28" y="63" width="34" height="5" rx="2.5"/><rect class="l" x="28" y="73" width="22" height="4" rx="2"/>
-<rect class="k" x="70" y="64" width="14" height="14" rx="4"/><path class="wl" d="M74 71h6M77 68v6"/>
-<path class="stk" d="M104 28h8l6 30h22l5-20h-31"/><circle class="k" cx="122" cy="68" r="3"/><circle class="k" cx="136" cy="68" r="3"/>
-<circle class="k" cx="142" cy="26" r="8"/><text class="tw" x="142" y="29.5" font-size="9" text-anchor="middle">2</text>`),
-
-  restoran: svg('0 0 160 100', `
-<rect class="k" x="24" y="8" width="46" height="84" rx="9"/><rect class="w" x="28" y="12" width="38" height="76" rx="6"/>
-<rect class="k" x="35" y="22" width="9" height="9"/><rect class="w" x="38" y="25" width="3" height="3"/>
-<rect class="k" x="50" y="22" width="9" height="9"/><rect class="w" x="53" y="25" width="3" height="3"/>
-<rect class="k" x="35" y="37" width="9" height="9"/><rect class="w" x="38" y="40" width="3" height="3"/>
-<rect class="k" x="50" y="38" width="3" height="3"/><rect class="k" x="56" y="38" width="3" height="3"/><rect class="k" x="53" y="43" width="3" height="3"/>
-<rect class="l" x="35" y="54" width="24" height="4" rx="2"/><rect class="l" x="35" y="62" width="16" height="4" rx="2"/><rect class="k" x="35" y="72" width="24" height="8" rx="4"/>
-<circle class="w st" cx="110" cy="60" r="22"/><circle class="stn" cx="110" cy="60" r="13"/>
-<rect class="w st" x="132" y="24" width="16" height="16" rx="3"/><path class="stk" d="M148 28h3a4 4 0 0 1 0 8h-3"/>`),
-
-  servis: svg('0 0 160 100', `
-<rect class="w st" x="16" y="22" width="92" height="34" rx="8"/><path class="stl" d="M16 44h92"/><rect class="l" x="24" y="29" width="40" height="5" rx="2.5"/><circle class="k" cx="98" cy="32" r="3"/>
-<path class="stk" d="M36 64c5 6 5 10 0 16M58 64c5 6 5 10 0 16M80 64c5 6 5 10 0 16"/>
-<path class="k" d="M146 26a13 13 0 0 1-16 15l-18 18-7-7 18-18a13 13 0 0 1 15-16l-7 7 2 8 8 2z"/>`),
-
-  kuafor: svg('0 0 160 100', `
-<circle class="stn" cx="30" cy="30" r="7"/><circle class="stn" cx="30" cy="56" r="7"/><path class="stk" d="M36 34l36 20M36 52l36-20"/>
-<rect class="k" x="84" y="22" width="6" height="56" rx="3"/><path class="stk" d="M90 30h8M90 38h8M90 46h8M90 54h8M90 62h8M90 70h8"/>
-<rect class="w st" x="110" y="28" width="40" height="46" rx="6"/><rect class="l" x="116" y="36" width="18" height="4" rx="2"/><rect class="k" x="116" y="46" width="28" height="9" rx="3"/><rect class="l" x="116" y="61" width="28" height="4" rx="2"/>`),
-
-  saglik: svg('0 0 160 100', `
-<rect class="w st" x="18" y="22" width="62" height="60" rx="8"/><path class="stl" d="M18 38h62"/><rect class="k" x="30" y="14" width="4" height="12" rx="2"/><rect class="k" x="64" y="14" width="4" height="12" rx="2"/>
-<circle class="l" cx="32" cy="50" r="3"/><circle class="l" cx="49" cy="50" r="3"/><circle class="l" cx="66" cy="50" r="3"/><circle class="l" cx="32" cy="66" r="3"/><circle class="k" cx="49" cy="66" r="6"/><circle class="l" cx="66" cy="66" r="3"/>
-<circle class="w st" cx="120" cy="54" r="24"/><circle class="s" cx="120" cy="54" r="14"/><path class="stk" d="M112 54l6 6 11-13"/>`),
+const P = {
+  sofa: '<rect class="w st" x="30" y="26" width="54" height="28" rx="8"/><rect class="w st" x="20" y="44" width="74" height="30" rx="8"/><path class="stl" d="M20 60h74"/><path class="stk" d="M28 74v8M86 74v8"/>',
+  lamba: '<path class="stk" d="M126 80V42"/><path class="k" d="M110 42h32l-7-18h-18z"/><rect class="l" x="114" y="80" width="24" height="4" rx="2"/>',
+  zemin: '<rect class="l" x="14" y="88" width="132" height="4" rx="2"/>',
+  camasir: '<rect class="w st" x="20" y="20" width="58" height="66" rx="6"/><rect class="l" x="27" y="27" width="22" height="5" rx="2.5"/><circle class="k" cx="68" cy="29.5" r="3"/><circle class="stn" cx="49" cy="58" r="17"/><circle class="s" cx="49" cy="58" r="10"/>',
+  buzdolabi: '<rect class="w st" x="96" y="12" width="44" height="74" rx="6"/><path class="stl" d="M96 40h44"/><rect class="k" x="104" y="22" width="3" height="10" rx="1.5"/><rect class="k" x="104" y="48" width="3" height="16" rx="1.5"/>',
+  aski: '<path class="stk" d="M60 14a5 5 0 1 1 5 5v5"/>',
+  gomlek: '<path class="w st" d="M44 36l16-10h10l16 10 8 14-12 6v30H48V56l-12-6z"/><path class="stl" d="M58 26a7 7 0 0 0 14 0"/>',
+  kumas: '<rect class="w st" x="104" y="40" width="40" height="12" rx="3"/><rect class="w st" x="100" y="52" width="48" height="12" rx="3"/><rect class="w st" x="96" y="64" width="56" height="12" rx="3"/><rect class="k" x="112" y="30" width="24" height="6" rx="3"/>',
+  urunKarti: '<rect class="w st" x="20" y="12" width="72" height="76" rx="8"/><rect class="s" x="28" y="20" width="56" height="36" rx="5"/><circle class="l" cx="56" cy="38" r="9"/><rect class="k" x="28" y="63" width="34" height="5" rx="2.5"/><rect class="l" x="28" y="73" width="22" height="4" rx="2"/><rect class="k" x="70" y="64" width="14" height="14" rx="4"/><path class="wl" d="M74 71h6M77 68v6"/>',
+  sepet: '<path class="stk" d="M104 28h8l6 30h22l5-20h-31"/><circle class="k" cx="122" cy="68" r="3"/><circle class="k" cx="136" cy="68" r="3"/><circle class="k" cx="142" cy="26" r="8"/><text class="tw" x="142" y="29.5" font-size="9" text-anchor="middle">2</text>',
+  qrTelefon: '<rect class="k" x="24" y="8" width="46" height="84" rx="9"/><rect class="w" x="28" y="12" width="38" height="76" rx="6"/><rect class="k" x="35" y="22" width="9" height="9"/><rect class="w" x="38" y="25" width="3" height="3"/><rect class="k" x="50" y="22" width="9" height="9"/><rect class="w" x="53" y="25" width="3" height="3"/><rect class="k" x="35" y="37" width="9" height="9"/><rect class="w" x="38" y="40" width="3" height="3"/><rect class="k" x="50" y="38" width="3" height="3"/><rect class="k" x="56" y="38" width="3" height="3"/><rect class="k" x="53" y="43" width="3" height="3"/><rect class="l" x="35" y="54" width="24" height="4" rx="2"/><rect class="l" x="35" y="62" width="16" height="4" rx="2"/><rect class="k" x="35" y="72" width="24" height="8" rx="4"/>',
+  tabak: '<circle class="w st" cx="110" cy="60" r="22"/><circle class="stn" cx="110" cy="60" r="13"/><rect class="w st" x="132" y="24" width="16" height="16" rx="3"/><path class="stk" d="M148 28h3a4 4 0 0 1 0 8h-3"/>',
+  klima: '<rect class="w st" x="16" y="22" width="92" height="34" rx="8"/><path class="stl" d="M16 44h92"/><rect class="l" x="24" y="29" width="40" height="5" rx="2.5"/><circle class="k" cx="98" cy="32" r="3"/>',
+  hava: '<path class="stk" d="M36 64c5 6 5 10 0 16M58 64c5 6 5 10 0 16M80 64c5 6 5 10 0 16"/>',
+  anahtar: '<path class="k" d="M146 26a13 13 0 0 1-16 15l-18 18-7-7 18-18a13 13 0 0 1 15-16l-7 7 2 8 8 2z"/>',
+  makas: '<circle class="stn" cx="30" cy="30" r="7"/><circle class="stn" cx="30" cy="56" r="7"/><path class="stk" d="M36 34l36 20M36 52l36-20"/>',
+  tarak: '<rect class="k" x="84" y="22" width="6" height="56" rx="3"/><path class="stk" d="M90 30h8M90 38h8M90 46h8M90 54h8M90 62h8M90 70h8"/>',
+  randevu: '<rect class="w st" x="110" y="28" width="40" height="46" rx="6"/><rect class="l" x="116" y="36" width="18" height="4" rx="2"/><rect class="k" x="116" y="46" width="28" height="9" rx="3"/><rect class="l" x="116" y="61" width="28" height="4" rx="2"/>',
+  takvim: '<rect class="w st" x="18" y="22" width="62" height="60" rx="8"/><path class="stl" d="M18 38h62"/><rect class="k" x="30" y="14" width="4" height="12" rx="2"/><rect class="k" x="64" y="14" width="4" height="12" rx="2"/><circle class="l" cx="32" cy="50" r="3"/><circle class="l" cx="49" cy="50" r="3"/><circle class="l" cx="66" cy="50" r="3"/><circle class="l" cx="32" cy="66" r="3"/><circle class="k" cx="49" cy="66" r="6"/><circle class="l" cx="66" cy="66" r="3"/>',
+  onay: '<circle class="w st" cx="120" cy="54" r="24"/><circle class="s" cx="120" cy="54" r="14"/><path class="stk" d="M112 54l6 6 11-13"/>',
+  pencere: '<rect class="w st" x="16" y="14" width="128" height="76" rx="8"/><path class="stl" d="M16 32h128"/><circle class="l" cx="28" cy="23" r="3"/><circle class="l" cx="38" cy="23" r="3"/><circle class="l" cx="48" cy="23" r="3"/><rect class="s" x="70" y="19" width="40" height="8" rx="4"/><rect class="k" x="28" y="44" width="44" height="7" rx="3.5"/><rect class="l" x="28" y="56" width="36" height="4" rx="2"/><rect class="k" x="28" y="68" width="28" height="10" rx="5"/><rect class="s" x="88" y="42" width="44" height="36" rx="6"/><circle class="l" cx="110" cy="58" r="8"/>',
+  telefon: '<rect class="k" x="60" y="6" width="48" height="88" rx="10"/><rect class="w" x="64" y="10" width="40" height="80" rx="7"/><rect class="k" x="76" y="14" width="16" height="4" rx="2"/><rect class="s" x="70" y="26" width="28" height="22" rx="5"/><rect class="k" x="70" y="54" width="20" height="4" rx="2"/><rect class="l" x="70" y="62" width="26" height="3" rx="1.5"/><rect class="k" x="70" y="74" width="28" height="9" rx="4.5"/><rect class="w st" x="14" y="40" width="44" height="24" rx="6"/><circle class="k" cx="25" cy="52" r="4"/><rect class="l" x="34" y="48" width="18" height="3" rx="1.5"/><rect class="l" x="34" y="54" width="12" height="3" rx="1.5"/>',
 };
+
+const SECTOR_BODY = {
+  mobilya: P.sofa + P.lamba + P.zemin,
+  beyaz: P.camasir + P.buzdolabi + P.zemin,
+  tekstil: P.aski + P.gomlek + P.kumas + P.zemin,
+  eticaret: P.urunKarti + P.sepet,
+  restoran: P.qrTelefon + P.tabak,
+  servis: P.klima + P.hava + P.anahtar,
+  kuafor: P.makas + P.tarak + P.randevu,
+  saglik: P.takvim + P.onay,
+  web: P.pencere,
+  mobil: P.telefon,
+};
+export const SECTOR_ART = Object.fromEntries(Object.entries(SECTOR_BODY).map(([k, b]) => [k, svg('0 0 160 100', b)]));
+
+// ---------- Projeler vitrini ----------
+// Bir mağaza sitesi, bir sipariş uygulaması, bir yönetim paneli ve sektör kartları tek sahnede.
+
+const T = (x, y, str, size, cls = 't', extra = '') => `<text class="${cls}" x="${x}" y="${y}" font-size="${size}"${extra}>${str}</text>`;
+const bar = (x, y, w, h = 6, cls = 'l') => `<rect class="${cls}" x="${x}" y="${y}" width="${w}" height="${h}" rx="${h / 2}"/>`;
+const pill = (x, y, w, h, label, dark = true, fs = 11) =>
+  `<rect class="${dark ? 'k' : 's'}" x="${x}" y="${y}" width="${w}" height="${h}" rx="${h / 2}"/>${T(x + w / 2, y + h / 2 + fs * .36, label, fs, dark ? 'tw' : 't', ' text-anchor="middle"')}`;
+// Parçayı (ox,oy) köşesi (X,Y)'ye gelecek şekilde s oranında yerleştirir
+const put = (body, X, Y, s, ox, oy) => `<g transform="translate(${(X - ox * s).toFixed(1)} ${(Y - oy * s).toFixed(1)}) scale(${s})">${body}</g>`;
+
+const product = (x, y, name, price, thumb) => `<rect class="w st" x="${x}" y="${y}" width="184" height="180" rx="10"/><rect class="s" x="${x + 10}" y="${y + 10}" width="164" height="100" rx="8"/>${thumb}
+${T(x + 10, y + 134, name, 12)}${T(x + 174, y + 134, price, 12, 't', ' text-anchor="end"')}${bar(x + 10, y + 144, 70, 5)}${pill(x + 10, y + 154, 84, 20, 'Sepete ekle', true, 10)}`;
+
+const menuItem = (y, name, price) => `<rect class="s" x="786" y="${y}" width="40" height="40" rx="10"/>${T(836, y + 16, name, 12)}${bar(836, y + 23, 60, 4)}${T(836, y + 37, price, 11, 'tn')}<circle class="k" cx="940" cy="${y + 20}" r="11"/><path class="wl" d="M935 ${y + 20}h10M940 ${y + 15}v10"/>`;
+
+const orderRow = (y, no, w, status, dark) => `${T(898, y + 4, no, 10, 'tn')}${bar(940, y - 1, w, 6)}${pill(1064, y - 9, 88, 20, status, dark, 9)}`;
+
+export const SHOWCASE = svg('0 0 1200 640', `
+<rect class="w st" x="60" y="50" width="640" height="450" rx="14"/><path class="stl" d="M60 86h640"/>
+<circle class="l" cx="82" cy="68" r="4"/><circle class="l" cx="98" cy="68" r="4"/><circle class="l" cx="114" cy="68" r="4"/>
+<rect class="s" x="300" y="59" width="160" height="18" rx="9"/>${T(380, 72, 'magaza.com', 10, 'tm', ' text-anchor="middle"')}
+<rect class="k" x="88" y="106" width="22" height="22" rx="6"/>${T(118, 122, 'Mağaza', 13)}
+${T(380, 121, 'Ürünler', 11, 'tm')}${T(440, 121, 'Koleksiyon', 11, 'tm')}${T(518, 121, 'İletişim', 11, 'tm')}${pill(596, 104, 80, 26, 'Sepet · 2', true, 11)}
+<rect class="s" x="88" y="146" width="584" height="130" rx="10"/>
+${T(112, 188, 'Yeni sezon', 22)}${T(112, 214, 'oturma grupları', 22)}${bar(112, 228, 150)}${bar(112, 240, 110)}${pill(112, 254, 70, 22, 'İncele', true, 10)}
+${put(P.sofa + P.lamba, 480, 162, 1.05, 20, 26)}
+${product(88, 296, 'Üçlü koltuk', '₺18.900', put(P.sofa, 146, 331, .9, 20, 26))}
+${product(288, 296, 'Keten gömlek', '₺1.250', put(P.gomlek, 354, 329, .9, 36, 26))}
+${product(488, 296, 'Çamaşır makinesi', '₺24.500', put(P.camasir, 554, 326, .9, 20, 20))}
+
+<rect class="k" x="760" y="30" width="220" height="400" rx="30"/><rect class="w" x="768" y="38" width="204" height="384" rx="23"/><rect class="k" x="840" y="48" width="60" height="14" rx="7"/>
+${T(786, 96, 'Masa 12', 10, 'tm')}${T(786, 118, 'Menü', 20)}
+<rect class="s" x="786" y="130" width="168" height="26" rx="13"/>${T(800, 147, 'Ara', 10, 'tm')}
+${pill(786, 166, 54, 22, 'Kahve', true, 10)}${pill(846, 166, 48, 22, 'Tatlı', false, 10)}${pill(900, 166, 54, 22, 'Sandviç', false, 10)}
+${menuItem(200, 'Filtre kahve', '₺120')}${menuItem(252, 'Cheesecake', '₺180')}${menuItem(304, 'Soğuk latte', '₺150')}
+${pill(786, 366, 168, 36, 'Sipariş ver · ₺450', true, 12)}
+
+<rect class="w st" x="880" y="412" width="290" height="218" rx="12"/>
+${T(898, 440, 'Siparişler', 15)}${T(1152, 440, 'Bugün · 24', 11, 'tm', ' text-anchor="end"')}
+${T(898, 462, 'NO', 9, 'tm')}${T(940, 462, 'MÜŞTERİ', 9, 'tm')}${T(1068, 462, 'DURUM', 9, 'tm')}<path class="stl" d="M898 470h254"/>
+${orderRow(488, '#1042', 96, 'Hazırlanıyor', false)}${orderRow(514, '#1041', 72, 'Kargoda', true)}${orderRow(540, '#1040', 100, 'Teslim edildi', false)}${orderRow(566, '#1039', 84, 'Kargoda', true)}
+${[12, 18, 10, 22, 16, 26, 20, 14, 24, 20].map((h, i) => `<rect class="${i === 5 ? 'k' : 'l'}" x="${898 + i * 26}" y="${612 - h}" width="14" height="${h}" rx="3"/>`).join('')}
+
+<rect class="w st" x="40" y="525" width="260" height="80" rx="12"/>${put(P.makas, 58, 548, .55, 23, 23)}
+${T(100, 552, 'Cuma 14:30', 11, 'tm')}${T(100, 572, 'Saç kesimi', 13)}${pill(204, 553, 80, 24, 'Onaylandı', true, 10)}
+<rect class="w st" x="330" y="540" width="270" height="72" rx="12"/>${put(P.klima + P.hava, 346, 552, .42, 16, 22)}
+${T(400, 564, 'Servis talebi', 11, 'tm')}${T(400, 584, 'Klima bakımı', 13)}${pill(532, 562, 52, 26, 'Ara', true, 11)}
+<rect class="w st" x="620" y="530" width="220" height="84" rx="12"/>${put(P.takvim, 636, 552, .55, 18, 14)}
+${T(684, 556, 'Diyetisyen', 11, 'tm')}${T(684, 576, 'Kontrol randevusu', 13)}${T(684, 594, 'Yarın 10:00', 11, 'tm')}`);

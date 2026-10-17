@@ -1,8 +1,8 @@
 // Siteyi content/ ve static/ klasörlerinden dist/ klasörüne üretir. Bağımlılık yok: node build.mjs
-import { readFileSync, writeFileSync, mkdirSync, readdirSync, cpSync, rmSync } from 'node:fs';
+import { readFileSync, writeFileSync, mkdirSync, readdirSync, cpSync, rmSync, existsSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { SERVICE_ART, SECTOR_ART } from './art.mjs';
+import { SERVICE_ART, SECTOR_ART, SHOWCASE } from './art.mjs';
 
 const ROOT = dirname(fileURLToPath(import.meta.url));
 const OUT = join(ROOT, 'dist');
@@ -98,7 +98,7 @@ const words = s => s.split(/\s+/).filter(Boolean).length;
 
 // ---------- İçerik ----------
 
-const load = dir => readdirSync(join(ROOT, 'content', dir))
+const load = dir => (existsSync(join(ROOT, 'content', dir)) ? readdirSync(join(ROOT, 'content', dir)) : [])
   .filter(f => f.endsWith('.md'))
   .map(f => {
     const { meta, body } = read(join(ROOT, 'content', dir, f));
@@ -300,6 +300,14 @@ const SECTORS = [
 ];
 const sectorTile = ([k, t, d]) => `<div class="tile"><div class="tile-art" aria-hidden="true">${SECTOR_ART[k] || ''}</div><h3>${t}</h3><p>${d}</p></div>`;
 const tiles = () => `<div class="tiles">${SECTORS.map(sectorTile).join('')}</div>`;
+// Üç biçim: projeler sayfasındaki özet
+const MEDIUMS = [
+  ['web', 'Web siteleri', 'Tanıtım sitesinden çok sayfalı kurumsal siteye; hızlı, mobil uyumlu ve Google\'a hazır.'],
+  ['mobil', 'Mobil uygulamalar', 'iOS ve Android için sipariş, randevu ve sadakat uygulamaları; mağaza yayını dahil.'],
+  ['eticaret', 'E-ticaret', 'Ürün, sepet, ödeme ve kargo akışı; stok ve siparişleri yöneten panelle birlikte.'],
+];
+const mediums = () => `<div class="grid g3">${MEDIUMS.map(([k, t, d]) => `<div class="card"><span class="card-art" aria-hidden="true">${SECTOR_ART[k]}</span><h3>${t}</h3><p>${d}</p></div>`).join('')}</div>`;
+const showcase = () => `<div class="showcase">${SHOWCASE}<span class="badge"><span class="pulse" aria-hidden="true"></span>Katalog hazırlanıyor</span></div>`;
 const KATALOG = `<p class="note"><span class="pulse" aria-hidden="true"></span><span><b>Katalog hazırlanıyor.</b> Bugüne kadar yapılan işlerin seçkisi derleniyor; tamamlanınca bu sayfada yayımlanacak.</span></p>`;
 
 const STEPS = [
@@ -411,9 +419,10 @@ function home() {
 <section class="section alt" id="projeler">
   <div class="wrap">
     <div class="sec-head">
-      <div><h2 class="h2">Projeler</h2><p>Bugüne kadar farklı sektörlerden işletmelerle çalıştım; işlerin kataloğu hazırlanıyor. Şimdilik sektörler ve her birinde neye ihtiyaç duyulduğu.</p></div>
+      <div><h2 class="h2">Projeler</h2><p>Web siteleri, mobil uygulamalar ve e-ticaret; mobilyadan tekstile, restorandan teknik servise farklı sektörlerden işletmeler için. İşlerin kataloğu hazırlanıyor.</p></div>
       <a class="more" href="/projeler/">Projeler sayfası${ICONS.ok}</a>
     </div>
+    ${showcase()}
     ${tiles()}
   </div>
 </section>
@@ -438,28 +447,28 @@ function projectsIndex() {
     description: `Nurettin Ensar Ocakçı'nın çalıştığı sektörler ve kendi projeleri. Müşteri işlerinin kataloğu hazırlanıyor.`,
     ld: [{
       '@type': 'CollectionPage', url: SITE + '/projeler/', name: 'Projeler', isPartOf: { '@id': SITE_ID }, inLanguage: 'tr-TR',
-      mainEntity: { '@type': 'ItemList', itemListElement: projects.map((p, i) => ({ '@type': 'ListItem', position: i + 1, url: SITE + p.path, name: p.baslik })) },
+      about: SECTORS.map(([, t]) => ({ '@type': 'Thing', name: t })),
     }, crumbsLd(items)],
     body: `<section class="page-head">
   <div class="wrap">
     ${crumbs(items)}
     <h1>Projeler</h1>
-    <p class="lead">Bugüne kadar farklı sektörlerden işletmeler için web siteleri, mobil uygulamalar ve arayüzler yaptım. İşlerin kataloğu hazırlanıyor; yayına girene kadar burada çalıştığım sektörler ve kendi projelerim var.</p>
+    <p class="lead">Web siteleri, mobil uygulamalar ve e-ticaret; farklı sektörlerden işletmeler için. İşlerin kataloğu hazırlanıyor; yayına girene kadar burada ne yaptığım ve hangi sektörlerde çalıştığım var.</p>
   </div>
 </section>
 <section class="section">
+  <div class="wrap">
+    ${showcase()}
+    ${mediums()}
+  </div>
+</section>
+<section class="section alt">
   <div class="wrap">
     <div class="sec-head"><div><h2 class="h2">Çalıştığım sektörler</h2><p>Her sektörün kendi ihtiyacı var; aşağıda her birinde neye odaklanıldığı yazılı.</p></div></div>
     ${tiles()}
     ${KATALOG}
   </div>
-</section>
-${projects.length ? `<section class="section alt">
-  <div class="wrap">
-    <div class="sec-head"><div><h2 class="h2">Kendi projelerim</h2><p>Ne için yapıldığı, nasıl çalıştığı ve alınan kararlarla birlikte.</p></div></div>
-    ${rows(projectRows(projects))}
-  </div>
-</section>` : ''}`,
+</section>`,
   });
 }
 
