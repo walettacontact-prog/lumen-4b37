@@ -25,7 +25,7 @@ p{margin:0}
 .top-in{display:flex;align-items:center;justify-content:space-between;gap:24px;height:68px}
 .brand{display:inline-flex;align-items:center;gap:11px;color:var(--ink);text-decoration:none;white-space:nowrap}
 .logo-mark{flex:none;width:36px;height:36px}
-.lm-bg{fill:var(--ink)}.lm-e{fill:#fff}
+.lm-bg{fill:var(--ink)}.lm-l{stroke:#fff}
 .logo-t{display:flex;flex-direction:column;font-size:18px;font-weight:600;letter-spacing:-.03em;line-height:1}
 .logo-t small{margin-bottom:4px;color:#8a8984;font-size:9.5px;font-weight:500;letter-spacing:.28em}
 /* ç'nin çengeli: harfin taban çizgisinin altı turuncu */
@@ -216,7 +216,7 @@ a.card:hover .go svg{transform:translateX(3px)}
 .foot{padding:56px 0 32px;background:var(--dark);border-top:1px solid var(--dark-line);color:var(--dark-mute);font-size:15px}
 .foot-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:32px}
 .foot .brand{color:#fff;--ced-ust:#fff}
-.foot .lm-bg{fill:#fff}.foot .lm-e{fill:var(--ink)}
+.foot .lm-bg{fill:#fff}.foot .lm-l{stroke:var(--ink)}
 .foot-about p{max-width:22em;margin-top:16px}
 .foot h2{margin-bottom:16px;color:#fff;font-size:14px;font-weight:500;letter-spacing:0}
 .foot ul{display:grid;gap:10px;margin:0;padding:0;list-style:none}

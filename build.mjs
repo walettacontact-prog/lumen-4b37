@@ -131,8 +131,8 @@ const ICONS = {
 
 // ---------- Logo ----------
 
-// EO monogramı: Ensar'ın E'si ve Ocakçı'nın O'su. Yazıda ç'nin çengeli turuncu.
-const LOGO_MARK = '<svg class="logo-mark" viewBox="0 0 48 48" aria-hidden="true"><rect class="lm-bg" width="48" height="48" rx="12"/><path class="lm-e" d="M8.3 15h11v4h-7v3h6v4h-6v3h7v4h-11z"/><circle cx="30.7" cy="24" r="7" fill="none" stroke="#ff5a1f" stroke-width="4"/></svg>';
+// NEO monogramı: Nurettin Ensar Ocakçı'nın baş harfleri, o turuncu. Yazıda ç'nin çengeli turuncu.
+const LOGO_MARK = '<svg class="logo-mark" viewBox="0 0 48 48" aria-hidden="true"><rect class="lm-bg" width="48" height="48" rx="12"/><g fill="none" stroke-width="3"><path class="lm-l" d="M7 29.5V18.5M7 23.5a3.8 3.8 0 0 1 7.6 0v6M19.3 24h8.6A4.3 4.3 0 1 0 26.9 26.8"/><circle cx="37" cy="24" r="4.3" stroke="#ff5a1f"/></g></svg>';
 const CED = 'Ensar Ocak<span class="ced">ç</span>ı';
 const LOGO = `${LOGO_MARK}<span class="logo-t"><small>NURETTİN</small><span>${CED}</span></span>`;
 
