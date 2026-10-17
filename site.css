@@ -51,19 +51,101 @@ p{margin:0}
 .btn-sm{height:40px;padding:0 18px;font-size:15px}
 
 /* Giriş */
-.hero{padding:clamp(56px,9vw,120px) 0 clamp(56px,8vw,104px)}
-.hero-grid{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:clamp(40px,6vw,88px);align-items:center}
+.hero{position:relative;isolation:isolate;overflow:hidden;padding-top:clamp(48px,7vw,96px);border-bottom:1px solid var(--line)}
+.hero::before{content:"";position:absolute;inset:0;z-index:-1;background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);background-size:48px 48px;-webkit-mask-image:radial-gradient(ellipse 70% 80% at 75% 35%,#000 20%,transparent 70%);mask-image:radial-gradient(ellipse 70% 80% at 75% 35%,#000 20%,transparent 70%);opacity:.8}
+.hero-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.08fr);gap:clamp(40px,5vw,72px);align-items:center}
 .eyebrow{display:flex;align-items:center;gap:10px;margin-bottom:22px;color:var(--mute);font-size:15px;font-weight:500}
 .eyebrow::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--accent)}
-.hero h1{font-size:clamp(38px,5.2vw,64px);line-height:1.04;letter-spacing:-.04em}
+.hero h1{font-size:clamp(40px,5vw,66px);line-height:1.02;letter-spacing:-.045em}
 .lead{max-width:38em;margin-top:24px;color:var(--mute);font-size:clamp(17px,1.5vw,19px)}
 .actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:36px}
-.panel{padding:8px 28px;border:1px solid var(--line);border-radius:20px;background:var(--soft)}
-.panel-title{padding:20px 0 6px;color:var(--mute);font-size:14px;font-weight:500}
-.checks{margin:0;padding:0;list-style:none}
-.checks li{display:flex;align-items:center;gap:12px;padding:14px 0;border-top:1px solid var(--line);color:var(--ink);font-size:16px}
-.checks svg{width:20px;height:20px;color:var(--accent)}
-@media (max-width:900px){.hero-grid{grid-template-columns:1fr}}
+@media (max-width:960px){.hero-grid{grid-template-columns:1fr}}
+
+/* Giriş çizimi: tarayıcı, telefon, arama sonucu ve yapay zekâ asistanı */
+.stage{position:relative;aspect-ratio:1/.9;container-type:inline-size;font-size:clamp(10px,2.3cqw,14px);line-height:1.4}
+.stage>*{position:absolute;animation:rise .9s cubic-bezier(.2,.7,.2,1) both}
+.win{top:7%;right:0;width:86%;overflow:hidden;border:1px solid var(--line);border-radius:14px;background:#fff;box-shadow:0 40px 80px -40px rgba(17,17,18,.3)}
+.win-bar{display:flex;align-items:center;gap:6px;height:6.4cqw;padding:0 2.6cqw;border-bottom:1px solid var(--line);background:#fbfbfa}
+.win-bar i{width:1.5cqw;height:1.5cqw;border-radius:50%;background:#dcdbd6}
+.win-bar span{margin:0 auto;padding:.4cqw 3.2cqw;border-radius:99px;background:var(--soft);color:var(--mute);font-size:.85em}
+.win .art{width:100%;height:auto}
+.phone{left:0;bottom:0;width:28%;animation-delay:.12s;filter:drop-shadow(0 24px 28px rgba(17,17,18,.22))}
+.phone .art{width:100%;height:auto}
+.serp{top:0;left:0;width:40%;padding:1.1em 1.2em;border:1px solid var(--line);border-radius:14px;background:#fff;box-shadow:0 24px 48px -24px rgba(17,17,18,.25);animation-delay:.24s}
+.serp-q{display:flex;align-items:center;gap:.5em;margin-bottom:.9em;padding:.45em .8em;border:1px solid var(--line);border-radius:99px;color:var(--ink);font-size:.9em}
+.serp-q svg{width:1.1em;height:1.1em;color:var(--mute)}
+.serp-u{display:flex;align-items:center;gap:.45em;color:var(--mute);font-size:.8em}
+.serp-u i{width:1.3em;height:1.3em;border-radius:50%;background:var(--ink);box-shadow:inset 0 0 0 .4em var(--ink),inset 0 0 0 1em var(--accent)}
+.serp strong{display:block;margin:.25em 0 .45em;color:#1a0dab;font-weight:500;font-size:1.02em;letter-spacing:-.01em}
+.serp-d{display:block;height:.45em;margin-top:.4em;border-radius:9px;background:var(--line)}
+.serp-d+.serp-d{width:70%}
+.chat{right:0;bottom:3%;width:52%;padding:1em;border:1px solid var(--line);border-radius:16px;background:#fff;box-shadow:0 30px 60px -30px rgba(17,17,18,.3);animation-delay:.36s}
+.chat-h{display:flex;align-items:center;gap:.5em;margin-bottom:.8em;color:var(--ink);font-size:.85em;font-weight:600}
+.chat-h svg{width:1.4em;height:1.4em;padding:.25em;border-radius:.4em;background:var(--accent);color:#fff}
+.chat-h b{margin-left:auto;width:.55em;height:.55em;border-radius:50%;background:#1fae5b}
+.msg{width:fit-content;max-width:86%;padding:.55em .85em;border-radius:1em;font-size:.92em}
+.me{margin-left:auto;border-bottom-right-radius:.3em;background:var(--soft);color:var(--ink);animation:fadein .4s .7s both}
+.reply{display:grid;margin-top:.5em}
+.reply>*{grid-area:1/1}
+.bot{border-bottom-left-radius:.3em;background:var(--ink);color:#fff;animation:fadein .4s 2.1s both}
+.typing{display:flex;gap:.3em;align-self:start;padding:.85em .95em;animation:fadein .3s 1.1s both,fadeout .2s 2s forwards}
+.typing i{width:.4em;height:.4em;border-radius:50%;background:var(--mute);opacity:.35;animation:blink 1s infinite}
+.typing i:nth-child(2){animation-delay:.15s}
+.typing i:nth-child(3){animation-delay:.3s}
+@keyframes rise{from{opacity:0;transform:translateY(18px)}}
+@keyframes fadein{from{opacity:0}}
+@keyframes fadeout{to{opacity:0}}
+@keyframes blink{50%{opacity:1}}
+@media (max-width:960px){.stage{max-width:600px}}
+
+/* Canlı ölçüm şeridi */
+.live{margin-top:clamp(48px,6vw,88px);border-top:1px solid var(--line);background:rgba(255,255,255,.75)}
+.live-in{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px 40px;padding-top:22px;padding-bottom:22px}
+.live-t{display:flex;align-items:center;gap:10px;color:var(--mute);font-size:14px}
+.pulse{flex:none;width:8px;height:8px;border-radius:50%;background:#1fae5b;animation:pulse 2s infinite}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(31,174,91,.45)}70%,100%{box-shadow:0 0 0 8px rgba(31,174,91,0)}}
+.live-s{display:flex;gap:clamp(24px,4vw,56px);margin:0}
+.live-s div{display:flex;flex-direction:column-reverse}
+.live-s dt{color:var(--mute);font-size:13px}
+.live-s dd{margin:0;color:var(--ink);font-size:22px;font-weight:600;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+@media (max-width:640px){.live-s{justify-content:space-between;width:100%}.live-s dd{font-size:19px}}
+
+/* Hizmet seçici */
+.svc{display:grid;grid-template-columns:minmax(0,.75fr) minmax(0,1.6fr);gap:clamp(24px,4vw,56px);align-items:start}
+.svc-tabs{display:none;flex-direction:column;border-top:1px solid var(--line)}
+.js .svc-tabs{display:flex}
+.svc-tab{display:flex;align-items:center;gap:16px;width:100%;padding:22px 0;border:0;border-bottom:1px solid var(--line);background:none;color:var(--mute);font:inherit;font-size:clamp(19px,1.9vw,24px);font-weight:500;letter-spacing:-.02em;text-align:left;cursor:pointer;transition:color .2s}
+.svc-tab .n{width:24px;color:var(--mute);font-size:13px;letter-spacing:0;font-variant-numeric:tabular-nums}
+.svc-tab::after{content:"";width:8px;height:8px;margin-left:auto;border-radius:50%;background:var(--accent);opacity:0;transition:opacity .2s}
+.svc-tab:hover,.svc-tab[aria-selected="true"]{color:var(--ink)}
+.svc-tab[aria-selected="true"]::after{opacity:1}
+.svc-panels{display:grid;grid-template-columns:minmax(0,1fr);gap:16px}
+.svc-panel{display:grid;gap:clamp(20px,3vw,32px);padding:clamp(16px,2.4vw,28px);border:1px solid var(--line);border-radius:20px;background:#fff}
+.js .svc-panel:not(.on){display:none}
+.svc-art{padding:clamp(12px,2.4vw,28px);border-radius:14px;background:var(--soft)}
+.svc-art .art{width:100%;height:auto}
+.svc-body{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px 40px;align-items:start;padding:0 clamp(0px,1vw,8px) 4px}
+.svc-body h3{font-size:clamp(22px,2.2vw,28px);letter-spacing:-.03em}
+.svc-body p{margin-top:10px;color:var(--mute)}
+.svc-body .more{grid-column:1/-1;white-space:normal}
+.svc-list{margin:0;padding:0;list-style:none}
+.svc-list li{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--line);color:var(--ink);font-size:15.5px}
+.svc-list li:first-child{padding-top:2px}
+.svc-list svg{width:18px;height:18px;color:var(--accent)}
+.svc-panel.on{animation:fadein .35s both}
+@media (max-width:960px){.svc{grid-template-columns:minmax(0,1fr)}.js .svc-tabs{display:none}.js .svc-panel:not(.on){display:grid}}
+@media (max-width:640px){.svc-body{grid-template-columns:1fr}}
+
+/* Çizim renkleri */
+.art .k{fill:var(--ink)}.art .w{fill:#fff}.art .s{fill:var(--soft)}.art .l{fill:var(--line)}.art .a{fill:var(--accent)}.art .al{fill:#ffe4d9}
+.art .st{stroke:var(--line);stroke-width:1.5}
+.art .stn{fill:none;stroke:var(--line);stroke-width:1.5}
+.art .stl{fill:none;stroke:var(--line);stroke-width:1.5}
+.art .dash{fill:none;stroke:#b9b8b2;stroke-width:1.5;stroke-dasharray:4 5}
+.art .arw{fill:none;stroke:#b9b8b2;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+.art .wl{fill:none;stroke:#fff;stroke-width:1.8;stroke-linecap:round}
+.art text{font-family:var(--sans)}
+.art .t{fill:var(--ink);font-weight:600}.art .tm{fill:var(--mute)}.art .tw{fill:#fff;font-weight:500}.art .ta{fill:#c2410c;font-weight:500}
 
 /* Bölümler */
 .section{padding:clamp(64px,9vw,112px) 0}
@@ -136,6 +218,7 @@ a.card:hover .go svg{transform:translateX(3px)}
 .foot a:hover{color:#fff}
 .foot-bottom{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;margin-top:56px;padding-top:24px;border-top:1px solid var(--dark-line);font-size:14px}
 @media (max-width:800px){.foot-grid{grid-template-columns:1fr 1fr}.foot-about{grid-column:1/-1}}
+.foot-mark{margin-top:clamp(40px,6vw,72px);color:#232326;font-size:min(14.2vw,172px);font-weight:600;letter-spacing:-.06em;line-height:.78;white-space:nowrap;user-select:none}
 
 /* İç sayfalar */
 .page-head{padding:clamp(36px,6vw,80px) 0 clamp(36px,5vw,64px);border-bottom:1px solid var(--line)}
@@ -184,4 +267,4 @@ a.card:hover .go svg{transform:translateX(3px)}
 .notfound h1{font-size:clamp(72px,16vw,160px);letter-spacing:-.06em;line-height:1}
 .notfound p{margin:16px 0 32px;color:var(--mute)}
 
-@media (prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important}}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important;animation:none!important}.typing{display:none}}

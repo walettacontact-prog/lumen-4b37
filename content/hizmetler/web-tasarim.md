@@ -4,6 +4,7 @@ seo: Web Tasarım ve Kurumsal Web Sitesi
 aciklama: Hızlı açılan, mobil uyumlu ve arama motorlarına uygun kurumsal web siteleri, tanıtım siteleri ve açılış sayfaları.
 kisa: Kurumsal siteler, tanıtım siteleri ve açılış sayfaları. Mobil uyumlu, hızlı ve arama motorlarına uygun.
 ikon: web
+one: Kurumsal ve tanıtım siteleri | Mobil uyum ve hız | SEO altyapısı ve Google kaydı
 sira: 1
 tarih: 2026-10-17
 ---

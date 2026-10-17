@@ -4,6 +4,7 @@ seo: İşletmeler için Yapay Zekâ: Asistan ve Otomasyon
 aciklama: Müşteri sorularını yanıtlayan asistanlar, belge ve veri işleme, tekrar eden işlerin otomasyonu: işletmelere uyarlanmış yapay zekâ çözümleri.
 kisa: Müşteri sorularını yanıtlayan asistanlar, belge ve veri işleme, tekrar eden işlerin otomasyonu.
 ikon: yz
+one: Müşteri soruları için asistan | Belge ve veri işleme | Tekrar eden işlerin otomasyonu
 sira: 4
 tarih: 2026-10-17
 ---

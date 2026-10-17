@@ -2,6 +2,7 @@
 import { readFileSync, writeFileSync, mkdirSync, readdirSync, cpSync, rmSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { HERO_SITE, HERO_PHONE, SERVICE_ART } from './art.mjs';
 
 const ROOT = dirname(fileURLToPath(import.meta.url));
 const OUT = join(ROOT, 'dist');
@@ -123,6 +124,9 @@ const ICONS = {
   mesaj: svg('<path d="M20 11.5a8 8 0 0 1-11.6 7.1L4 20l1.4-4.2A8 8 0 1 1 20 11.5Z"/>'),
   tel: svg('<path d="M5 4h3.5l2 5-2.4 1.5a11 11 0 0 0 5.4 5.4L15 13.5l5 2V19a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2Z"/>'),
   ok: svg('<path d="M5 12h14M13 6l6 6-6 6"/>'),
+  ara: svg('<circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.2-4.2"/>'),
+  hiz: svg('<path d="M4.5 16a7.5 7.5 0 1 1 15 0"/><path d="m12 16 3.5-4.5"/>'),
+  sade: svg('<rect x="4" y="4" width="16" height="16" rx="2.5"/><path d="M4 10h16M10 10v10"/>'),
 };
 
 // ---------- Yapılandırılmış veri ----------
@@ -164,7 +168,7 @@ const CSS = readFileSync(join(ROOT, 'site.css'), 'utf8')
 
 const NAV = [['/hizmetler/', 'Hizmetler'], ['/yazilar/', 'Yazılar'], ['/hakkinda/', 'Hakkında']];
 
-function layout({ path, title, description, body, ld = [], type = 'website', noindex = false }) {
+function layout({ path, title, description, body, ld = [], type = 'website', noindex = false, script = '' }) {
   const url = SITE + path;
   const graph = JSON.stringify({ '@context': 'https://schema.org', '@graph': [WEBSITE, PERSON, ...ld] }).replace(/</g, '\\u003c');
   const nav = NAV.map(([href, label]) =>
@@ -195,6 +199,7 @@ ${noindex ? '<meta name="robots" content="noindex">' : `<meta name="robots" cont
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="alternate" type="application/rss+xml" title="Yazılar" href="${SITE}/yazilar/feed.xml">
 <link rel="preload" href="/fonts/geist-latin.woff2" as="font" type="font/woff2" crossorigin>
+<script>document.documentElement.className='js'</script>
 <style>${CSS}</style>
 <script type="application/ld+json">${graph}</script>
 </head>
@@ -216,7 +221,7 @@ ${footer()}
 var b=document.querySelector('.menu-btn');
 b.addEventListener('click',function(){b.setAttribute('aria-expanded',document.body.classList.toggle('nav-open'))});
 document.getElementById('nav').addEventListener('click',function(e){if(e.target.closest('a')){document.body.classList.remove('nav-open');b.setAttribute('aria-expanded','false')}});
-</script>
+${script}</script>
 </body>
 </html>
 `;
@@ -250,6 +255,7 @@ function footer() {
       <div><h2>Site</h2><ul>${li([['/', 'Ana sayfa'], ...NAV])}</ul></div>
       <div><h2>İletişim</h2><ul>${li([[WA, 'WhatsApp'], ['tel:' + PHONE.tel, PHONE.display]])}</ul></div>
     </div>
+    <div class="foot-mark" aria-hidden="true">${SHORT}</div>
     <div class="foot-bottom"><span>© ${new Date().getFullYear()} ${NAME}</span><span>ensarocakci.com</span></div>
   </div>
 </footer>`;
@@ -304,18 +310,58 @@ const HOME_FAQ = [
 ];
 
 const PRINCIPLES = [
-  ['Hız', 'Yavaş açılan bir sayfayı ziyaretçi beklemeden kapatır. Sayfalar gereksiz yükten arındırılır, görseller sıkıştırılır.'],
-  ['Bulunabilirlik', 'Başlıklar, açıklamalar, site haritası ve yapılandırılmış veri baştan doğru kurulur; site Google\'a tanıtılır.'],
-  ['Sadelik', 'Ziyaretçi aradığını birkaç saniyede bulmalı. Kalabalık ve gösterişli efektler yerine net içerik.'],
+  ['hiz', 'Hız', 'Yavaş açılan bir sayfayı ziyaretçi beklemeden kapatır. Sayfalar gereksiz yükten arındırılır, görseller sıkıştırılır.'],
+  ['ara', 'Bulunabilirlik', 'Başlıklar, açıklamalar, site haritası ve yapılandırılmış veri baştan doğru kurulur; site Google\'a tanıtılır.'],
+  ['sade', 'Sadelik', 'Ziyaretçi aradığını birkaç saniyede bulmalı. Kalabalık ve gösterişli efektler yerine net içerik.'],
 ];
 
-const CHECKS = ['Size özel, mobil uyumlu tasarım', 'Hızlı açılan sayfalar', 'SEO altyapısı ve site haritası', 'SSL sertifikası (https)', 'Google Search Console kaydı', 'Alan adı ve tüm erişimler sizde'];
+// Giriş bölümündeki çizim: aynı işletmenin web sitesi, randevu uygulaması, arama sonucu ve asistanı
+const stage = () => `<div class="stage" aria-hidden="true">
+  <div class="win"><div class="win-bar"><i></i><i></i><i></i><span>isletmeniz.com</span></div>${HERO_SITE}</div>
+  <div class="serp">
+    <div class="serp-q">${ICONS.ara}kuaför randevu</div>
+    <span class="serp-u"><i></i>isletmeniz.com</span>
+    <strong>İşletmeniz | Online randevu al</strong>
+    <span class="serp-d"></span><span class="serp-d"></span>
+  </div>
+  <div class="phone">${HERO_PHONE}</div>
+  <div class="chat">
+    <div class="chat-h">${ICONS.yz}Yapay zekâ asistanı<b></b></div>
+    <p class="msg me">Cumartesi açık mısınız?</p>
+    <div class="reply"><span class="msg typing"><i></i><i></i><i></i></span><p class="msg bot">Evet, cumartesi 10.00–18.00 arası açığız. Randevu oluşturayım mı?</p></div>
+  </div>
+</div>`;
+
+const explorer = () => `<div class="svc">
+  <div class="svc-tabs" role="tablist" aria-label="Hizmetler">${services.map((s, i) =>
+    `<button class="svc-tab" type="button" role="tab" id="sekme-${s.name}" aria-controls="panel-${s.name}" aria-selected="${i === 0}"><span class="n">0${i + 1}</span>${esc(s.baslik)}</button>`).join('')}</div>
+  <div class="svc-panels">${services.map((s, i) => `<div class="svc-panel${i === 0 ? ' on' : ''}" id="panel-${s.name}" role="tabpanel" aria-labelledby="sekme-${s.name}">
+    <div class="svc-art">${SERVICE_ART[s.ikon] || ''}</div>
+    <div class="svc-body">
+      <div><h3>${esc(s.baslik)}</h3><p>${esc(s.kisa)}</p></div>
+      <ul class="svc-list">${(s.one || '').split('|').filter(Boolean).map(x => `<li>${ICONS.check}${esc(x.trim())}</li>`).join('')}</ul>
+      <a class="more" href="${s.path}">${esc(s.baslik)} hakkında detaylı bilgi${ICONS.ok}</a>
+    </div>
+  </div>`).join('')}</div>
+</div>`;
+
+// Hizmet sekmeleri ve canlı ölçüm. Çerez ya da takip kodu eklenirse "Yok" ifadesi de güncellenmeli.
+const HOME_JS = `
+document.querySelectorAll('.svc-tab').forEach(function(t,_,all){t.addEventListener('click',function(){all.forEach(function(o){var on=o===t;o.setAttribute('aria-selected',on);document.getElementById(o.getAttribute('aria-controls')).classList.toggle('on',on)})})});
+addEventListener('load',function(){setTimeout(function(){
+  var n=performance.getEntriesByType&&performance.getEntriesByType('navigation')[0];if(!n)return;
+  var ms=n.loadEventStart||n.domContentLoadedEventEnd,kb=[n].concat(performance.getEntriesByType('resource')).reduce(function(s,e){return s+(e.encodedBodySize||0)},0)/1024;
+  document.querySelector('[data-load]').textContent=(ms/1000).toFixed(2).replace('.',',')+' sn';
+  if(kb)document.querySelector('[data-size]').textContent=Math.round(kb)+' KB';
+},0)});
+`;
 
 function home() {
   return layout({
     path: '/',
     title: `${NAME} | Web Tasarım, Yazılım ve Yapay Zekâ`,
     description: `İşletmeler için web tasarım, kurumsal web sitesi, yazılım, mobil uygulama ve yapay zekâ çözümleri. Hızlı, mobil uyumlu ve arama motorlarına uygun.`,
+    script: HOME_JS,
     ld: [
       { '@type': 'WebPage', '@id': SITE + '/#webpage', url: SITE + '/', name: NAME, isPartOf: { '@id': SITE_ID }, about: { '@id': PERSON_ID }, inLanguage: 'tr-TR' },
       ...faqLd(HOME_FAQ.map(([q, a]) => ({ q, a }))),
@@ -328,17 +374,24 @@ function home() {
       <p class="lead">Hızlı açılan ve Google'da bulunabilen web siteleri, işinize göre geliştirilen yazılımlar, mobil uygulamalar ve iş süreçlerine uyarlanan yapay zekâ araçları.</p>
       <div class="actions">
         <a class="btn" href="${WA}" rel="noopener" target="_blank">${ICONS.mesaj}WhatsApp'tan yazın</a>
-        <a class="btn btn-ghost" href="/hizmetler/">Hizmetleri inceleyin</a>
+        <a class="btn btn-ghost" href="#hizmetler">Hizmetleri inceleyin</a>
       </div>
     </div>
-    <div class="panel">
-      <p class="panel-title">Her web sitesinde</p>
-      <ul class="checks">${CHECKS.map(c => `<li>${ICONS.check}${c}</li>`).join('')}</ul>
+    ${stage()}
+  </div>
+  <div class="live">
+    <div class="wrap live-in">
+      <p class="live-t"><span class="pulse" aria-hidden="true"></span>Canlı ölçüm: bu sayfa, şu an sizin cihazınızda</p>
+      <dl class="live-s">
+        <div><dt>Yüklenme süresi</dt><dd data-load>–</dd></div>
+        <div><dt>Sayfa boyutu</dt><dd data-size>–</dd></div>
+        <div><dt>Çerez ve takip kodu</dt><dd>Yok</dd></div>
+      </dl>
     </div>
   </div>
 </section>
 
-<section class="section line-top" id="hizmetler">
+<section class="section" id="hizmetler">
   <div class="wrap">
     <div class="sec-head">
       <div>
@@ -347,25 +400,18 @@ function home() {
       </div>
       <a class="more" href="/hizmetler/">Tüm hizmetler${ICONS.ok}</a>
     </div>
-    <div class="grid g4">${services.map(serviceCard).join('')}</div>
+    ${explorer()}
   </div>
 </section>
 
 <section class="section alt">
   <div class="wrap">
-    <div class="sec-head"><div><h2 class="h2">Nasıl çalışıyorum</h2><p>Her proje aynı dört adımla ilerler; ne zaman ne olacağı baştan bellidir.</p></div></div>
-    ${steps()}
+    <div class="sec-head"><div><h2 class="h2">Her projede üç ölçüt</h2><p>Bir sitenin işe yaraması için güzel görünmesi yetmez.</p></div></div>
+    <div class="grid g3">${PRINCIPLES.map(([i, t, d]) => `<div class="card"><span class="ico">${ICONS[i]}</span><h3>${t}</h3><p>${d}</p></div>`).join('')}</div>
   </div>
 </section>
 
 <section class="section">
-  <div class="wrap">
-    <div class="sec-head"><div><h2 class="h2">Önem verdiklerim</h2></div></div>
-    <div class="grid g3">${PRINCIPLES.map(([t, d]) => `<div class="card"><h3>${t}</h3><p>${d}</p></div>`).join('')}</div>
-  </div>
-</section>
-
-<section class="section alt">
   <div class="wrap">
     <div class="sec-head">
       <div><h2 class="h2">Yazılar</h2><p>Web siteleri, yazılım ve yapay zekâ üzerine işletmeler için pratik yazılar.</p></div>
@@ -375,7 +421,7 @@ function home() {
   </div>
 </section>
 
-<section class="section">
+<section class="section alt">
   <div class="wrap split">
     <div><h2 class="h2">Sık sorulan sorular</h2></div>
     <div class="faq">${HOME_FAQ.map(([q, a]) => `<details><summary>${q}</summary><p>${a}</p></details>`).join('')}</div>

@@ -4,6 +4,7 @@ seo: İşletmelere Özel Yazılım ve Yönetim Paneli
 aciklama: Randevu, sipariş, stok ve müşteri takibi gibi işletmenize özel web tabanlı yazılımlar ve yönetim panelleri.
 kisa: Randevu, sipariş, stok veya müşteri takibi gibi işinize özel web yazılımları ve yönetim panelleri.
 ikon: kod
+one: Randevu, sipariş ve stok takibi | Yönetim panelleri | Raporlama ve entegrasyonlar
 sira: 2
 tarih: 2026-10-17
 ---
