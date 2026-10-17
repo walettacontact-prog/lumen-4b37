@@ -2,7 +2,7 @@
 import { readFileSync, writeFileSync, mkdirSync, readdirSync, cpSync, rmSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { SERVICE_ART } from './art.mjs';
+import { SERVICE_ART, SECTOR_ART } from './art.mjs';
 
 const ROOT = dirname(fileURLToPath(import.meta.url));
 const OUT = join(ROOT, 'dist');
@@ -287,6 +287,21 @@ const postRows = list => list.map((p, i) => row({ href: p.path, n: i + 1, meta: 
 const projectRows = list => list.map((p, i) => row({ href: p.path, n: i + 1, meta: [p.etiket, p.durum].filter(Boolean).map(esc), title: p.baslik, desc: p.aciklama }));
 const serviceRows = list => list.map((s, i) => row({ href: s.path, n: i + 1, title: s.baslik, desc: s.kisa }));
 
+// Çalışılan sektörler. Müşteri işleri gösterilmiyor; katalog hazırlanana kadar projeler bölümünü bunlar taşır.
+const SECTORS = [
+  ['mobilya', 'Mobilya ve ev eşyası', 'Ürün kataloğu, kampanya sayfaları ve WhatsApp\'tan sipariş.'],
+  ['beyaz', 'Beyaz eşya', 'Marka ve modele göre ürün sayfaları; servis ve garanti bilgileri.'],
+  ['tekstil', 'Tekstil', 'Koleksiyon sayfaları; toptan ve perakende için ayrı akışlar.'],
+  ['eticaret', 'E-ticaret', 'Ürün, sepet ve ödeme akışı; kargo ve iade süreçleri.'],
+  ['restoran', 'Restoran ve kafe', 'QR menü, rezervasyon ve paket sipariş bağlantıları.'],
+  ['servis', 'Teknik servis', 'Klima ve beyaz eşya servisleri için hizmet sayfaları ve tek dokunuşla arama.'],
+  ['kuafor', 'Kuaför ve berber', 'Hizmet listesi, fiyatlar ve online randevu.'],
+  ['saglik', 'Danışmanlık ve sağlık', 'Diyetisyen gibi randevuyla çalışan hizmetler için tanıtım ve randevu.'],
+];
+const sectorTile = ([k, t, d]) => `<div class="tile"><div class="tile-art" aria-hidden="true">${SECTOR_ART[k] || ''}</div><h3>${t}</h3><p>${d}</p></div>`;
+const tiles = () => `<div class="tiles">${SECTORS.map(sectorTile).join('')}</div>`;
+const KATALOG = `<p class="note"><span class="pulse" aria-hidden="true"></span><span><b>Katalog hazırlanıyor.</b> Bugüne kadar yapılan işlerin seçkisi derleniyor; tamamlanınca bu sayfada yayımlanacak.</span></p>`;
+
 const STEPS = [
   ['Tanışma', 'İşinizi, hedefinizi ve ihtiyacınızı kısa bir görüşmede konuşuyoruz.'],
   ['Plan ve teklif', 'Kapsam, süre ve maliyet yazılı bir teklifle netleşir.'],
@@ -331,7 +346,7 @@ addEventListener('load',function(){setTimeout(function(){
 function cover() {
   const last = posts[0];
   const spec = [
-    ['Projeler', `<a href="/projeler/">${projects.length} proje</a>`],
+    ['Projeler', `<a href="/projeler/">${SECTORS.length} sektör · katalog hazırlanıyor</a>`],
     ['Yazılar', `<a href="/yazilar/">${posts.length} yazı</a>`],
     ['Hizmetler', `<a href="/hizmetler/">${services.length} hizmet</a>`],
     last && ['Son yazı', `<a href="${last.path}">${esc(last.baslik)}</a>`],
@@ -361,7 +376,7 @@ function home() {
     <div>
       <p class="eyebrow">Nurettin Ensar Ocakçı'nın kişisel sitesi</p>
       <h1>Tasarım, yazılım ve yapay zekâ üzerine projeler, yazılar ve hizmetler.</h1>
-      <p class="lead">Kendi projelerim, yazdıklarım ve işletmelere verdiğim hizmetler tek yerde. Ne yaptığımı anlatmak yerine gösteriyorum.</p>
+      <p class="lead">Kendi projelerim, yazdıklarım ve işletmelere verdiğim hizmetler tek yerde.</p>
       <div class="actions">
         <a class="btn" href="/yazilar/">Yazıları okuyun</a>
         <a class="btn btn-ghost" href="/hizmetler/">Hizmetler</a>
@@ -386,22 +401,22 @@ function home() {
 <section class="section" id="yazilar">
   <div class="wrap">
     <div class="sec-head">
-      <div><h2 class="h2">Son yazılar</h2><p>Web siteleri, yazılım ve yapay zekâ üzerine; çoğu işletmelerin işine yarayacak pratik yazılar.</p></div>
+      <div><h2 class="h2">Son yazılar</h2><p>Tasarım, yazılım, yapay zekâ ve çalışma hayatı üzerine notlar.</p></div>
       <a class="more" href="/yazilar/">Tüm yazılar${ICONS.ok}</a>
     </div>
     ${rows(postRows(posts.slice(0, 4)))}
   </div>
 </section>
 
-${projects.length ? `<section class="section alt" id="projeler">
+<section class="section alt" id="projeler">
   <div class="wrap">
     <div class="sec-head">
-      <div><h2 class="h2">Projeler</h2><p>Kendim için yaptıklarım; ne için yapıldığı ve nasıl çalıştığıyla birlikte.</p></div>
-      <a class="more" href="/projeler/">Tüm projeler${ICONS.ok}</a>
+      <div><h2 class="h2">Projeler</h2><p>Bugüne kadar farklı sektörlerden işletmelerle çalıştım; işlerin kataloğu hazırlanıyor. Şimdilik sektörler ve her birinde neye ihtiyaç duyulduğu.</p></div>
+      <a class="more" href="/projeler/">Projeler sayfası${ICONS.ok}</a>
     </div>
-    ${rows(projectRows(projects.slice(0, 3)))}
+    ${tiles()}
   </div>
-</section>` : ''}
+</section>
 
 <section class="section" id="hizmetler">
   <div class="wrap">
@@ -420,7 +435,7 @@ function projectsIndex() {
   return layout({
     path: '/projeler/',
     title: `Projeler | ${SHORT}`,
-    description: `Nurettin Ensar Ocakçı'nın kendi projeleri: ne için yapıldı, nasıl çalışıyor, hangi kararlar alındı.`,
+    description: `Nurettin Ensar Ocakçı'nın çalıştığı sektörler ve kendi projeleri. Müşteri işlerinin kataloğu hazırlanıyor.`,
     ld: [{
       '@type': 'CollectionPage', url: SITE + '/projeler/', name: 'Projeler', isPartOf: { '@id': SITE_ID }, inLanguage: 'tr-TR',
       mainEntity: { '@type': 'ItemList', itemListElement: projects.map((p, i) => ({ '@type': 'ListItem', position: i + 1, url: SITE + p.path, name: p.baslik })) },
@@ -429,12 +444,22 @@ function projectsIndex() {
   <div class="wrap">
     ${crumbs(items)}
     <h1>Projeler</h1>
-    <p class="lead">Kendim için yaptıklarım. Her projede ne için yapıldığı, nasıl çalıştığı ve alınan kararlar yazılı.</p>
+    <p class="lead">Bugüne kadar farklı sektörlerden işletmeler için web siteleri, mobil uygulamalar ve arayüzler yaptım. İşlerin kataloğu hazırlanıyor; yayına girene kadar burada çalıştığım sektörler ve kendi projelerim var.</p>
   </div>
 </section>
 <section class="section">
-  <div class="wrap">${rows(projectRows(projects))}</div>
-</section>`,
+  <div class="wrap">
+    <div class="sec-head"><div><h2 class="h2">Çalıştığım sektörler</h2><p>Her sektörün kendi ihtiyacı var; aşağıda her birinde neye odaklanıldığı yazılı.</p></div></div>
+    ${tiles()}
+    ${KATALOG}
+  </div>
+</section>
+${projects.length ? `<section class="section alt">
+  <div class="wrap">
+    <div class="sec-head"><div><h2 class="h2">Kendi projelerim</h2><p>Ne için yapıldığı, nasıl çalıştığı ve alınan kararlarla birlikte.</p></div></div>
+    ${rows(projectRows(projects))}
+  </div>
+</section>` : ''}`,
   });
 }
 
@@ -542,8 +567,8 @@ function postsIndex() {
   const items = [['Ana sayfa', '/'], ['Yazılar', '/yazilar/']];
   return layout({
     path: '/yazilar/',
-    title: `Yazılar: Web Sitesi, SEO ve Yapay Zekâ Rehberleri | ${SHORT}`,
-    description: 'İşletmeler için web sitesi, arama motoru optimizasyonu (SEO), yazılım ve yapay zekâ üzerine pratik rehberler.',
+    title: `Yazılar: Tasarım, Yazılım ve Yapay Zekâ Üzerine Notlar | ${SHORT}`,
+    description: `Nurettin Ensar Ocakçı'nın tasarım, yazılım, yapay zekâ ve çalışma hayatı üzerine yazıları.`,
     ld: [{
       '@type': 'Blog', url: SITE + '/yazilar/', name: 'Yazılar', inLanguage: 'tr-TR', isPartOf: { '@id': SITE_ID }, author: { '@id': PERSON_ID },
       blogPost: posts.map(p => ({ '@type': 'BlogPosting', headline: p.baslik, url: SITE + p.path, datePublished: p.tarih })),
@@ -552,7 +577,7 @@ function postsIndex() {
   <div class="wrap">
     ${crumbs(items)}
     <h1>Yazılar</h1>
-    <p class="lead">Web siteleri, arama motorları, yazılım ve yapay zekâ üzerine; çoğu işletmelerin işine yarayacak pratik yazılar.</p>
+    <p class="lead">Tasarım, yazılım, yapay zekâ ve çalışma hayatı üzerine notlar. Bir kısmı rehber, bir kısmı düşünce.</p>
   </div>
 </section>
 <section class="section">
@@ -650,7 +675,7 @@ function feed() {
   <title>${NAME} – Yazılar</title>
   <link>${SITE}/yazilar/</link>
   <atom:link href="${SITE}/yazilar/feed.xml" rel="self" type="application/rss+xml"/>
-  <description>Web siteleri, SEO, yazılım ve yapay zekâ üzerine pratik yazılar.</description>
+  <description>Tasarım, yazılım, yapay zekâ ve çalışma hayatı üzerine notlar.</description>
   <language>tr</language>
 ${posts.map(p => `  <item>
     <title>${esc(p.baslik)}</title>
