@@ -2,7 +2,7 @@
 import { readFileSync, writeFileSync, mkdirSync, readdirSync, cpSync, rmSync, existsSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { SERVICE_ART, SECTOR_ART, SHOWCASE } from './art.mjs';
+import { SERVICE_ART, SECTOR_ART, SHOWCASE, HERO_ART } from './art.mjs';
 
 const ROOT = dirname(fileURLToPath(import.meta.url));
 const OUT = join(ROOT, 'dist');
@@ -108,6 +108,10 @@ const load = dir => (existsSync(join(ROOT, 'content', dir)) ? readdirSync(join(R
 
 const services = load('hizmetler').sort((a, b) => Number(a.sira) - Number(b.sira));
 const posts = load('yazilar').sort((a, b) => b.tarih.localeCompare(a.tarih) || (Number(a.sira) || 99) - (Number(b.sira) || 99));
+// Yazı kategorileri: yazının başlığındaki "kategori" alanından türetilir
+const categories = [...new Set(posts.map(p => p.kategori).filter(Boolean))]
+  .map(k => ({ name: k, slug: slug(k), path: `/yazilar/kategori/${slug(k)}/`, posts: posts.filter(p => p.kategori === k) }));
+const catPath = p => p.kategori ? `/yazilar/kategori/${slug(p.kategori)}/` : '/yazilar/';
 const projects = load('projeler').sort((a, b) => (Number(a.sira) || 99) - (Number(b.sira) || 99) || b.tarih.localeCompare(a.tarih));
 const pages = load('sayfalar').map(p => ({ ...p, path: `/${p.name}/` }));
 const modified = x => x.guncelleme || x.tarih || today;
@@ -132,7 +136,7 @@ const ICONS = {
 
 // İşaret: "neo." (Nurettin Ensar Ocakçı). Ayrı bir çizim değil, yazı tipiyle yazılır; siyah-beyaz.
 const MARK = '<span class="neo" aria-hidden="true">neo.</span>';
-const LOGO = `${MARK}<span class="brand-name">${NAME}</span>`;
+const LOGO = `<span class="neo">neo.</span><span class="brand-name">${NAME}</span>`;
 
 // ---------- Yapılandırılmış veri ----------
 
@@ -203,15 +207,16 @@ ${noindex ? '<meta name="robots" content="noindex">' : `<meta name="robots" cont
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="alternate" type="application/rss+xml" title="Yazılar" href="${SITE}/yazilar/feed.xml">
 <link rel="preload" href="/fonts/geist-latin.woff2" as="font" type="font/woff2" crossorigin>
-<script>document.documentElement.className='js'</script>
+<script>document.documentElement.className='js';try{if(sessionStorage.neo)document.documentElement.className+=' seen';else sessionStorage.neo=1}catch(e){}</script>
 <style>${CSS}</style>
 <script type="application/ld+json">${graph}</script>
 </head>
 <body>
+<div class="intro" aria-hidden="true">${MARK}</div>
 <a class="skip" href="#icerik">İçeriğe geç</a>
 <header class="top">
   <div class="wrap top-in">
-    <a class="brand" href="/" aria-label="${NAME}, ana sayfa">${LOGO}</a>
+    <a class="brand" href="/">${LOGO}</a>
     <button class="menu-btn" type="button" aria-expanded="false" aria-controls="nav" aria-label="Menü"><span></span><span></span></button>
     <nav id="nav" class="nav" aria-label="Ana menü">${nav}<a class="btn btn-sm" href="#iletisim">İletişim</a></nav>
   </div>
@@ -222,6 +227,7 @@ ${body}
 ${contact()}
 ${footer()}
 <script>
+var i=document.querySelector('.intro');if(i)setTimeout(function(){i.remove()},1400);
 var b=document.querySelector('.menu-btn');
 b.addEventListener('click',function(){b.setAttribute('aria-expanded',document.body.classList.toggle('nav-open'))});
 document.getElementById('nav').addEventListener('click',function(e){if(e.target.closest('a')){document.body.classList.remove('nav-open');b.setAttribute('aria-expanded','false')}});
@@ -236,11 +242,11 @@ function contact() {
   <div class="wrap cta-in">
     <div>
       <h2 id="iletisim-baslik">İletişim</h2>
-      <p>Bir iş, soru ya da öneri için doğrudan yazabilirsiniz. WhatsApp ve telefon; başka bir form yok.</p>
+      <p>WhatsApp'tan yazın ya da arayın.</p>
     </div>
     <div class="actions">
       <a class="btn" href="${WA}" rel="noopener" target="_blank">${ICONS.mesaj}WhatsApp'tan yazın</a>
-      <a class="btn btn-ghost" href="tel:${PHONE.tel}">${ICONS.tel}${PHONE.display}</a>
+      <a class="cta-num" href="tel:${PHONE.tel}">${PHONE.display}</a>
     </div>
   </div>
 </section>`;
@@ -252,14 +258,14 @@ function footer() {
   <div class="wrap">
     <div class="foot-grid">
       <div class="foot-about">
-        <a class="brand" href="/" aria-label="${NAME}, ana sayfa">${LOGO}</a>
+        <a class="brand" href="/">${LOGO}</a>
         <p>neo, Nurettin Ensar Ocakçı'nın kişisel sitesi: projeler, yazılar ve işletmelere verdiği hizmetler.</p>
       </div>
       <div><h2>Hizmetler</h2><ul>${li(services.map(s => [s.path, s.baslik]))}</ul></div>
       <div><h2>Site</h2><ul>${li([['/', 'Ana sayfa'], ...NAV])}</ul></div>
       <div><h2>İletişim</h2><ul>${li([[WA, 'WhatsApp'], ['tel:' + PHONE.tel, PHONE.display]])}</ul></div>
     </div>
-    <div class="foot-mark" aria-hidden="true">${SHORT}</div>
+    <div class="foot-mark" aria-hidden="true" data-t="${SHORT}"></div>
     <div class="foot-bottom"><span>© ${new Date().getFullYear()} ${NAME}</span><span>neo · ensarocakci.com</span></div>
   </div>
 </footer>`;
@@ -282,8 +288,8 @@ const row = ({ href, n, meta = [], title, desc }) => `<li><a href="${href}">
   <div>${meta.length ? `<div class="meta">${meta.map(m => `<span>${m}</span>`).join('')}</div>` : ''}<h3>${esc(title)}</h3><p>${esc(desc)}</p></div>
   <span class="go" aria-hidden="true">${ICONS.ok}</span>
 </a></li>`;
-const rows = items => `<ol class="feed">${items.join('')}</ol>`;
-const postRows = list => list.map((p, i) => row({ href: p.path, n: i + 1, meta: [`<time datetime="${p.tarih}">${trDate(p.tarih)}</time>`, `${p.minutes} dk okuma`], title: p.baslik, desc: p.aciklama }));
+const rows = (items, cls = '') => `<ol class="feed${cls ? ' ' + cls : ''}">${items.join('')}</ol>`;
+const postRows = list => list.map((p, i) => row({ href: p.path, n: i + 1, meta: [p.kategori ? `<span class="cat">${esc(p.kategori)}</span>` : '', `<time datetime="${p.tarih}">${trDate(p.tarih)}</time>`].filter(Boolean), title: p.baslik, desc: p.aciklama }));
 const projectRows = list => list.map((p, i) => row({ href: p.path, n: i + 1, meta: [p.etiket, p.durum].filter(Boolean).map(esc), title: p.baslik, desc: p.aciklama }));
 const serviceRows = list => list.map((s, i) => row({ href: s.path, n: i + 1, title: s.baslik, desc: s.kisa }));
 
@@ -298,7 +304,7 @@ const SECTORS = [
   ['kuafor', 'Kuaför ve berber', 'Hizmet listesi, fiyatlar ve online randevu.'],
   ['saglik', 'Danışmanlık ve sağlık', 'Diyetisyen gibi randevuyla çalışan hizmetler için tanıtım ve randevu.'],
 ];
-const sectorTile = ([k, t, d]) => `<div class="tile"><div class="tile-art" aria-hidden="true">${SECTOR_ART[k] || ''}</div><h3>${t}</h3><p>${d}</p></div>`;
+const sectorTile = ([k, t, d], min) => `<div class="tile"><div class="tile-art" aria-hidden="true">${SECTOR_ART[k] || ''}</div><h3>${t}</h3>${min ? '' : `<p>${d}</p>`}</div>`;
 const tiles = () => `<div class="tiles">${SECTORS.map(sectorTile).join('')}</div>`;
 // Üç biçim: projeler sayfasındaki özet
 const MEDIUMS = [
@@ -308,7 +314,16 @@ const MEDIUMS = [
 ];
 const mediums = () => `<div class="grid g3">${MEDIUMS.map(([k, t, d]) => `<div class="card"><span class="card-art" aria-hidden="true">${SECTOR_ART[k]}</span><h3>${t}</h3><p>${d}</p></div>`).join('')}</div>`;
 const showcase = () => `<div class="showcase">${SHOWCASE}<span class="badge"><span class="pulse" aria-hidden="true"></span>Katalog hazırlanıyor</span></div>`;
-const KATALOG = `<p class="note"><span class="pulse" aria-hidden="true"></span><span><b>Katalog hazırlanıyor.</b> Bugüne kadar yapılan işlerin seçkisi derleniyor; tamamlanınca bu sayfada yayımlanacak.</span></p>`;
+const KATALOG = `<p class="note"><span class="pulse" aria-hidden="true"></span><span><b>Katalog hazırlanıyor.</b> Tamamlanınca projeler sayfasında yayımlanacak.</span></p>`;
+// Ana sayfadaki hizmet kartları: küçük, sade çizimlerle
+const serviceMini = s => `<a class="card" href="${s.path}">
+  <span class="card-art" aria-hidden="true">${SECTOR_ART[s.ikon] || ''}</span>
+  <h3>${esc(s.baslik)}</h3>
+  <p>${esc(s.kisa)}</p>
+  <span class="go">İncele${ICONS.ok}</span>
+</a>`;
+const chips = (current = '') => `<nav class="chips" aria-label="Kategoriler"><a href="/yazilar/"${current ? '' : ' aria-current="page"'}>Tümü (${posts.length})</a>${categories.map(c =>
+  `<a href="${c.path}"${c.slug === current ? ' aria-current="page"' : ''}>${esc(c.name)} (${c.posts.length})</a>`).join('')}</nav>`;
 
 const STEPS = [
   ['Tanışma', 'İşinizi, hedefinizi ve ihtiyacınızı kısa bir görüşmede konuşuyoruz.'],
@@ -340,100 +355,49 @@ const SERVICE_FAQ = [
   ['Site yayına çıktıktan sonra değişiklik yapılabilir mi?', 'Evet. Metin, görsel, fiyat ya da yeni sayfa gibi değişiklikler için ulaşabilirsiniz. İsterseniz içerikleri kendiniz güncelleyebileceğiniz bir panel de kurulabilir.'],
 ];
 
-// Canlı ölçüm: tarayıcının kendi ölçümü, hiçbir yere gönderilmez. Çerez ya da takip kodu eklenirse "Yok" ifadesi de güncellenmeli.
-const HOME_JS = `
-addEventListener('load',function(){setTimeout(function(){
-  var n=performance.getEntriesByType&&performance.getEntriesByType('navigation')[0];if(!n)return;
-  var ms=n.loadEventStart||n.domContentLoadedEventEnd,kb=[n].concat(performance.getEntriesByType('resource')).reduce(function(s,e){return s+(e.encodedBodySize||0)},0)/1024;
-  document.querySelector('[data-load]').textContent=(ms/1000).toFixed(2).replace('.',',')+' sn';
-  if(kb)document.querySelector('[data-size]').textContent=Math.round(kb)+' KB';
-},0)});
-`;
-
-// Kapak kartı: sitenin künyesi; sayılar ve tarihler derlemede hesaplanır
-function cover() {
-  const last = posts[0];
-  const spec = [
-    ['Projeler', `<a href="/projeler/">${SECTORS.length} sektör · katalog hazırlanıyor</a>`],
-    ['Yazılar', `<a href="/yazilar/">${posts.length} yazı</a>`],
-    ['Hizmetler', `<a href="/hizmetler/">${services.length} hizmet</a>`],
-    last && ['Son yazı', `<a href="${last.path}">${esc(last.baslik)}</a>`],
-    ['Güncelleme', trDate(latest)],
-    ['İletişim', `<a href="${WA}" rel="noopener" target="_blank">WhatsApp</a> · <a href="tel:${PHONE.tel}">${PHONE.display}</a>`],
-  ].filter(Boolean);
-  return `<aside class="cover" aria-label="Site künyesi">
-  <div>
-    <div class="cover-top">${MARK}<span class="cover-issue">${trMonth(latest)}</span></div>
-    <p class="cover-name">${NAME}</p>
-    <p class="cover-sub">Kişisel site · Tasarım, yazılım ve yapay zekâ</p>
-  </div>
-  <dl class="spec">${spec.map(([k, v]) => `<div><dt>${k}</dt><dd>${v}</dd></div>`).join('')}</dl>
-</aside>`;
-}
-
 function home() {
   return layout({
     path: '/',
-    title: `${NAME} | neo: Tasarım, Yazılım ve Yapay Zekâ`,
-    description: `neo, Nurettin Ensar Ocakçı'nın kişisel sitesi. Tasarım, yazılım ve yapay zekâ üzerine projeler, yazılar ve işletmelere verdiği hizmetler.`,
-    script: HOME_JS,
+    title: `${NAME} | neo: Web Sitesi, Mobil Uygulama ve Yapay Zekâ`,
+    description: `neo, Nurettin Ensar Ocakçı'nın sitesi. İşletmeler için web sitesi, mobil uygulama, yazılım ve yapay zekâ; çalışılan sektörler ve yazılar.`,
     ld: [{ '@type': 'WebPage', '@id': SITE + '/#webpage', url: SITE + '/', name: 'neo · ' + NAME, isPartOf: { '@id': SITE_ID }, about: { '@id': PERSON_ID }, inLanguage: 'tr-TR' }],
     body: `<section class="hero">
   <div class="hero-main">
   <div class="wrap hero-grid">
     <div>
-      <p class="eyebrow">Nurettin Ensar Ocakçı'nın kişisel sitesi</p>
-      <h1>Tasarım, yazılım ve yapay zekâ üzerine projeler, yazılar ve hizmetler.</h1>
-      <p class="lead">Kendi projelerim, yazdıklarım ve işletmelere verdiğim hizmetler tek yerde.</p>
+      <p class="eyebrow">${NAME}</p>
+      <h1>Web sitesi, mobil uygulama ve yapay zekâ.</h1>
+      <p class="lead">İşletmeler için tasarlıyor ve geliştiriyorum.</p>
       <div class="actions">
-        <a class="btn" href="/yazilar/">Yazıları okuyun</a>
-        <a class="btn btn-ghost" href="/hizmetler/">Hizmetler</a>
+        <a class="btn" href="${WA}" rel="noopener" target="_blank">${ICONS.mesaj}WhatsApp'tan yazın</a>
+        <a class="btn btn-ghost" href="#hizmetler">Hizmetler</a>
       </div>
     </div>
-    ${cover()}
+    <div class="cover">${MARK}${HERO_ART}</div>
   </div>
-  <div class="hero-mark" aria-hidden="true">${SHORT}</div>
-  </div>
-  <div class="live">
-    <div class="wrap live-in">
-      <p class="live-t"><span class="pulse" aria-hidden="true"></span>Canlı ölçüm: bu sayfa, şu an sizin cihazınızda</p>
-      <dl class="live-s">
-        <div><dt>Yüklenme süresi</dt><dd data-load>–</dd></div>
-        <div><dt>Sayfa boyutu</dt><dd data-size>–</dd></div>
-        <div><dt>Çerez ve takip kodu</dt><dd>Yok</dd></div>
-      </dl>
-    </div>
-  </div>
-</section>
-
-<section class="section" id="yazilar">
-  <div class="wrap">
-    <div class="sec-head">
-      <div><h2 class="h2">Son yazılar</h2><p>Tasarım, yazılım, yapay zekâ ve çalışma hayatı üzerine notlar.</p></div>
-      <a class="more" href="/yazilar/">Tüm yazılar${ICONS.ok}</a>
-    </div>
-    ${rows(postRows(posts.slice(0, 4)))}
-  </div>
-</section>
-
-<section class="section alt" id="projeler">
-  <div class="wrap">
-    <div class="sec-head">
-      <div><h2 class="h2">Projeler</h2><p>Web siteleri, mobil uygulamalar ve e-ticaret; mobilyadan tekstile, restorandan teknik servise farklı sektörlerden işletmeler için. İşlerin kataloğu hazırlanıyor.</p></div>
-      <a class="more" href="/projeler/">Projeler sayfası${ICONS.ok}</a>
-    </div>
-    ${showcase()}
-    ${tiles()}
+  <div class="hero-mark" aria-hidden="true" data-t="${SHORT}"></div>
   </div>
 </section>
 
 <section class="section" id="hizmetler">
   <div class="wrap">
-    <div class="sec-head">
-      <div><h2 class="h2">Hizmetler</h2><p>İşletmelere verdiğim hizmetler. Kapsam, süreç ve sık sorulan sorular her birinin kendi sayfasında.</p></div>
-      <a class="more" href="/hizmetler/">Tüm hizmetler${ICONS.ok}</a>
-    </div>
-    ${rows(serviceRows(services))}
+    <div class="sec-head"><div><h2 class="h2">Hizmetler</h2></div><a class="more" href="/hizmetler/">Tümü${ICONS.ok}</a></div>
+    <div class="grid g4">${services.map(serviceMini).join('')}</div>
+  </div>
+</section>
+
+<section class="section alt" id="projeler">
+  <div class="wrap">
+    <div class="sec-head"><div><h2 class="h2">Çalıştığım sektörler</h2></div><a class="more" href="/projeler/">Projeler${ICONS.ok}</a></div>
+    <div class="tiles tiles-min">${SECTORS.map(x => sectorTile(x, true)).join('')}</div>
+    ${KATALOG}
+  </div>
+</section>
+
+<section class="section" id="yazilar">
+  <div class="wrap">
+    <div class="sec-head"><div><h2 class="h2">Yazılar</h2></div><a class="more" href="/yazilar/">Tümü${ICONS.ok}</a></div>
+    ${rows(postRows(posts.slice(0, 4)), 'feed-min')}
   </div>
 </section>`,
   });
@@ -509,8 +473,8 @@ function servicesIndex() {
   const items = [['Ana sayfa', '/'], ['Hizmetler', '/hizmetler/']];
   return layout({
     path: '/hizmetler/',
-    title: `Hizmetler: Web Tasarım, Yazılım, Mobil Uygulama, Yapay Zekâ | ${SHORT}`,
-    description: `Nurettin Ensar Ocakçı'nın işletmelere verdiği hizmetler: web tasarım ve kurumsal web sitesi, işletmeye özel yazılım, iOS ve Android mobil uygulama, yapay zekâ uygulamaları.`,
+    title: `Hizmetler: Web Tasarım, Yazılım, Mobil Uygulama | ${SHORT}`,
+    description: `Nurettin Ensar Ocakçı'nın işletmelere verdiği hizmetler: web tasarım, işletmeye özel yazılım, iOS ve Android mobil uygulama ve yapay zekâ uygulamaları.`,
     ld: [{ '@type': 'CollectionPage', url: SITE + '/hizmetler/', name: 'Hizmetler', isPartOf: { '@id': SITE_ID }, inLanguage: 'tr-TR' }, crumbsLd(items), ...faqLd(SERVICE_FAQ.map(([q, a]) => ({ q, a })))],
     body: `<section class="page-head">
   <div class="wrap">
@@ -576,8 +540,8 @@ function postsIndex() {
   const items = [['Ana sayfa', '/'], ['Yazılar', '/yazilar/']];
   return layout({
     path: '/yazilar/',
-    title: `Yazılar: Tasarım, Yazılım ve Yapay Zekâ Üzerine Notlar | ${SHORT}`,
-    description: `Nurettin Ensar Ocakçı'nın tasarım, yazılım, yapay zekâ ve çalışma hayatı üzerine yazıları.`,
+    title: `Yazılar: Web Sitesi, Google ve Yapay Zekâ | ${SHORT}`,
+    description: `Nurettin Ensar Ocakçı'nın yazıları: web sitesi, Google'da bulunmak, mobil uygulama ve yapay zekâ üzerine kısa ve sade yazılar.`,
     ld: [{
       '@type': 'Blog', url: SITE + '/yazilar/', name: 'Yazılar', inLanguage: 'tr-TR', isPartOf: { '@id': SITE_ID }, author: { '@id': PERSON_ID },
       blogPost: posts.map(p => ({ '@type': 'BlogPosting', headline: p.baslik, url: SITE + p.path, datePublished: p.tarih })),
@@ -586,17 +550,40 @@ function postsIndex() {
   <div class="wrap">
     ${crumbs(items)}
     <h1>Yazılar</h1>
-    <p class="lead">Tasarım, yazılım, yapay zekâ ve çalışma hayatı üzerine notlar. Bir kısmı rehber, bir kısmı düşünce.</p>
+    <p class="lead">Kısa ve sade. Bir kısmı rehber, bir kısmı düşünce.</p>
   </div>
 </section>
 <section class="section">
-  <div class="wrap">${rows(postRows(posts))}</div>
+  <div class="wrap">${chips()}${rows(postRows(posts))}</div>
+</section>`,
+  });
+}
+
+function categoryPage(c) {
+  const items = [['Ana sayfa', '/'], ['Yazılar', '/yazilar/'], [c.name, c.path]];
+  return layout({
+    path: c.path,
+    title: `${c.name} yazıları | ${SHORT}`,
+    description: `${c.name} üzerine kısa ve sade yazılar: ${c.posts.map(p => p.baslik).join(' · ')}`.slice(0, 155),
+    ld: [{
+      '@type': 'CollectionPage', url: SITE + c.path, name: `${c.name} yazıları`, isPartOf: { '@id': SITE_ID }, inLanguage: 'tr-TR',
+      mainEntity: { '@type': 'ItemList', itemListElement: c.posts.map((p, i) => ({ '@type': 'ListItem', position: i + 1, url: SITE + p.path, name: p.baslik })) },
+    }, crumbsLd(items)],
+    body: `<section class="page-head">
+  <div class="wrap">
+    ${crumbs(items)}
+    <h1>${esc(c.name)}</h1>
+    <p class="lead">${c.posts.length} yazı</p>
+  </div>
+</section>
+<section class="section">
+  <div class="wrap">${chips(c.slug)}${rows(postRows(c.posts))}</div>
 </section>`,
   });
 }
 
 function postPage(p) {
-  const items = [['Ana sayfa', '/'], ['Yazılar', '/yazilar/'], [p.baslik, p.path]];
+  const items = [['Ana sayfa', '/'], ['Yazılar', '/yazilar/'], ...(p.kategori ? [[p.kategori, catPath(p)]] : []), [p.baslik, p.path]];
   const others = posts.filter(o => o !== p).slice(0, 3);
   return layout({
     path: p.path,
@@ -605,7 +592,7 @@ function postPage(p) {
     description: p.aciklama,
     ld: [{
       '@type': 'BlogPosting', '@id': SITE + p.path + '#yazi', headline: p.baslik, description: p.aciklama, url: SITE + p.path,
-      mainEntityOfPage: SITE + p.path, datePublished: p.tarih, dateModified: modified(p), inLanguage: 'tr-TR',
+      mainEntityOfPage: SITE + p.path, datePublished: p.tarih, dateModified: modified(p), inLanguage: 'tr-TR', articleSection: p.kategori,
       image: SITE + '/og.jpg', author: { '@id': PERSON_ID }, publisher: { '@id': PERSON_ID }, isPartOf: { '@id': SITE_ID }, wordCount: p.minutes * 200,
     }, crumbsLd(items), ...faqLd(p.faq)],
     body: `<section class="page-head">
@@ -613,7 +600,7 @@ function postPage(p) {
     ${crumbs(items)}
     <h1>${esc(p.baslik)}</h1>
     <p class="lead">${esc(p.aciklama)}</p>
-    <div class="meta"><span>${NAME}</span><time datetime="${p.tarih}">${trDate(p.tarih)}</time><span>${p.minutes} dakikalık okuma</span></div>
+    <div class="meta">${p.kategori ? `<a class="cat" href="${catPath(p)}">${esc(p.kategori)}</a>` : ''}<time datetime="${p.tarih}">${trDate(p.tarih)}</time><span>${p.minutes} dakikalık okuma</span></div>
   </div>
 </section>
 <div class="wrap article">
@@ -690,7 +677,8 @@ ${posts.map(p => `  <item>
     <title>${esc(p.baslik)}</title>
     <link>${SITE}${p.path}</link>
     <guid>${SITE}${p.path}</guid>
-    <pubDate>${rfc(p.tarih)}</pubDate>
+    <pubDate>${rfc(p.tarih)}</pubDate>${p.kategori ? `
+    <category>${esc(p.kategori)}</category>` : ''}
     <description>${esc(p.aciklama)}</description>
   </item>`).join('\n')}
 </channel>
@@ -716,6 +704,7 @@ write('/hizmetler/', servicesIndex());
 services.forEach(s => write(s.path, servicePage(s)));
 write('/yazilar/', postsIndex());
 posts.forEach(p => write(p.path, postPage(p)));
+categories.forEach(c => write(c.path, categoryPage(c)));
 pages.forEach(p => write(p.path, simplePage(p)));
 write('/404.html', notFound());
 write('/yazilar/feed.xml', feed());
@@ -727,7 +716,8 @@ write('/sitemap.xml', sitemap([
   ...services.map(s => [s.path, modified(s)]),
   ['/yazilar/', posts.map(modified).sort().pop()],
   ...posts.map(p => [p.path, modified(p)]),
+  ...categories.map(c => [c.path, c.posts.map(modified).sort().pop()]),
   ...pages.map(p => [p.path, modified(p)]),
 ]));
 
-console.log(`dist/ hazır: ${projects.length} proje, ${posts.length} yazı, ${services.length} hizmet, ${pages.length} sayfa`);
+console.log(`dist/ hazır: ${posts.length} yazı (${categories.length} kategori), ${services.length} hizmet, ${projects.length} proje, ${pages.length} sayfa`);

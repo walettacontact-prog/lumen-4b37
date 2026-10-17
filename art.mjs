@@ -100,6 +100,8 @@ const P = {
   takvim: '<rect class="w st" x="18" y="22" width="62" height="60" rx="8"/><path class="stl" d="M18 38h62"/><rect class="k" x="30" y="14" width="4" height="12" rx="2"/><rect class="k" x="64" y="14" width="4" height="12" rx="2"/><circle class="l" cx="32" cy="50" r="3"/><circle class="l" cx="49" cy="50" r="3"/><circle class="l" cx="66" cy="50" r="3"/><circle class="l" cx="32" cy="66" r="3"/><circle class="k" cx="49" cy="66" r="6"/><circle class="l" cx="66" cy="66" r="3"/>',
   onay: '<circle class="w st" cx="120" cy="54" r="24"/><circle class="s" cx="120" cy="54" r="14"/><path class="stk" d="M112 54l6 6 11-13"/>',
   pencere: '<rect class="w st" x="16" y="14" width="128" height="76" rx="8"/><path class="stl" d="M16 32h128"/><circle class="l" cx="28" cy="23" r="3"/><circle class="l" cx="38" cy="23" r="3"/><circle class="l" cx="48" cy="23" r="3"/><rect class="s" x="70" y="19" width="40" height="8" rx="4"/><rect class="k" x="28" y="44" width="44" height="7" rx="3.5"/><rect class="l" x="28" y="56" width="36" height="4" rx="2"/><rect class="k" x="28" y="68" width="28" height="10" rx="5"/><rect class="s" x="88" y="42" width="44" height="36" rx="6"/><circle class="l" cx="110" cy="58" r="8"/>',
+  panel: '<rect class="w st" x="16" y="16" width="128" height="72" rx="8"/><path class="stl" d="M50 16v72"/><rect class="k" x="24" y="28" width="18" height="5" rx="2.5"/><rect class="l" x="24" y="40" width="18" height="4" rx="2"/><rect class="l" x="24" y="50" width="18" height="4" rx="2"/><rect class="s" x="60" y="26" width="34" height="22" rx="5"/><rect class="s" x="100" y="26" width="34" height="22" rx="5"/><rect class="l" x="62" y="60" width="8" height="18" rx="2"/><rect class="l" x="74" y="54" width="8" height="24" rx="2"/><rect class="k" x="86" y="48" width="8" height="30" rx="2"/><rect class="l" x="98" y="58" width="8" height="20" rx="2"/><rect class="l" x="110" y="52" width="8" height="26" rx="2"/>',
+  yz: '<rect class="w st" x="22" y="22" width="92" height="40" rx="12"/><circle class="k" cx="42" cy="42" r="4"/><circle class="k" cx="58" cy="42" r="4"/><circle class="l" cx="74" cy="42" r="4"/><rect class="k" x="56" y="62" width="82" height="26" rx="13"/><rect class="w" x="68" y="73" width="44" height="4" rx="2"/><path class="stk" d="M124 16l2.5 6 6 2.5-6 2.5-2.5 6-2.5-6-6-2.5 6-2.5z"/>',
   telefon: '<rect class="k" x="60" y="6" width="48" height="88" rx="10"/><rect class="w" x="64" y="10" width="40" height="80" rx="7"/><rect class="k" x="76" y="14" width="16" height="4" rx="2"/><rect class="s" x="70" y="26" width="28" height="22" rx="5"/><rect class="k" x="70" y="54" width="20" height="4" rx="2"/><rect class="l" x="70" y="62" width="26" height="3" rx="1.5"/><rect class="k" x="70" y="74" width="28" height="9" rx="4.5"/><rect class="w st" x="14" y="40" width="44" height="24" rx="6"/><circle class="k" cx="25" cy="52" r="4"/><rect class="l" x="34" y="48" width="18" height="3" rx="1.5"/><rect class="l" x="34" y="54" width="12" height="3" rx="1.5"/>',
 };
 
@@ -114,6 +116,8 @@ const SECTOR_BODY = {
   saglik: P.takvim + P.onay,
   web: P.pencere,
   mobil: P.telefon,
+  kod: P.panel,
+  yz: P.yz,
 };
 export const SECTOR_ART = Object.fromEntries(Object.entries(SECTOR_BODY).map(([k, b]) => [k, svg('0 0 160 100', b)]));
 
@@ -166,3 +170,20 @@ ${T(100, 552, 'Cuma 14:30', 11, 'tm')}${T(100, 572, 'Saç kesimi', 13)}${pill(20
 ${T(400, 564, 'Servis talebi', 11, 'tm')}${T(400, 584, 'Klima bakımı', 13)}${pill(532, 562, 52, 26, 'Ara', true, 11)}
 <rect class="w st" x="620" y="530" width="220" height="84" rx="12"/>${put(P.takvim, 636, 552, .55, 18, 14)}
 ${T(684, 556, 'Diyetisyen', 11, 'tm')}${T(684, 576, 'Kontrol randevusu', 13)}${T(684, 594, 'Yarın 10:00', 11, 'tm')}`);
+
+// ---------- Giriş çizimi ----------
+// Koyu kart üstünde beyaz çizgilerle: site, telefon ve asistan balonu. Metin yok.
+export const HERO_ART = `<svg class="cover-art" viewBox="0 0 420 262" aria-hidden="true"><g fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+<rect x="16" y="46" width="252" height="170" rx="14"/><path d="M16 78h252"/>
+<circle cx="36" cy="62" r="3" fill="#fff" stroke="none" opacity=".5"/><circle cx="48" cy="62" r="3" fill="#fff" stroke="none" opacity=".5"/><circle cx="60" cy="62" r="3" fill="#fff" stroke="none" opacity=".5"/>
+<rect x="40" y="100" width="92" height="12" rx="6" fill="#fff" stroke="none" opacity=".9"/><rect x="40" y="122" width="62" height="8" rx="4" fill="#fff" stroke="none" opacity=".35"/><rect x="40" y="138" width="76" height="8" rx="4" fill="#fff" stroke="none" opacity=".35"/>
+<rect x="40" y="164" width="66" height="24" rx="12" fill="#fff" stroke="none"/>
+<rect x="150" y="98" width="98" height="92" rx="10" fill="#fff" stroke="none" opacity=".12"/><circle cx="199" cy="144" r="19" fill="#fff" stroke="none" opacity=".22"/>
+<rect x="250" y="72" width="114" height="190" rx="22" fill="#111112"/>
+<rect x="291" y="82" width="32" height="6" rx="3" fill="#fff" stroke="none" opacity=".55"/>
+<rect x="266" y="106" width="82" height="50" rx="8" fill="#fff" stroke="none" opacity=".12"/>
+<rect x="266" y="166" width="54" height="8" rx="4" fill="#fff" stroke="none" opacity=".9"/><rect x="266" y="182" width="72" height="6" rx="3" fill="#fff" stroke="none" opacity=".35"/>
+<rect x="266" y="210" width="82" height="26" rx="13" fill="#fff" stroke="none"/>
+<path d="M310 14h82a12 12 0 0 1 12 12v22a12 12 0 0 1-12 12h-50l-16 12v-12h-16a12 12 0 0 1-12-12V26a12 12 0 0 1 12-12z" fill="#111112"/>
+<circle cx="334" cy="37" r="3.5" fill="#fff" stroke="none"/><circle cx="351" cy="37" r="3.5" fill="#fff" stroke="none" opacity=".6"/><circle cx="368" cy="37" r="3.5" fill="#fff" stroke="none" opacity=".3"/>
+</g></svg>`;

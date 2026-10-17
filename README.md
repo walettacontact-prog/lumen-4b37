@@ -20,6 +20,7 @@ Pages'e çıkar.
 ---
 baslik: Yazının başlığı
 aciklama: Arama sonuçlarında görünecek bir iki cümlelik özet.
+kategori: Web sitesi
 tarih: 2026-10-17
 ---
 Giriş paragrafı...
@@ -35,7 +36,8 @@ Metin, **kalın**, [bağlantı](https://ornek.com) ve listeler:
 Projeler için aynı biçim `content/projeler/` altında kullanılır; ek olarak `etiket`
 (örn. `Web · Statik site`) ve `durum` (örn. `Yayında`) alanları vardır.
 
-Site haritası, RSS, listeler ve ana sayfadaki sayılar kendiliğinden güncellenir.
+`kategori` alanı serbesttir; yeni bir kategori yazıldığında sayfası ve filtresi kendiliğinden oluşur.
+Site haritası, RSS ve listeler kendiliğinden güncellenir.
 
 ## Yerelde çalıştırma
 

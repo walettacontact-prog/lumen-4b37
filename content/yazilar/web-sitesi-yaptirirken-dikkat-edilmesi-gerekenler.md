@@ -2,8 +2,9 @@
 baslik: Web sitesi yaptırırken nelere dikkat edilmeli? 10 madde
 seo: Web Sitesi Yaptırırken Dikkat Edilmesi Gereken 10 Şey
 aciklama: Alan adından hıza, SEO'dan KVKK'ya: web sitesi yaptırmadan önce bilmeniz gereken 10 konu ve teklif alırken sormanız gereken sorular.
+kategori: Web sitesi
 tarih: 2026-10-17
-sira: 1
+sira: 4
 ---
 Web sitesi yaptırmak çoğu işletme için birkaç yılda bir verilen bir karardır. Bu yüzden süreç sırasında sorulmayan birkaç soru, sonradan para ve zaman kaybına dönüşebilir. Aşağıdaki maddeler, teklif almadan önce kontrol etmeniz gerekenleri özetliyor.
 

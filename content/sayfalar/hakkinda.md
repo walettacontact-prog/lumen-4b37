@@ -1,7 +1,7 @@
 ---
 baslik: Hakkında
 seo: Nurettin Ensar Ocakçı Kimdir?
-aciklama: Nurettin Ensar Ocakçı; tasarım, yazılım ve yapay zekâ üzerine çalışıyor. neo, projelerini, yazılarını ve işletmelere verdiği hizmetleri topladığı kişisel sitesi.
+aciklama: Nurettin Ensar Ocakçı; tasarım, yazılım ve yapay zekâ üzerine çalışıyor. neo, projelerini, yazılarını ve hizmetlerini topladığı kişisel sitesi.
 giris: Tasarım, yazılım ve yapay zekâ üzerine çalışıyor. neo, kişisel sitesi.
 tarih: 2026-10-17
 ---
