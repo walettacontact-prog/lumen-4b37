@@ -504,6 +504,8 @@ function servicesIndex() {
 function servicePage(s) {
   const items = [['Ana sayfa', '/'], ['Hizmetler', '/hizmetler/'], [s.baslik, s.path]];
   const others = services.filter(o => o !== s);
+  const kategoriler = (s.ilgili || '').split('|').map(x => x.trim()).filter(Boolean);
+  const ilgili = posts.filter(p => kategoriler.includes(p.kategori)).slice(0, 4);
   return layout({
     path: s.path,
     title: `${s.seo || s.baslik} | ${SHORT}`,
@@ -527,6 +529,12 @@ function servicePage(s) {
   <div class="prose">${s.html}</div>
   <aside class="side"><div class="side-in">${tocBox(s.toc)}${contactBox()}</div></aside>
 </div>
+${ilgili.length ? `<section class="section">
+  <div class="wrap">
+    <div class="sec-head"><div><h2 class="h2">İlgili yazılar</h2></div><a class="more" href="/yazilar/">Tüm yazılar${ICONS.ok}</a></div>
+    ${rows(postRows(ilgili))}
+  </div>
+</section>` : ''}
 <section class="section alt">
   <div class="wrap">
     <div class="sec-head"><div><h2 class="h2">Diğer hizmetler</h2></div></div>

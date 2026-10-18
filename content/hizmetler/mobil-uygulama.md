@@ -5,6 +5,7 @@ aciklama: İşletmeler için iOS ve Android mobil uygulama geliştirme; tasarım
 kisa: iOS ve Android için uygulamalar; tasarımdan App Store ve Google Play yayınına kadar.
 ikon: mobil
 one: iOS ve Android, tek kod tabanı | Bildirimler ve yönetim paneli | App Store ve Google Play yayını
+ilgili: Mobil uygulama
 sira: 3
 tarih: 2026-10-17
 ---

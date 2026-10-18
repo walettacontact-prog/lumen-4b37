@@ -5,6 +5,7 @@ aciklama: Randevu, sipariş, stok ve müşteri takibi gibi işletmenize özel we
 kisa: Randevu, sipariş, stok veya müşteri takibi gibi işinize özel web yazılımları ve yönetim panelleri.
 ikon: kod
 one: Randevu, sipariş ve stok takibi | Yönetim panelleri | Raporlama ve entegrasyonlar
+ilgili: Müşteri kazanma
 sira: 2
 tarih: 2026-10-17
 ---

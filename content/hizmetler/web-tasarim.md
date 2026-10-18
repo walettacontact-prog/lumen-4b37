@@ -5,6 +5,7 @@ aciklama: Hızlı açılan, mobil uyumlu ve arama motorlarına uygun kurumsal we
 kisa: Kurumsal siteler, tanıtım siteleri ve açılış sayfaları. Mobil uyumlu, hızlı ve arama motorlarına uygun.
 ikon: web
 one: Kurumsal ve tanıtım siteleri | Mobil uyum ve hız | SEO altyapısı ve Google kaydı
+ilgili: Web sitesi | Müşteri kazanma
 sira: 1
 tarih: 2026-10-17
 ---
