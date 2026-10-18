@@ -177,7 +177,7 @@ const CSS = readFileSync(join(ROOT, 'site.css'), 'utf8')
 
 const NAV = [['/projeler/', 'Projeler'], ['/yazilar/', 'Yazılar'], ['/hizmetler/', 'Hizmetler'], ['/hakkinda/', 'Hakkında']];
 
-function layout({ path, title, description, body, ld = [], type = 'website', noindex = false, script = '' }) {
+function layout({ path, title, description, body, ld = [], type = 'website', noindex = false, script = '', top = '' }) {
   const url = SITE + path;
   const graph = JSON.stringify({ '@context': 'https://schema.org', '@graph': [WEBSITE, PERSON, ...ld] }).replace(/</g, '\\u003c');
   const nav = NAV.map(([href, label]) =>
@@ -214,7 +214,7 @@ ${noindex ? '<meta name="robots" content="noindex">' : `<meta name="robots" cont
 <body>
 <div class="intro" aria-hidden="true">${MARK}</div>
 <a class="skip" href="#icerik">İçeriğe geç</a>
-<header class="top">
+${top}<header class="top">
   <div class="wrap top-in">
     <a class="brand" href="/">${LOGO}</a>
     <button class="menu-btn" type="button" aria-expanded="false" aria-controls="nav" aria-label="Menü"><span></span><span></span></button>
@@ -322,6 +322,12 @@ const serviceMini = s => `<a class="card" href="${s.path}">
   <p>${esc(s.kisa)}</p>
   <span class="go">İncele${ICONS.ok}</span>
 </a>`;
+// Ana sayfanın üst şeridi: son yazılar; liste iki kez yazılır ki akış kesintisiz dönsün
+const ticker = () => {
+  const items = posts.slice(0, 6).map(p => `<a href="${p.path}">${esc(p.baslik)}</a>`).join('<i aria-hidden="true"></i>');
+  return `<div class="ticker"><div class="wrap ticker-in"><span class="ticker-l">Yazılar</span><div class="ticker-win"><div class="ticker-track"><span class="ticker-set">${items}</span><span class="ticker-set" aria-hidden="true">${items}</span></div></div></div></div>
+`;
+};
 const chips = (current = '') => `<nav class="chips" aria-label="Kategoriler"><a href="/yazilar/"${current ? '' : ' aria-current="page"'}>Tümü (${posts.length})</a>${categories.map(c =>
   `<a href="${c.path}"${c.slug === current ? ' aria-current="page"' : ''}>${esc(c.name)} (${c.posts.length})</a>`).join('')}</nav>`;
 
@@ -361,6 +367,7 @@ function home() {
     title: `${NAME} | neo: Web Sitesi, Mobil Uygulama ve Yapay Zekâ`,
     description: `neo, Nurettin Ensar Ocakçı'nın sitesi. İşletmeler için web sitesi, mobil uygulama, yazılım ve yapay zekâ; çalışılan sektörler ve yazılar.`,
     ld: [{ '@type': 'WebPage', '@id': SITE + '/#webpage', url: SITE + '/', name: 'neo · ' + NAME, isPartOf: { '@id': SITE_ID }, about: { '@id': PERSON_ID }, inLanguage: 'tr-TR' }],
+    top: ticker(),
     body: `<section class="hero">
   <div class="hero-main">
   <div class="wrap hero-grid">
@@ -397,7 +404,7 @@ function home() {
 <section class="section" id="yazilar">
   <div class="wrap">
     <div class="sec-head"><div><h2 class="h2">Yazılar</h2></div><a class="more" href="/yazilar/">Tümü${ICONS.ok}</a></div>
-    ${rows(postRows(posts.slice(0, 4)), 'feed-min')}
+    ${rows(postRows(posts.slice(0, 6)), 'feed-min')}
   </div>
 </section>`,
   });

@@ -20,6 +20,20 @@ p{margin:0}
 .skip:focus{left:16px;top:12px;z-index:100;padding:8px 14px;border-radius:8px;background:var(--ink);color:#fff}
 :focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 
+/* Üst şerit: son yazılar (yalnızca ana sayfa). Salt CSS, üzerine gelince durur. */
+.ticker{overflow:hidden;border-bottom:1px solid var(--line);background:var(--soft)}
+.ticker-in{display:flex;align-items:center;gap:18px;height:42px}
+.ticker-l{flex:none;color:var(--ink);font-size:12.5px;font-weight:600;letter-spacing:.1em;text-transform:uppercase}
+.ticker-win{flex:1;min-width:0;overflow:hidden;-webkit-mask-image:linear-gradient(90deg,#000 92%,transparent);mask-image:linear-gradient(90deg,#000 92%,transparent)}
+.ticker-track{display:flex;width:max-content;animation:ticker 55s linear infinite}
+.ticker:hover .ticker-track,.ticker:focus-within .ticker-track{animation-play-state:paused}
+.ticker-set{display:flex;align-items:center;gap:22px;padding-right:22px;white-space:nowrap}
+.ticker a{color:var(--mute);font-size:15px;text-decoration:none;transition:color .2s}
+.ticker a:hover,.ticker a:focus-visible{color:var(--ink)}
+.ticker i{width:4px;height:4px;border-radius:50%;background:#c4c3bd}
+@keyframes ticker{to{transform:translateX(-50%)}}
+@media (max-width:760px){.ticker-in{height:40px;gap:12px}.ticker a{font-size:14px}}
+
 /* Üst menü */
 .top{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.92);-webkit-backdrop-filter:saturate(1.4) blur(10px);backdrop-filter:saturate(1.4) blur(10px);border-bottom:1px solid var(--line)}
 .top-in{display:flex;align-items:center;justify-content:space-between;gap:24px;height:68px}
