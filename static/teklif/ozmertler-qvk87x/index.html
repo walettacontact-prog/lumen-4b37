@@ -24,7 +24,7 @@ body{margin:0}
 :root{
   --bg:#ffffff; --soft:#f4f4f1; --ink:#111112; --text:#2c2c2f; --mute:#6a6a64; --line:#e4e3de;
   --cov:#111112; --cov-fg:#ffffff; --cov-mute:#a3a29c; --cov-line:rgba(255,255,255,.13);
-  --ok:#1f8a52; --no:#b04332;
+  --ok:#1f8a52; --no:#b04332; --sheen:rgba(17,17,18,.07); --sheen-rec:rgba(255,255,255,.16); --glow-c:rgba(17,17,18,.45);
   --sans:"Geist",ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
   --mono:"Geist Mono",ui-monospace,"SF Mono",Menlo,monospace;
   --wrap:1120px; --r:18px;
@@ -32,15 +32,15 @@ body{margin:0}
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
   --bg:#0d0d0e; --soft:#161618; --ink:#f4f4f2; --text:#d4d4cf; --mute:#96968f; --line:#29292c;
   --cov:#f4f4f2; --cov-fg:#111112; --cov-mute:#5f5f5a; --cov-line:rgba(0,0,0,.12);
-  --ok:#5cc690; --no:#e8826f; color-scheme:dark}}
+  --ok:#5cc690; --no:#e8826f; --sheen:rgba(255,255,255,.09); --sheen-rec:rgba(17,17,18,.08); --glow-c:rgba(255,255,255,.2); color-scheme:dark}}
 :root[data-theme="dark"]{
   --bg:#0d0d0e; --soft:#161618; --ink:#f4f4f2; --text:#d4d4cf; --mute:#96968f; --line:#29292c;
   --cov:#f4f4f2; --cov-fg:#111112; --cov-mute:#5f5f5a; --cov-line:rgba(0,0,0,.12);
-  --ok:#5cc690; --no:#e8826f; color-scheme:dark}
+  --ok:#5cc690; --no:#e8826f; --sheen:rgba(255,255,255,.09); --sheen-rec:rgba(17,17,18,.08); --glow-c:rgba(255,255,255,.2); color-scheme:dark}
 @media print{:root,:root[data-theme="dark"],:root:not([data-theme="light"]){
   --bg:#fff; --soft:#f4f4f1; --ink:#111112; --text:#2c2c2f; --mute:#6a6a64; --line:#e4e3de;
   --cov:#111112; --cov-fg:#fff; --cov-mute:#a3a29c; --cov-line:rgba(255,255,255,.13);
-  --ok:#1f8a52; --no:#b04332; color-scheme:light}}
+  --ok:#1f8a52; --no:#b04332; --sheen:rgba(17,17,18,.07); --sheen-rec:rgba(255,255,255,.16); --glow-c:rgba(17,17,18,.45); color-scheme:light}}
 
 *{box-sizing:border-box}
 body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:16px;line-height:1.5;-webkit-font-smoothing:antialiased}
@@ -62,7 +62,7 @@ a{color:inherit;text-underline-offset:3px}
 .cover .label{color:var(--cov-mute)}
 .cover h1{color:var(--cov-fg);font-size:clamp(34px,5.4vw,60px);line-height:1;letter-spacing:-.05em}
 .cover-row{display:flex;justify-content:space-between;align-items:end;gap:16px 24px;flex-wrap:wrap}
-.special{border:1px solid var(--cov-line);border-radius:999px;padding:8px 16px;font-size:14px;font-weight:500;color:var(--cov-fg)}
+.special{border-radius:999px;padding:12px 22px;font-size:clamp(17px,1.8vw,21px);font-weight:600;letter-spacing:-.015em;background:var(--cov-fg);color:var(--cov)}
 
 section{padding-block:clamp(30px,4.5vw,48px)}
 .sec-t{font-size:clamp(22px,2.6vw,28px);letter-spacing:-.035em;line-height:1.1;margin-bottom:16px}
@@ -78,15 +78,15 @@ section{padding-block:clamp(30px,4.5vw,48px)}
 .price{display:grid;gap:6px;padding-bottom:16px}
 .amt{font-size:clamp(42px,5.4vw,62px);font-weight:600;letter-spacing:-.055em;line-height:.95;color:var(--ink)}
 .amt small{font-size:17px;font-weight:500;letter-spacing:-.01em;margin-left:8px;color:var(--mute)}
-.price p:not(.amt){font-size:14.5px;color:var(--mute)}
+.price p:not(.amt){font-size:17px;font-weight:500;color:var(--text)}
 .price p b{color:var(--ink);font-weight:600}
 .card.rec .price p b{color:var(--cov-fg)}
-.ozel{position:relative;overflow:hidden;justify-self:start;display:inline-flex;align-items:center;gap:8px;margin-top:6px;padding:10px 18px;border-radius:999px;font-size:clamp(16px,1.6vw,19px);font-weight:600;letter-spacing:-.015em;color:#1d1405;background:linear-gradient(135deg,#f9e7a8 0%,#e8c25f 40%,#fff4cc 55%,#d6a43a 100%);box-shadow:0 0 0 1px rgba(214,164,58,.55),0 8px 28px rgba(232,194,95,.45);animation:isil 2.8s ease-in-out infinite}
-.ozel::before{content:"✦";font-size:.9em}
-.ozel::after{content:"";position:absolute;inset:0;background:linear-gradient(110deg,transparent 30%,rgba(255,255,255,.8) 50%,transparent 70%);transform:translateX(-130%);animation:parla 2.8s ease-in-out infinite}
-@keyframes parla{0%,45%{transform:translateX(-130%)}100%{transform:translateX(130%)}}
-@keyframes isil{0%,100%{box-shadow:0 0 0 1px rgba(214,164,58,.55),0 8px 28px rgba(232,194,95,.35)}50%{box-shadow:0 0 0 1px rgba(214,164,58,.7),0 8px 36px rgba(232,194,95,.7)}}
-@media (prefers-reduced-motion:reduce){.ozel,.ozel::after{animation:none}.ozel::after{display:none}}
+.card{position:relative;overflow:hidden;isolation:isolate;animation:isil 3.2s ease-in-out infinite}
+.card::after{content:"";position:absolute;inset:0;z-index:2;pointer-events:none;background:linear-gradient(115deg,transparent 35%,var(--sheen) 50%,transparent 65%);transform:translateX(-120%);animation:parla 4.5s ease-in-out infinite}
+.card.rec::after{background:linear-gradient(115deg,transparent 35%,var(--sheen-rec) 50%,transparent 65%)}
+@keyframes parla{0%,55%{transform:translateX(-120%)}100%{transform:translateX(120%)}}
+@keyframes isil{0%,100%{box-shadow:0 18px 50px -26px var(--glow-c)}50%{box-shadow:0 26px 72px -16px var(--glow-c)}}
+@media (prefers-reduced-motion:reduce){.card,.card::after{animation:none}.card::after{display:none}}
 
 .row{display:grid;grid-template-columns:minmax(0,8.5em) minmax(0,1fr);gap:14px;align-items:baseline;font-size:15px}
 .row .label{font-size:11px;line-height:1.5}
@@ -96,7 +96,8 @@ section{padding-block:clamp(30px,4.5vw,48px)}
 .card.rec{background:var(--cov);border-color:var(--cov);color:var(--cov-fg)}
 .card.rec>*{border-color:var(--cov-line)}
 .card.rec h3,.card.rec .amt,.card.rec .row b{color:var(--cov-fg)}
-.card.rec .label,.card.rec .price p:not(.amt),.card.rec .amt small{color:var(--cov-mute)}
+.card.rec .label,.card.rec .amt small{color:var(--cov-mute)}
+.card.rec .price p:not(.amt){color:var(--cov-fg)}
 .card.rec .pill{background:var(--cov-fg);color:var(--cov)}
 .total{background:var(--soft);margin-inline:-12px;padding-inline:12px!important;border-radius:12px;border-top:0!important;margin-top:6px}
 .card.rec .total{background:var(--cov-line)}
@@ -169,9 +170,9 @@ section{padding-block:clamp(30px,4.5vw,48px)}
   .me .big{font-size:48px}
   .pay,.ikas{padding:16px 18px}
   .ck,.risk,.fix{font-size:12.5px}
-  .ozel::after{display:none}
-  .ozel{animation:none}
-  .cover,.ozel,.card.rec,.fix,.who .free,.total,.pill,.risk::before,.ikas,.me,.me .tags .hl{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .card::after{display:none}
+  .card{animation:none;box-shadow:none}
+  .cover,.special,.card.rec,.fix,.who .free,.total,.pill,.risk::before,.ikas,.me,.me .tags .hl{-webkit-print-color-adjust:exact;print-color-adjust:exact}
 }
 </style>
 </head>
@@ -199,7 +200,7 @@ section{padding-block:clamp(30px,4.5vw,48px)}
       <article class="card rec">
         <div class="top"><span class="label">Paket 1</span><span class="pill">Önerilen</span></div>
         <h3>Özel web sitesi + WhatsApp sipariş</h3>
-        <div class="price"><p class="amt num">20.000 TL<small>tek sefer</small></p><span class="ozel">Onur Ocakçı'ya özel son fiyat</span><p>Her şey dahil, aylık ücret yok.</p></div>
+        <div class="price"><p class="amt num">20.000 TL<small>tek sefer</small></p><p>Her şey dahil, aylık ücret yok.</p></div>
         <div class="row"><span class="label">Tasarım</span><span><b>Size özel</b>, sıfırdan</span></div>
         <div class="row"><span class="label">Sipariş</span><span>Müşteri sepetini oluşturur, sipariş <b>WhatsApp iletişim merkezinize</b> gider</span></div>
         <div class="row"><span class="label">Ödeme</span><span>Ödeme adımları birlikte netleştirilir. <b>Sitede ödeme altyapısı yok</b></span></div>
@@ -214,7 +215,7 @@ section{padding-block:clamp(30px,4.5vw,48px)}
       <article class="card">
         <div class="top"><span class="label">Paket 2</span></div>
         <h3>ikas ile kartla ödemeli e-ticaret</h3>
-        <div class="price"><p class="amt num">15.000 TL<small>kurulum</small></p><span class="ozel">Onur Ocakçı'ya özel son fiyat</span><p>Üstüne ilk aydan itibaren ikas'a aylık 5.000 TL.</p></div>
+        <div class="price"><p class="amt num">15.000 TL<small>kurulum</small></p><p>Üstüne ilk aydan itibaren ikas'a <b>aylık 5.000 TL</b>.</p></div>
         <div class="row"><span class="label">Tasarım</span><span><b>Hazır tema</b>, size göre düzenlenir</span></div>
         <div class="row"><span class="label">Sipariş</span><span><b>Sepet</b>, sitede satın alma</span></div>
         <div class="row"><span class="label">Ödeme</span><span><b>Sitede kartla ödeme</b> (ikas). Para 7 günde hesapta</span></div>
