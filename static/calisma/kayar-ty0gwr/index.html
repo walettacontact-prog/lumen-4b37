@@ -138,7 +138,22 @@ main .wrap{padding-block:16px}
 .credit{font-size:13px;color:var(--mute);padding-bottom:40px;line-height:1.6}
 .credit a{color:inherit}
 
+.ne{margin-top:14px;font-size:21px;color:var(--text)}
+.how{list-style:none;padding:0;margin:20px 0 0;display:grid;gap:10px;counter-reset:h;border-top:1px solid var(--line);padding-top:18px}
+.how::before{content:"Nasıl yapılır?";font-size:14px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--mute)}
+.how li{counter-increment:h;display:grid;grid-template-columns:34px 1fr;gap:12px;align-items:center;padding-left:0}
+.how li::before{position:static;background:none;content:counter(h);width:34px;height:34px;border-radius:50%;border:1.5px solid var(--ink);display:grid;place-items:center;font-weight:600;font-size:16px;color:var(--ink)}
+.note{margin-top:14px;font-size:16px;color:var(--mute)}
+.cap{font-size:15px;color:var(--mute)}
+.bad{list-style:none;padding:0;margin:14px 0 0;display:grid;gap:8px}
+.bad li{padding-left:30px;position:relative}
+.bad li::before{content:"✕";position:absolute;left:0;top:0;width:auto;height:auto;background:none;color:#b04332;font-weight:600}
+.step.wide{grid-template-columns:minmax(0,4fr) minmax(0,8fr)}
+.ba{display:grid;gap:18px}
+.ba .old{max-width:62%}
 @media (max-width:820px){
+  .step.wide{grid-template-columns:1fr}
+  .ba .old{max-width:100%}
   body{font-size:19px}
   .step{grid-template-columns:1fr;gap:24px;padding:40px 0}
   .step:nth-of-type(even) .txt{order:0}
@@ -178,7 +193,7 @@ main .wrap{padding-block:16px}
     <div class="facts">
       <div><p class="n">8 Şubat</p><p>Ramazan başlıyor (Diyanet takvimi)</p></div>
       <div><p class="n">2 hafta</p><p>Sucuğun yıl içindeki en güçlü dönemi</p></div>
-      <div><p class="n">Tek fikir</p><p>“Sahurun sesi: Kayar” her yerde</p></div>
+      <div><p class="n">Tek fikir</p><p>“Sahurun sesi: Kayar” ambalajdan sokağa</p></div>
     </div>
     <figure class="hero" style="margin:0">
       <img src="g/arac.jpg" alt="Kayar reklamlı yürüyen reklam aracı, örnek görünüm" width="1600" height="900">
@@ -192,50 +207,53 @@ main .wrap{padding-block:16px}
 
   <div class="intro">
     <p class="label">Ne yapacağız?</p>
-    <h2>Ambalajdan sokağa 7 adım</h2>
-    <p>Reklamı gören kişi ürünü rafta hemen tanısın, Sakarya'nın her köşesinde aynı mesajı görsün.</p>
+    <h2>7 adım, her biri nasıl yapılır</h2>
+    <p>Her adımda önce ne olduğu, sonra nasıl yapılacağı. Görseller örnek tasarımdır.</p>
   </div>
 
   <section class="step">
     <div class="txt">
       <p class="no"><b>1</b>AMBALAJ</p>
-      <h3>Ramazan'a özel kuşak</h3>
-      <ul>
-        <li>Bugünkü etiketin üstüne sarılan kırmızı-sarı bant</li>
-        <li>Ürün adı uzaktan okunur, “1985'ten beri Adapazarı” mührü</li>
-        <li>Kare kod (QR): okutan çekilişe ve tariflere ulaşır</li>
-      </ul>
+      <h3>Ramazan kuşağı</h3>
+      <p class="ne">Bugünkü etiketin üstüne Ramazan boyunca lacivert-altın bir kuşak sarılır. Rafta ilk göze çarpan Kayar olur.</p>
+      <ol class="how">
+        <li>Etiketin ölçüsü alınır, kuşak tasarlanır</li>
+        <li>Matbaada basılır (Aralık–Ocak)</li>
+        <li>Üretimde etiketin üstüne sarılır</li>
+      </ol>
     </div>
     <div class="vis">
-      <div class="pair">
-        <figure class="vis"><span class="tag new">Ramazan kuşağı</span><img src="g/kusak.jpg" alt="Ramazan kuşağı tasarımı" width="1500" height="300" loading="lazy"><figcaption>Bant tasarımı, ölçü etikete göre ayarlanır</figcaption></figure>
-        <figure class="vis old"><img src="g/etiket.jpg" alt="Bugünkü Kayar etiketi" width="500" height="500" loading="lazy"><figcaption><span class="tag">Bugün</span><br>Bugünkü etiket aynen kalır, kuşak Ramazan boyunca üstüne sarılır.</figcaption></figure>
-      </div>
+      <img src="g/kusak_urun.jpg" alt="Ramazan kuşağı sarılmış Kayar sucuk, örnek görünüm" width="1000" height="850" loading="lazy">
+      <img src="g/kusak.jpg" alt="Ramazan kuşağı düz tasarım" width="1600" height="360" loading="lazy">
+      <p class="cap">Örnek görünüm · Kuşak ve düz tasarımı (kare kod çekilişe gider)</p>
     </div>
   </section>
 
   <section class="step">
     <div class="txt">
       <p class="no"><b>2</b>MARKET</p>
-      <h3>Rafta ve kapıda Kayar</h3>
-      <ul>
-        <li>Market girişine ışıklı pano veya A3 afiş</li>
-        <li>Rafa “Ramazan sahur paketi” etiketi</li>
-        <li>Sitenizde yazan 600'e yakın satış noktası: Milkan, Mopaş, Şenmar, Karaul, Kraas, Sakmar, Esmer, Özpaş, Geltat</li>
-      </ul>
+      <h3>Market kapısı ve raf</h3>
+      <p class="ne">Satış noktalarında ışıklı pano, afiş ve raf etiketi. Reklamı gören, rafta Kayar'ı hemen bulur.</p>
+      <ol class="how">
+        <li>Güncel satış noktası listesi sizden alınır</li>
+        <li>Afiş ve raf etiketleri basılır</li>
+        <li>25–31 Ocak'ta marketlere dağıtılır</li>
+      </ol>
+      <p class="note">Sitenizde yazan marketler: Milkan, Mopaş, Şenmar, Karaul, Kraas, Sakmar, Esmer, Özpaş, Geltat</p>
     </div>
-    <figure class="vis"><img src="g/pano.jpg" alt="Market önü ışıklı pano, örnek görünüm" width="1000" height="1563" loading="lazy" style="width:100%;height:620px;object-fit:cover;object-position:center 20%"><figcaption>Örnek görünüm · Market önü ışıklı pano</figcaption></figure>
+    <figure class="vis"><img src="g/pano.jpg" alt="Market önü ışıklı pano, örnek görünüm" width="1000" height="1563" loading="lazy" style="width:100%;height:640px;object-fit:cover;object-position:center 15%"><figcaption>Örnek görünüm · Market önü ışıklı pano</figcaption></figure>
   </section>
 
   <section class="step">
     <div class="txt">
       <p class="no"><b>3</b>TELEFON</p>
-      <h3>Instagram ve Facebook, yalnızca Sakarya</h3>
-      <ul>
-        <li>Reklam sadece Sakarya'daki telefonlara gider</li>
-        <li>Kısa tarif videoları: “3 dakikada yumurtalı sucuk”</li>
-        <li>Sahur saatinde (gece 22:00–03:00) daha sık</li>
-      </ul>
+      <h3>Instagram ve Facebook</h3>
+      <p class="ne">Reklam yalnızca Sakarya'daki telefonlara gider. Sahur saatinde daha sık çıkar.</p>
+      <ol class="how">
+        <li>Kısa tarif videosu çekilir (Ocak)</li>
+        <li>Reklam hesabı Sakarya'ya göre kurulur</li>
+        <li>25 Ocak'ta başlar, gece 22:00–03:00 artar</li>
+      </ol>
     </div>
     <div class="phones">
       <div class="phone"><div class="scr"><img src="g/story.jpg" alt="Instagram hikâye örneği" width="540" height="960" loading="lazy"></div></div>
@@ -251,17 +269,19 @@ main .wrap{padding-block:16px}
     <div class="txt">
       <p class="no"><b>4</b>YÜRÜYEN ARAÇ</p>
       <h3>Kalabalığın olduğu yerde</h3>
-      <ul>
-        <li>Çarşı, Uzunçarşı, semt pazarları, market otoparkları</li>
-        <li>Cuma namazı çıkışları: 5 ve 12 Şubat</li>
-        <li>Ramazan haftası iftar öncesi (15:00–18:00) market ve fırın çevresi</li>
-      </ul>
+      <p class="ne">Ekranlı araç iki hafta boyunca çarşı, pazar ve market çevresinde dolaşır.</p>
+      <ol class="how">
+        <li>Araç firmasıyla 2 haftalık sözleşme (Aralık)</li>
+        <li>Tasarım araç ekranının ölçüsüne göre hazırlanır</li>
+        <li>Her gün rota ve gösterim raporu istenir</li>
+      </ol>
     </div>
     <div class="panel">
-      <p class="label">Araç firmasından istenecekler</p>
-      <div class="row"><b>Rota</b><span>Her gün GPS rota raporu</span></div>
-      <div class="row"><b>Gösterim</b><span>Günlük gösterim kaydı (günde 200)</span></div>
-      <div class="row"><b>Hava</b><span>Yağmurlu gün için telafi günü</span></div>
+      <p class="label">Güzergâh</p>
+      <div class="row"><b>Her gün</b><span>Çarşı, Uzunçarşı, semt pazarları, market otoparkları</span></div>
+      <div class="row"><b>Cuma</b><span>Namaz çıkışları: 5 ve 12 Şubat</span></div>
+      <div class="row"><b>İftar önü</b><span>15:00–18:00 market ve fırın çevresi</span></div>
+      <div class="row"><b>Yağmur</b><span>Sözleşmede telafi günü</span></div>
     </div>
   </section>
 
@@ -269,11 +289,12 @@ main .wrap{padding-block:16px}
     <div class="txt">
       <p class="no"><b>5</b>BÜYÜK EKRAN</p>
       <h3>Serdivan AVM karşısı</h3>
-      <ul>
-        <li>Şehrin en işlek yollarından biri</li>
-        <li>10–15 saniye, en fazla 6–7 kelime</li>
-        <li>Büyük ürün, slogan, logo; trafikte bir bakışta okunur</li>
-      </ul>
+      <p class="ne">Şehrin en işlek yolunda 10–15 saniyelik kısa reklam. En fazla 6–7 kelime.</p>
+      <ol class="how">
+        <li>Fiyat ve günlük gösterim sayısı teklifi alınır</li>
+        <li>Kısa ekran videosu hazırlanır</li>
+        <li>1–15 Şubat yayında; firma fotoğrafla kanıtlar</li>
+      </ol>
     </div>
     <figure class="vis"><img src="g/billboard.jpg" alt="Büyük ekranda Kayar reklamı, örnek görünüm" width="1600" height="1000" loading="lazy"><figcaption>Örnek görünüm · Büyük ekran / billboard</figcaption></figure>
   </section>
@@ -282,32 +303,39 @@ main .wrap{padding-block:16px}
     <div class="txt">
       <p class="no"><b>6</b>KAMPANYA</p>
       <h3>Tadım günü ve çekiliş</h3>
-      <ul>
-        <li><b>7 Şubat akşamı</b>, ilk sahurdan önce bir market önünde tadım standı</li>
-        <li>Kuşaktaki ve afişteki kare kodu okut, takip et, <b>30 gün sucuk kazan</b></li>
+      <p class="ne">İlk sahurdan önce tadım, kuşaktaki kare kodla çekiliş: “30 gün sucuk kazan”.</p>
+      <ol class="how">
+        <li>Sahur paketinin içeriği ve fiyatı sizden</li>
         <li>Çekiliş için yasal izin alınır</li>
-      </ul>
+        <li>7 Şubat akşamı bir market önünde tadım standı</li>
+      </ol>
     </div>
     <div class="panel">
       <p class="label">Ramazan sahur paketi</p>
-      <p style="font-size:24px;color:var(--ink);font-weight:600;letter-spacing:-.02em;line-height:1.25">Sucuk + kavurma, Ramazan'a özel fiyatla tek pakette</p>
+      <p style="font-size:26px;color:var(--ink);font-weight:600;letter-spacing:-.02em;line-height:1.2">Sucuk + kavurma, Ramazan'a özel fiyatla tek pakette</p>
       <p style="color:var(--mute)">İçeriği ve fiyatı sizin kararınız; tasarımı ve duyurusunu biz yaparız.</p>
     </div>
   </section>
 
-  <section class="step">
+  <section class="step wide">
     <div class="txt">
-      <p class="no"><b>7</b>İNTERNET</p>
-      <h3>Site ve Google düzelir</h3>
-      <ul>
-        <li>Sitenizde ürünler bugün “Tükendi” görünüyor; düzeltilir</li>
-        <li>“Nereden alınır?” haritası: en yakın market bir dokunuşta</li>
-        <li>Google Haritalar kaydı ve aynı imza her yerde: <b>Kayar Sucukları · 1985 · Adapazarı</b></li>
+      <p class="no"><b>7</b>İNTERNET SİTESİ</p>
+      <h3>Site yenilenmeli</h3>
+      <p class="ne">Reklamı gören kişi önce sitenize bakar. Bugünkü site bu yükü taşıyamaz:</p>
+      <ul class="bad">
+        <li>Bütün ürünler “Tükendi”, fiyatlar 0,00 TL görünüyor</li>
+        <li>Satış noktaları yalnızca resim; aranamıyor, haritada yok</li>
+        <li>Ürün fotoğraflarında desenli arka plan, telefonda küçük</li>
       </ul>
+      <ol class="how">
+        <li>Ürün ve satış noktası bilgileri sizden alınır</li>
+        <li>Yeni site: telefonda kolay, “Nereden alınır?” haritası</li>
+        <li>Google Haritalar kaydı; Ocak sonuna kadar yayında</li>
+      </ol>
     </div>
-    <div class="panel">
-      <p class="label">Neden önemli?</p>
-      <p style="color:var(--ink)">Haziran 2026'da isim benzerliği yüzünden başka bir firmayla karıştırıldınız. Kampanyada tek ve net imza kullanılırsa bu karışıklık biter.</p>
+    <div class="ba">
+      <figure class="vis old"><span class="tag">Bugün</span><img src="g/site_bugun.jpg" alt="Bugünkü kayarsucuk.com.tr" width="960" height="600" loading="lazy"></figure>
+      <figure class="vis"><span class="tag new">Yeni site</span><img src="g/site_yeni.jpg" alt="Yeni Kayar sitesi tasarımı, bilgisayar ve telefon" width="1600" height="947" loading="lazy" style="border:0"><figcaption>Örnek tasarım · Bilgisayar ve telefon</figcaption></figure>
     </div>
   </section>
 
