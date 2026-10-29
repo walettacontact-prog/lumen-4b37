@@ -151,7 +151,27 @@ main .wrap{padding-block:16px}
 .step.wide{grid-template-columns:minmax(0,4fr) minmax(0,8fr)}
 .ba{display:grid;gap:18px}
 .ba .old{max-width:62%}
+.y41{padding:56px 0 48px;border-bottom:1px solid var(--line);display:grid;gap:34px}
+.y41 h2{font-size:clamp(32px,4.6vw,48px);letter-spacing:-.04em;line-height:1.05;margin-top:-24px}
+.lead2{color:var(--mute);font-size:21px;max-width:36em;margin-top:-22px}
+.y41 h3{font-size:clamp(26px,3vw,34px);letter-spacing:-.03em;line-height:1.1}
+.tr{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,6fr);gap:22px;align-items:start}
+.flat{display:grid;grid-template-columns:minmax(0,2fr) minmax(0,5fr);gap:14px;align-items:start}
+.flat .panel{grid-column:1/-1}
+.pk{display:grid;grid-template-columns:minmax(0,6fr) minmax(0,5fr);gap:32px;align-items:center}
+.opts{display:grid;gap:10px;margin-top:18px}
+.opt{border:1px solid var(--line);border-radius:14px;padding:14px 16px;display:grid;gap:2px}
+.opt span{color:var(--mute);font-size:17px}
+.opt.rec{border-color:var(--ink);border-width:1.5px}
+.opt .tag{margin-bottom:6px}
+.ideas{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:18px}
+.idea{background:var(--soft);border-radius:16px;padding:18px 20px;display:grid;gap:4px;align-content:start}
+.idea b{font-size:20px}
+.idea span{color:var(--mute);font-size:17px}
+.stk{justify-items:center}
+.stk img{border:0;max-width:320px;filter:drop-shadow(0 18px 24px rgba(0,0,0,.18))}
 @media (max-width:820px){
+  .tr,.pk,.ideas{grid-template-columns:1fr}
   .step.wide{grid-template-columns:1fr}
   .ba .old{max-width:100%}
   body{font-size:19px}
@@ -205,6 +225,61 @@ main .wrap{padding-block:16px}
 <main>
 <div class="wrap">
 
+  <section class="y41">
+    <p class="label">Yeni · Kayar'ın isteği</p>
+    <h2>41. yıl: “41 kere maşallah”</h2>
+    <p class="lead2">Logo ve etiket aynen kalır. 41. yıl; yolda giden araçta, sticker'da ve markette satılacak tanışma paketinde görünür.</p>
+
+    <div class="tr">
+      <figure class="vis"><img src="g/arac41.jpg" alt="Kayar reklam aracı, 41. yıl tasarımı, örnek görünüm" width="1656" height="2550" loading="lazy"><figcaption>Örnek görünüm · Sakarya'daki reklam aracı, arka ve yan ekran</figcaption></figure>
+      <div class="flat">
+        <figure class="vis"><span class="tag">Arka · dikey</span><img src="g/arka41.jpg" alt="Arka ekran tasarımı" width="800" height="1240" loading="lazy"></figure>
+        <figure class="vis"><span class="tag">Yan · yatay</span><img src="g/yan41.jpg" alt="Yan ekran tasarımı" width="1600" height="696" loading="lazy"></figure>
+        <div class="panel">
+          <p class="label">Araçta dikkat</p>
+          <div class="row"><b>Az kelime</b><span>Arkadaki sürücü 3 saniyede okur: logo, “41 kere maşallah”, sucuk</span></div>
+          <div class="row"><b>Adres</b><span>kayarsucuk.com.tr (elinizdeki örnekte yazan “kayarsucuklari.com.tr” diye bir site yok)</span></div>
+          <div class="row"><b>Logo</b><span>Baskı için logonun orijinal dosyası Kayar'dan alınır</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="pk">
+      <figure class="vis"><img src="g/kutu41.jpg" alt="41. yıla özel tanışma paketi kutusu, örnek görünüm" width="1140" height="820" loading="lazy"><figcaption>Örnek görünüm · Pencereli tanışma paketi</figcaption></figure>
+      <div>
+        <h3>Tanışma paketi nasıl olmalı?</h3>
+        <p class="ne">İçinde sucuk, 100 gr kavurma, 100 gr pastırma. Ürünler kendi vakumlu ambalajında kalır; dıştaki sadece kılıf.</p>
+        <div class="opts">
+          <div class="opt rec"><span class="tag new">Önerilen</span><b>Vakumlu set</b><span>Üç ürün tek şeffaf poşette, önüne büyük sticker. En ucuz, soğuk dolaba uygun; kahvaltı paketiyle aynı düzen.</span></div>
+          <div class="opt"><b>Tepsi + karton kılıf</b><span>Lamineli karton; rafta şık, maliyet orta.</span></div>
+          <div class="opt"><b>Pencereli kutu</b><span>En şık, en pahalı. Bayram ve şirket hediyesine uygun.</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sell">
+      <h3>Markette nasıl satılır?</h3>
+      <ol class="how">
+        <li>Soğuk dolapta, sucukların hemen yanında</li>
+        <li>Rafta “41. yıla özel tanışma paketi” etiketi</li>
+        <li>Tek, akılda kalan fiyat; istenirse “41 TL indirim”</li>
+        <li>Market zincirleriyle raf yeri ve broşürde yer konuşulur</li>
+      </ol>
+    </div>
+
+    <div class="more">
+      <h3>Başka ne yapılabilir?</h3>
+      <div class="ideas">
+        <div class="idea"><b>41 gün kampanya</b><span>1 Şubat – 13 Mart tam 41 gün; Ramazan ve Bayram içinde.</span></div>
+        <div class="idea"><b>Pide poşeti</b><span>İftar öncesi fırın kuyruğu: Kayar baskılı pide poşeti, “Pidenin yanına Kayar”.</span></div>
+        <div class="idea"><b>Şirketlere iftar kolisi</b><span>Fabrika ve OSB'lerin Ramazan kolilerine Kayar; tek anlaşmayla yüzlerce paket.</span></div>
+        <div class="idea"><b>Askıda sahur paketi</b><span>Müşteri bırakır, ihtiyaç sahibi alır; Kayar her 10 pakete 1 ekler.</span></div>
+        <div class="idea"><b>41 kişiye paket</b><span>Instagram'da “41. yıla özel 41 kişiye tanışma paketi” çekilişi.</span></div>
+        <div class="idea"><b>Bayrama kavurma</b><span>9–11 Mart: “Bayram sofrasına Kayar kavurma” ile ikinci dalga.</span></div>
+      </div>
+    </div>
+  </section>
+
   <div class="intro">
     <p class="label">Ne yapacağız?</p>
     <h2>7 adım, her biri nasıl yapılır</h2>
@@ -214,19 +289,15 @@ main .wrap{padding-block:16px}
   <section class="step">
     <div class="txt">
       <p class="no"><b>1</b>AMBALAJ</p>
-      <h3>Ramazan kuşağı</h3>
-      <p class="ne">Bugünkü etiketin üstüne Ramazan boyunca lacivert-altın bir kuşak sarılır. Rafta ilk göze çarpan Kayar olur.</p>
+      <h3>Etiket aynen kalır, üstüne sticker</h3>
+      <p class="ne">Logo ve etiket değişmez. Bugünkü etiketin üstüne yuvarlak bir “41. yıl · 41 kere maşallah” sticker'ı yapıştırılır.</p>
       <ol class="how">
-        <li>Etiketin ölçüsü alınır, kuşak tasarlanır</li>
-        <li>Matbaada basılır (Aralık–Ocak)</li>
-        <li>Üretimde etiketin üstüne sarılır</li>
+        <li>Plastik (PP) sticker basılır; soğuk dolapta nemden kalkmaz</li>
+        <li>4–5 cm, yuvarlak; sucuğa değil etiketin üstüne</li>
+        <li>Elle ya da etiket makinesiyle yapıştırılır</li>
       </ol>
     </div>
-    <div class="vis">
-      <img src="g/kusak_urun.jpg" alt="Ramazan kuşağı sarılmış Kayar sucuk, örnek görünüm" width="1000" height="850" loading="lazy">
-      <img src="g/kusak.jpg" alt="Ramazan kuşağı düz tasarım" width="1600" height="360" loading="lazy">
-      <p class="cap">Örnek görünüm · Kuşak ve düz tasarımı (kare kod çekilişe gider)</p>
-    </div>
+    <figure class="vis stk"><img src="g/sticker41.png" alt="41. yıl sticker tasarımı" width="420" height="420" loading="lazy"><figcaption>Sticker tasarımı · gerçek boyu 4–5 cm</figcaption></figure>
   </section>
 
   <section class="step">
@@ -302,12 +373,12 @@ main .wrap{padding-block:16px}
   <section class="step">
     <div class="txt">
       <p class="no"><b>6</b>KAMPANYA</p>
-      <h3>Tadım günü ve çekiliş</h3>
-      <p class="ne">İlk sahurdan önce tadım, kuşaktaki kare kodla çekiliş: “30 gün sucuk kazan”.</p>
+      <h3>Çekiliş ve sahur paketi</h3>
+      <p class="ne">Afişteki kare kodla çekiliş: “30 gün sucuk kazan”. Ramazan'a özel sahur paketi.</p>
       <ol class="how">
         <li>Sahur paketinin içeriği ve fiyatı sizden</li>
         <li>Çekiliş için yasal izin alınır</li>
-        <li>7 Şubat akşamı bir market önünde tadım standı</li>
+        <li>Afiş ve Instagram'dan duyurulur</li>
       </ol>
     </div>
     <div class="panel">
@@ -345,7 +416,7 @@ main .wrap{padding-block:16px}
     <ol class="time">
       <li><span class="t">Kasım</span><span>Onay, fiyatların toplanması</span></li>
       <li><span class="t">1–15 Aralık</span><span>Araç ve ekran sözleşmesi</span></li>
-      <li><span class="t">Aralık–Ocak</span><span>Çekim, kuşak, afiş baskısı</span></li>
+      <li><span class="t">Aralık–Ocak</span><span>Çekim, sticker, afiş baskısı</span></li>
       <li><span class="t">25–31 Ocak</span><span>Afişler marketlere</span></li>
       <li class="go"><span class="t">1–15 Şubat</span><span>Kampanya yayında</span></li>
       <li><span class="t">16–20 Şubat</span><span>Sonuç raporu</span></li>
