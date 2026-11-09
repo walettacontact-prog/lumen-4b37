@@ -8,7 +8,6 @@
 <title>Beytuş Burger · 1983'ten beri Adapazarı</title>
 <link rel="preload" href="font/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="font/dmsans-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preload" as="image" href="img/burger-480.webp" imagesrcset="img/burger-480.webp 480w, img/burger-740.webp 740w" imagesizes="(min-width: 900px) 30vw, 64vw">
 <script>document.documentElement.classList.add("js")</script>
 <style>
 /* Yazı tipleri: Fraunces (yumuşak, tombul başlıklar) + DM Sans (metin). Türkçe harfler latin-ext dosyasında. */
@@ -69,49 +68,71 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 .ust nav .yazi:hover { background: rgba(255, 245, 230, .12); }
 .ust .dugme { min-height: 46px; padding: 0 20px; font-size: 15px; }
 
-/* ---------- Giriş ---------- */
-.js .giris-bas, .js .giris-alt, .js .burger-uc { visibility: hidden; }
-.giris { position: relative; overflow: hidden; background: var(--kirmizi); color: var(--krem); isolation: isolate;
-  padding: calc(92px + env(safe-area-inset-top)) var(--kenar) 96px; display: grid; gap: 6px; }
-.isinlar { position: absolute; z-index: -2; left: 50%; top: 50%; width: 260vmax; height: 260vmax; margin: -130vmax 0 0 -130vmax; pointer-events: none;
-  background: repeating-conic-gradient(from 0deg, rgba(255, 245, 230, .07) 0 7deg, transparent 7deg 14deg);
-  -webkit-mask: radial-gradient(closest-side, #000 0, #000 22%, transparent 70%); mask: radial-gradient(closest-side, #000 0, #000 22%, transparent 70%);
-  animation: don 90s linear infinite; }
-@keyframes don { to { transform: rotate(360deg); } }
+/* ---------- Giriş: koyu sahne, burger açık başlar, aşağı kaydırdıkça kapanır (sabit kalan çerçeve) ---------- */
+.js .giris-bas, .js .giris-alt { visibility: hidden; }
+.giris { position: relative; height: 200svh; background: #140b09; color: var(--krem); overflow: clip; }
+.giris-sabit { position: sticky; top: 0; height: 100svh; overflow: hidden; isolation: isolate; display: grid; grid-template-rows: auto minmax(0, 1fr) auto;
+  padding: calc(82px + env(safe-area-inset-top)) var(--kenar) calc(16px + env(safe-area-inset-bottom)); }
+.giris-sabit::before { content: ""; position: absolute; inset: 0; z-index: -2; pointer-events: none;
+  background: radial-gradient(60% 46% at 50% 64%, rgba(232, 112, 44, .5) 0%, rgba(176, 40, 24, .28) 42%, rgba(20, 11, 9, 0) 78%),
+              radial-gradient(120% 90% at 50% 40%, rgba(20, 11, 9, 0) 55%, rgba(0, 0, 0, .55) 100%); }
+.giris-sabit::after { content: ""; position: absolute; inset: -50%; z-index: -1; pointer-events: none; opacity: .09; mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
 .giris .kucuk { color: var(--hardal); }
-.giris h1 { font-size: clamp(64px, 18.5vw, 220px); color: var(--krem); margin-top: 12px; }
+.giris h1 { font-size: clamp(54px, 15vw, 200px); color: var(--krem); margin-top: 10px; }
 .giris h1 .satir { display: block; overflow: hidden; padding: .02em .04em .14em 0; margin-bottom: -.14em; }
 .giris h1 .vurgu { color: var(--hardal); }
 .kelime { display: inline-block; white-space: nowrap; }
 .harf { display: inline-block; will-change: transform; }
-.giris .alt-yazi { max-width: 32ch; font-size: clamp(17px, 1.5vw, 21px); line-height: 1.5; color: #ffe7d6; }
+.giris .alt-yazi { max-width: 32ch; font-size: clamp(17px, 1.5vw, 21px); line-height: 1.5; color: #f1dccb; }
 .giris .alt-yazi b { color: var(--krem); font-weight: 700; }
 .giris .dugmeler { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 24px; }
-
-/* Burgerin sahnesi: arkada çapraz kayan dev yazılar, önde süzülen burger */
-.giris-sahne { position: relative; height: min(112vw, 560px); margin: 0 calc(var(--kenar) * -1); display: grid; place-items: center; }
-.dev-kayan { position: absolute; left: -10%; right: -10%; top: 50%; pointer-events: none; z-index: 0; }
-.dev-kayan .kayan-grup span { font: 900 clamp(84px, 24vw, 230px)/1 var(--baslik); letter-spacing: -.04em; padding-right: .3em; }
-.dev-kayan .yildiz { font-size: .5em; padding-right: .5em; vertical-align: middle; }
-.dev-kayan.d1 { transform: translateY(-78%) rotate(-7deg); color: var(--hardal); }
-.dev-kayan.d2 { transform: translateY(-4%) rotate(5deg); color: transparent; -webkit-text-stroke: 2px rgba(255, 245, 230, .55); }
-.dev-kayan.d2 .yildiz { color: rgba(255, 245, 230, .55); -webkit-text-stroke: 0; }
-.burger-uc { position: relative; z-index: 2; width: min(64vw, 340px); cursor: pointer; }
-.burger-yuz { will-change: transform; transform-origin: 50% 100%; }
-.burger-suz { animation: suz 4.2s ease-in-out infinite; will-change: transform; }
-@keyframes suz { 0%, 100% { transform: translateY(0) rotate(-1.5deg); } 50% { transform: translateY(-14px) rotate(1.5deg); } }
-.burger-uc img { width: 100%; height: auto; filter: drop-shadow(0 26px 22px rgba(34, 20, 18, .45)); -webkit-user-select: none; user-select: none; -webkit-user-drag: none; }
-.burger-golge { position: absolute; left: 12%; right: 12%; bottom: -7%; height: 9%; border-radius: 50%; background: radial-gradient(closest-side, rgba(34, 20, 18, .55), rgba(34, 20, 18, 0)); animation: golge 4.2s ease-in-out infinite; }
-@keyframes golge { 0%, 100% { transform: scaleX(1); opacity: 1; } 50% { transform: scaleX(.84); opacity: .7; } }
-.susam { position: absolute; z-index: 3; left: 50%; top: 14%; width: 9px; height: 15px; margin-left: -4px; border-radius: 50%; background: #fff3d6; border: 1.5px solid #c58a3e; opacity: 0; pointer-events: none; }
-.cikartma { position: absolute; z-index: 4; padding: 10px 16px 12px; border-radius: 16px; border: var(--cizgi); box-shadow: 4px 4px 0 var(--kofte); font: 900 clamp(20px, 5vw, 30px)/1 var(--baslik); letter-spacing: -.02em; white-space: nowrap; }
-.cikartma.c1 { right: calc(var(--kenar) - 6px); top: 10%; background: var(--krem); color: var(--kirmizi); transform: rotate(8deg); }
-.cikartma.c2 { left: calc(var(--kenar) - 6px); bottom: 12%; background: var(--hardal); color: var(--kofte); transform: rotate(-7deg); font-size: clamp(16px, 4vw, 22px); }
+.giris-alt { display: none; }
+.burger-alan { position: relative; min-height: 0; display: flex; align-items: flex-end; justify-content: center; }
+.burger { position: relative; cursor: pointer; -webkit-user-select: none; user-select: none; }
+.burger-kamera { position: absolute; inset: 0; transform-origin: 50% 100%; will-change: transform; }
+.burger-sirt { position: absolute; inset: 0; transform-origin: 50% 100%; will-change: transform; }
+.kat { position: absolute; will-change: transform; }
+.kat img { width: 100%; height: auto; -webkit-user-drag: none; filter: drop-shadow(0 14px 14px rgba(0, 0, 0, .38)); }
+.burger .golge { position: absolute; left: 6%; right: 6%; bottom: -3%; height: 8%; border-radius: 50%; background: radial-gradient(closest-side, rgba(0, 0, 0, .7), rgba(0, 0, 0, 0)); }
+.giris-dip { display: none; align-items: center; justify-content: center; gap: 12px; min-height: 30px; font: 700 12px/1 var(--govde); letter-spacing: .16em; text-transform: uppercase; color: rgba(255, 245, 230, .7); }
+.giris-dip .cizgi { width: 90px; height: 3px; border-radius: 3px; background: rgba(255, 245, 230, .18); overflow: hidden; }
+.giris-dip .cizgi i { display: block; height: 100%; background: var(--hardal); transform-origin: 0 50%; transform: scaleX(0); }
+/* Telefonda tanıtım yazısı ve düğmeler burger kapandıktan sonra gelir */
+.giris-sonra { background: #140b09; color: var(--krem); padding: 8px var(--kenar) 92px; }
+.giris-sonra .alt-yazi { max-width: 32ch; font-size: 18px; line-height: 1.5; color: #f1dccb; }
+.giris-sonra .alt-yazi b { color: var(--krem); }
+.giris-sonra .dugmeler { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 22px; }
 
 /* Sarı eğik şerit */
-.serit { position: relative; z-index: 5; margin: -46px -30px 0; background: var(--hardal); border-block: var(--cizgi); transform: rotate(-2.4deg); padding: 16px 0 14px; box-shadow: 0 6px 0 var(--kofte); }
+.serit { position: relative; z-index: 5; margin: -40px -30px 0; background: var(--hardal); border-block: var(--cizgi); transform: rotate(-2.4deg); padding: 16px 0 14px; box-shadow: 0 6px 0 var(--kofte); }
 .serit .kayan-grup span { font: 850 clamp(24px, 3.6vw, 44px)/1 var(--baslik); letter-spacing: -.02em; padding-right: 24px; }
 .serit .yildiz { color: var(--kirmizi); font-size: .8em; padding-right: 24px; }
+
+/* Mutfak videosu */
+.mutfak { position: relative; background: #140b09; color: var(--krem); padding: clamp(100px, 13vw, 170px) var(--kenar); display: grid; gap: 40px; align-items: center; overflow: hidden; }
+.mutfak .kucuk { color: var(--hardal); }
+.mutfak h2 { font-size: clamp(46px, 11vw, 132px); margin-top: 12px; }
+.mutfak h2 em { font-style: normal; color: var(--hardal); }
+.mutfak p.not { margin-top: 18px; color: #d9c6b3; max-width: 34ch; }
+.video-kart { position: relative; justify-self: center; width: min(78vw, 420px); aspect-ratio: 9 / 16; border-radius: 30px; overflow: hidden; border: 3px solid var(--krem); box-shadow: 10px 10px 0 var(--kirmizi); background: #000; }
+.video-kart video, .video-kart img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.video-kart .etiket { position: absolute; left: 14px; bottom: 14px; z-index: 2; padding: 8px 12px; border-radius: 999px; background: rgba(20, 11, 9, .72); color: var(--krem); font: 700 12px/1 var(--govde); letter-spacing: .12em; text-transform: uppercase; -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); }
+
+/* Karavan */
+.karavan { position: relative; background: #bfe3f7; color: var(--kofte); padding: clamp(100px, 13vw, 160px) 0 clamp(90px, 11vw, 140px); overflow: hidden; }
+.karavan-bas { padding: 0 var(--kenar); display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 18px 40px; }
+.karavan-bas .kucuk { color: var(--kirmizi); }
+.karavan-bas h2 { font-size: clamp(50px, 12vw, 150px); margin-top: 10px; }
+.karavan-bas p { max-width: 30ch; font-size: 18px; }
+.karavan-ray { display: flex; gap: 16px; padding: 44px var(--kenar) 20px; overflow-x: auto; scroll-snap-type: x mandatory; scroll-padding-left: var(--kenar); scrollbar-width: none; overscroll-behavior-x: contain; }
+.karavan-ray::-webkit-scrollbar { display: none; }
+.karavan-ray figure { position: relative; flex: 0 0 min(70vw, 340px); aspect-ratio: 9 / 16; scroll-snap-align: start; border-radius: 26px; overflow: hidden; border: var(--cizgi); box-shadow: 7px 7px 0 var(--kofte); background: #000; }
+.karavan-ray figure video, .karavan-ray figure img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.karavan-ray figcaption { position: absolute; left: 12px; bottom: 12px; padding: 8px 12px; border-radius: 999px; background: var(--krem); border: 2px solid var(--kofte); font: 700 13px/1 var(--govde); }
+.karavan .serit2 { margin-top: 34px; background: var(--kirmizi); color: var(--krem); border-block: var(--cizgi); transform: rotate(1.6deg); padding: 14px 0 12px; }
+.karavan .serit2 .kayan-grup span { font: 850 clamp(24px, 3.4vw, 42px)/1 var(--baslik); letter-spacing: -.02em; padding-right: 22px; }
+.karavan .serit2 .yildiz { color: var(--hardal); padding-right: 22px; font-size: .8em; }
 
 /* Hikâye */
 .hikaye { position: relative; overflow: hidden; background: var(--krem); padding: clamp(110px, 15vw, 190px) var(--kenar) clamp(90px, 12vw, 150px); display: grid; gap: 56px; }
@@ -130,7 +151,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 .etiket-1983 small { display: block; font: 700 11px/1.2 var(--govde); letter-spacing: .14em; text-transform: uppercase; margin-top: 4px; }
 
 /* Çapraz kayan bantlar */
-.capraz { position: relative; height: clamp(170px, 24vw, 280px); background: linear-gradient(var(--krem) 50%, var(--kirmizi) 50%); overflow: hidden; }
+.capraz { position: relative; height: clamp(170px, 24vw, 280px); background: linear-gradient(#140b09 50%, var(--kirmizi) 50%); overflow: hidden; }
 .bant { position: absolute; left: -6%; right: -6%; top: 50%; border-block: var(--cizgi); padding: 14px 0 12px; }
 .bant .kayan-grup span { font: 850 clamp(26px, 4.4vw, 54px)/1 var(--baslik); letter-spacing: -.02em; padding-right: 22px; }
 .bant .yildiz { padding-right: 22px; font-size: .8em; }
@@ -165,14 +186,14 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 .ray-cubuk i { display: block; height: 100%; width: 100%; background: var(--hardal); border-radius: 5px; transform-origin: 0 50%; transform: scaleX(.12); }
 
 /* Kareler: iki sıra kayan fotoğraf */
-.kareler { position: relative; background: var(--krem); padding: clamp(100px, 13vw, 160px) 0 clamp(90px, 11vw, 140px); overflow: hidden; }
+.kareler { position: relative; background: #140b09; color: var(--krem); padding: clamp(100px, 13vw, 160px) 0 clamp(90px, 11vw, 140px); overflow: hidden; }
 .kareler-bas { padding: 0 var(--kenar); display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 18px 40px; }
-.kareler-bas .kucuk { color: var(--kirmizi); }
+.kareler-bas .kucuk { color: var(--hardal); }
 .kareler-bas h2 { font-size: clamp(48px, 11vw, 140px); margin-top: 10px; }
 .foto-kayan { margin-top: 26px; }
 .kareler-bas + .foto-kayan { margin-top: 48px; }
 .foto-kayan .kayan-grup { gap: 16px; padding-right: 16px; }
-.foto-kayan figure { height: clamp(230px, 34vw, 420px); border-radius: 24px; overflow: hidden; border: var(--cizgi); box-shadow: 6px 6px 0 var(--kofte); background: var(--krem-2); }
+.foto-kayan figure { height: clamp(230px, 34vw, 420px); border-radius: 24px; overflow: hidden; border: 3px solid var(--krem); box-shadow: 6px 6px 0 var(--kirmizi); background: var(--krem-2); }
 .foto-kayan figure:nth-child(odd) { transform: rotate(-2deg); }
 .foto-kayan figure:nth-child(even) { transform: rotate(2deg); }
 .foto-kayan img { height: 100%; width: auto; max-width: none; }
@@ -217,17 +238,19 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   body { font-size: 18px; }
   .ust nav .yazi { display: inline-flex; }
   .ust .logo img { height: 58px; }
-  .giris { min-height: 100vh; grid-template-columns: 1fr 1fr; grid-template-rows: auto auto; align-content: center; column-gap: 2vw; padding-top: 120px; padding-bottom: 130px; }
-  .giris-bas { grid-column: 1; grid-row: 1; align-self: end; }
-  .giris-alt { grid-column: 1; grid-row: 2; }
-  .giris h1 { font-size: min(11.5vw, 200px); }
-  .giris-sahne { grid-column: 2; grid-row: 1 / 3; height: min(78vh, 720px); margin: 0; }
-  .giris-sahne { overflow: hidden; border-radius: 40px; }
-  .dev-kayan { left: -10%; right: -10%; }
-  .dev-kayan .kayan-grup span { font-size: min(11vw, 190px); }
-  .burger-uc { width: min(30vw, 420px); }
-  .cikartma.c1 { right: 2%; }
-  .cikartma.c2 { left: 4%; }
+  .giris { height: 230vh; }
+  .giris-sabit { grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); grid-template-rows: 1fr auto; column-gap: 3vw; padding-top: 110px; }
+  .giris-bas { grid-column: 1; grid-row: 1; align-self: center; }
+  .giris-alt { display: block; margin-top: 28px; }
+  .giris h1 { font-size: min(10.5vw, 190px); }
+  .burger-alan { grid-column: 2; grid-row: 1 / 3; }
+  .giris-dip { display: flex; grid-column: 1; justify-content: flex-start; }
+  .giris-sonra { display: none; }
+  .mutfak { grid-template-columns: 1.1fr .9fr; gap: 6vw; }
+  .mutfak h2 { font-size: min(7.6vw, 124px); }
+  .karavan-ray { overflow: visible; scroll-snap-type: none; justify-content: center; }
+  .karavan-ray figure { flex-basis: min(26vw, 380px); }
+  .karavan-ray figure:nth-child(2) { margin-top: 70px; }
   .hizli { display: none; }
   .alt-bilgi { padding-bottom: 40px; }
 
@@ -248,8 +271,9 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 }
 @media (hover: none) { .imlec { display: none !important; } }
 @media (prefers-reduced-motion: reduce) {
-  .isinlar, .burger-suz, .burger-golge { animation: none; }
-  .js .giris-bas, .js .giris-alt, .js .burger-uc { visibility: visible; }
+  .js .giris-bas, .js .giris-alt { visibility: visible; }
+  .giris { height: auto; }
+  .giris-sabit { position: relative; }
 }
 </style>
 </head>
@@ -260,7 +284,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   <a class="logo" href="#" aria-label="Beytuş Burger, başa dön"><img src="img/logo-320.webp" alt="Beytuş Burger" width="320" height="214"></a>
   <nav aria-label="Ana bağlantılar">
     <a class="yazi" href="#hikaye">Hikâyemiz</a>
-    <a class="yazi" href="#kareler">Kareler</a>
+    <a class="yazi" href="#karavan">Karavan</a>
     <a class="yazi" href="#ziyaret">Bizi bulun</a>
     <a class="dugme" href="https://beytus.com.tr/menu">Menü</a>
   </nav>
@@ -268,31 +292,33 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 
 <main>
   <section class="giris" aria-labelledby="giris-baslik">
-    <div class="isinlar" aria-hidden="true"></div>
-    <div class="giris-bas">
-      <p class="kucuk">Adapazarı · 1983'ten beri</p>
-      <h1 class="b" id="giris-baslik"><span class="satir">Kat kat</span><span class="satir vurgu">Beytuş.</span></h1>
-    </div>
-    <div class="giris-sahne">
-      <div class="dev-kayan d1 kayan" data-kayan="-1" data-hiz="70" aria-hidden="true"><div class="kayan-ic"><div class="kayan-grup"><span>Beytuş</span><i class="yildiz">✺</i><span>Burger</span><i class="yildiz">✺</i></div></div></div>
-      <div class="dev-kayan d2 kayan" data-kayan="1" data-hiz="55" aria-hidden="true"><div class="kayan-ic"><div class="kayan-grup"><span>Kat kat</span><i class="yildiz">✺</i><span>Adapazarı</span><i class="yildiz">✺</i></div></div></div>
-      <div class="burger-uc" role="img" aria-label="Cheddarlı, turşulu, karamelize soğanlı burger">
-        <div class="burger-yuz"><div class="burger-suz">
-          <img src="img/burger-480.webp" srcset="img/burger-480.webp 480w, img/burger-740.webp 740w" sizes="(min-width: 900px) 30vw, 64vw" alt="" width="740" height="1011" fetchpriority="high" draggable="false">
-        </div></div>
-        <div class="burger-golge" aria-hidden="true"></div>
+    <div class="giris-sabit">
+      <div class="giris-bas">
+        <p class="kucuk">Adapazarı · 1983'ten beri</p>
+        <h1 class="b" id="giris-baslik"><span class="satir">Kat kat</span><span class="satir vurgu">Beytuş.</span></h1>
+        <div class="giris-alt">
+          <p class="alt-yazi"><b>%100 dana köfte</b>, <b>Beytuş Burger Sos</b> ve sıcak ekmek. Adapazarı'nda, 1983'ten beri.</p>
+          <div class="dugmeler">
+            <a class="dugme" href="https://beytus.com.tr/menu">Menüye bak</a>
+            <a class="dugme krem" href="#ziyaret">Bizi bul</a>
+          </div>
+        </div>
       </div>
-      <div class="cikartma c1" aria-hidden="true">%100 dana!</div>
-      <div class="cikartma c2" aria-hidden="true">1983'ten beri</div>
-    </div>
-    <div class="giris-alt">
-      <p class="alt-yazi"><b>%100 dana köfte</b>, <b>Beytuş Burger Sos</b> ve sıcak ekmek. Adapazarı'nda, 1983'ten beri.</p>
-      <div class="dugmeler">
-        <a class="dugme" href="https://beytus.com.tr/menu">Menüye bak</a>
-        <a class="dugme krem" href="#ziyaret">Bizi bul</a>
+      <div class="burger-alan">
+        <div class="burger" role="img" aria-label="Cheddarlı, turşulu, karamelize soğanlı burger; kaydırdıkça katları kapanır">
+          <div class="burger-kamera"><div class="golge" aria-hidden="true"></div><div class="burger-sirt"></div></div>
+        </div>
       </div>
+      <div class="giris-dip" aria-hidden="true"><span class="dip-yazi">Kaydır</span><span class="cizgi"><i></i></span></div>
     </div>
   </section>
+  <div class="giris-sonra">
+    <p class="alt-yazi"><b>%100 dana köfte</b>, <b>Beytuş Burger Sos</b> ve sıcak ekmek. Adapazarı'nda, 1983'ten beri.</p>
+    <div class="dugmeler">
+      <a class="dugme" href="https://beytus.com.tr/menu">Menüye bak</a>
+      <a class="dugme krem" href="#ziyaret">Bizi bul</a>
+    </div>
+  </div>
 
   <div class="serit kayan" data-kayan="-1" data-hiz="60" aria-hidden="true"><div class="kayan-ic"><div class="kayan-grup">
     <span>%100 dana köfte</span><i class="yildiz">✺</i><span>Beytuş Burger Sos</span><i class="yildiz">✺</i><span>1983'ten beri</span><i class="yildiz">✺</i><span>Adapazarı</span><i class="yildiz">✺</i>
@@ -308,6 +334,18 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
       <div class="cerceve"><img src="img/neon-720.webp" alt="Beytuş Burger neon tabelası" width="720" height="1280" loading="lazy"></div>
       <div class="etiket-1983" aria-hidden="true">1983<small>Adapazarı</small></div>
     </figure>
+  </section>
+
+  <section class="mutfak" aria-labelledby="mutfak-baslik">
+    <div>
+      <p class="kucuk">Beytuş mutfağı</p>
+      <h2 class="b" id="mutfak-baslik">Gerçek burger,<br><em>gerçek lezzet.</em></h2>
+      <p class="not">Izgaradan tezgâha kısa bir an. Beytuş'un Instagram'ından.</p>
+    </div>
+    <div class="video-kart">
+      <video muted loop playsinline preload="none" poster="video/mutfak-kapak.webp" data-oto aria-label="Izgarada köfte, domates ve soğan dilimleme, burgerin hazırlanışı"><source src="video/mutfak.mp4" type="video/mp4"></video>
+      <span class="etiket">@beytusburger</span>
+    </div>
   </section>
 
   <div class="capraz" aria-hidden="true">
@@ -346,6 +384,21 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
       </div>
       <div class="ray-cubuk" aria-hidden="true"><i></i></div>
     </div>
+  </section>
+
+  <section class="acilir karavan" id="karavan" aria-labelledby="karavan-baslik">
+    <div class="karavan-bas">
+      <div><p class="kucuk">Beytuş karavanı</p><h2 class="b" id="karavan-baslik">Yollarda<br>Beytuş.</h2></div>
+      <p>Fuarlarda, festivallerde, yollarda: Beytuş Burger karavanı.</p>
+    </div>
+    <div class="karavan-ray" tabindex="0" aria-label="Beytuş Burger karavanı">
+      <figure><video muted loop playsinline preload="none" poster="video/karavan-kapak.webp" data-oto aria-label="Beytuş Burger karavanı fuar alanının üstünden uçuyor, sonra fuarda burger pişiyor"><source src="video/karavan.mp4" type="video/mp4"></video><figcaption>Tarım fuarında</figcaption></figure>
+      <figure><img src="img/karavan-gece-720.webp" alt="Eskişehir Gastro Fest'te gece, Beytuş Burger karavanı" width="720" height="1280" loading="lazy"><figcaption>Eskişehir Gastro Fest</figcaption></figure>
+      <figure><img src="img/karavan-yol-720.webp" alt="Yolda Beytuş Burger karavanı" width="720" height="1280" loading="lazy"><figcaption>Yolda</figcaption></figure>
+    </div>
+    <div class="serit2 kayan" data-kayan="1" data-hiz="55" aria-hidden="true"><div class="kayan-ic"><div class="kayan-grup">
+      <span>Fuarlarda</span><i class="yildiz">✺</i><span>Festivallerde</span><i class="yildiz">✺</i><span>Yollarda</span><i class="yildiz">✺</i><span>Beytuş Burger</span><i class="yildiz">✺</i>
+    </div></div></div>
   </section>
 
   <section class="acilir kareler" id="kareler" aria-labelledby="kareler-baslik">
