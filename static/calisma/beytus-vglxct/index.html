@@ -38,7 +38,7 @@ a { color: inherit; text-decoration: none; }
 a, button { -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
 button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
 :focus-visible { outline: 3px solid var(--hardal); outline-offset: 3px; border-radius: 8px; }
-.b { font-family: var(--baslik); font-weight: 860; font-optical-sizing: auto; letter-spacing: -.028em; line-height: .96; }
+.b { font-family: var(--baslik); font-weight: 780; font-optical-sizing: auto; letter-spacing: -.012em; line-height: 1.04; }
 .kucuk { font: 700 13px/1.2 var(--govde); letter-spacing: .16em; text-transform: uppercase; }
 
 /* Düğmeler: logodaki gibi kalın çerçeveli çıkartma */
@@ -68,56 +68,49 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 .ust nav .yazi:hover { background: rgba(255, 245, 230, .12); }
 .ust .dugme { min-height: 46px; padding: 0 20px; font-size: 15px; }
 
-/* ---------- Giriş: koyu sahne, burger açık başlar, aşağı kaydırdıkça kapanır (sabit kalan çerçeve) ---------- */
-.js .giris-bas, .js .giris-alt { visibility: hidden; }
-.giris { position: relative; height: 200svh; background: #140b09; color: var(--krem); overflow: clip; }
-.giris-sabit { position: sticky; top: 0; height: 100svh; overflow: hidden; isolation: isolate; display: grid; grid-template-rows: auto minmax(0, 1fr) auto;
-  padding: calc(82px + env(safe-area-inset-top)) var(--kenar) calc(16px + env(safe-area-inset-bottom)); }
-.giris-sabit::before { content: ""; position: absolute; inset: 0; z-index: -2; pointer-events: none;
-  background: radial-gradient(60% 46% at 50% 64%, rgba(232, 112, 44, .5) 0%, rgba(176, 40, 24, .28) 42%, rgba(20, 11, 9, 0) 78%),
-              radial-gradient(120% 90% at 50% 40%, rgba(20, 11, 9, 0) 55%, rgba(0, 0, 0, .55) 100%); }
-.giris-sabit::after { content: ""; position: absolute; inset: -50%; z-index: -1; pointer-events: none; opacity: .09; mix-blend-mode: overlay;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
-.giris .kucuk { color: var(--hardal); }
-.giris h1 { font-size: clamp(54px, 15vw, 200px); color: var(--krem); margin-top: 10px; }
-.giris h1 .satir { display: block; overflow: hidden; padding: .02em .04em .14em 0; margin-bottom: -.14em; }
-.giris h1 .vurgu { color: var(--hardal); }
+/* ---------- Giriş: Instagram hikâyesi gibi slayt — üç gerçek video, üstte dolan çubuklar ---------- */
+.giris { position: relative; height: 100svh; min-height: 560px; background: #0f0807; color: var(--krem); overflow: clip; }
+.giris-cerceve { position: absolute; inset: 0; overflow: hidden; transform-origin: 50% 0; will-change: transform; }
+.slayt { position: absolute; inset: 0; visibility: hidden; }
+.slayt.aktif { visibility: visible; z-index: 2; }
+.slayt.cikiyor { visibility: visible; z-index: 1; }
+.slayt-medya { position: absolute; inset: 0; overflow: hidden; background: #0f0807; }
+.slayt-medya video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; will-change: transform; }
+.slayt-medya::after { content: ""; position: absolute; inset: 0; pointer-events: none;
+  background: linear-gradient(180deg, rgba(15, 8, 7, .55) 0%, rgba(15, 8, 7, 0) 22%, rgba(15, 8, 7, 0) 45%, rgba(15, 8, 7, .78) 76%, rgba(15, 8, 7, .95) 100%); }
+.slayt-yazi { position: absolute; z-index: 3; left: var(--kenar); right: var(--kenar); bottom: calc(128px + env(safe-area-inset-bottom)); }
+.slayt-yazi .kucuk { color: var(--hardal); }
+.slayt-baslik { font-size: clamp(46px, 13.5vw, 170px); color: var(--krem); margin-top: 12px; }
+.slayt-baslik .satir { display: block; overflow: hidden; padding: .04em .06em .16em 0; margin-bottom: -.16em; }
+.slayt-baslik em { font-style: normal; color: var(--hardal); }
 .kelime { display: inline-block; white-space: nowrap; }
 .harf { display: inline-block; will-change: transform; }
-.giris .alt-yazi { max-width: 32ch; font-size: clamp(17px, 1.5vw, 21px); line-height: 1.5; color: #f1dccb; }
-.giris .alt-yazi b { color: var(--krem); font-weight: 700; }
-.giris .dugmeler { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 24px; }
-.giris-alt { display: none; }
-.burger-alan { position: relative; min-height: 0; display: flex; align-items: flex-end; justify-content: center; }
-.burger { position: relative; cursor: pointer; -webkit-user-select: none; user-select: none; }
-.burger-kamera { position: absolute; inset: 0; transform-origin: 50% 100%; will-change: transform; }
-.burger-sirt { position: absolute; inset: 0; transform-origin: 50% 100%; will-change: transform; }
-.kat { position: absolute; will-change: transform; }
-.kat img { width: 100%; height: auto; -webkit-user-drag: none; filter: drop-shadow(0 14px 14px rgba(0, 0, 0, .38)); }
-.burger .golge { position: absolute; left: 6%; right: 6%; bottom: -3%; height: 8%; border-radius: 50%; background: radial-gradient(closest-side, rgba(0, 0, 0, .7), rgba(0, 0, 0, 0)); }
-.giris-dip { display: none; align-items: center; justify-content: center; gap: 12px; min-height: 30px; font: 700 12px/1 var(--govde); letter-spacing: .16em; text-transform: uppercase; color: rgba(255, 245, 230, .7); }
-.giris-dip .cizgi { width: 90px; height: 3px; border-radius: 3px; background: rgba(255, 245, 230, .18); overflow: hidden; }
-.giris-dip .cizgi i { display: block; height: 100%; background: var(--hardal); transform-origin: 0 50%; transform: scaleX(0); }
-/* Telefonda tanıtım yazısı ve düğmeler burger kapandıktan sonra gelir */
-.giris-sonra { background: #140b09; color: var(--krem); padding: 8px var(--kenar) 92px; }
-.giris-sonra .alt-yazi { max-width: 32ch; font-size: 18px; line-height: 1.5; color: #f1dccb; }
-.giris-sonra .alt-yazi b { color: var(--krem); }
-.giris-sonra .dugmeler { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 22px; }
+.slayt-yazi .alt { margin-top: 14px; max-width: 30ch; font-size: clamp(16px, 1.4vw, 20px); line-height: 1.5; color: #f1dccb; }
+.slayt-yazi .alt b { color: var(--krem); }
+.giris-dugmeler { position: absolute; z-index: 5; left: var(--kenar); bottom: calc(58px + env(safe-area-inset-bottom)); display: flex; flex-wrap: wrap; gap: 10px; }
+.giris-dugmeler .dugme { min-height: 50px; padding: 0 22px; }
+.slayt-arka { display: none; }
+/* hikâye çubukları */
+.cubuklar { position: absolute; z-index: 6; left: var(--kenar); right: var(--kenar); top: calc(78px + env(safe-area-inset-top)); display: flex; gap: 6px; }
+.cubuklar button { flex: 1; height: 18px; padding: 7px 0; position: relative; }
+.cubuklar button::before, .cubuklar i { content: ""; position: absolute; left: 0; right: 0; top: 7px; height: 4px; border-radius: 4px; }
+.cubuklar button::before { background: rgba(255, 245, 230, .3); }
+.cubuklar i { background: var(--krem); transform-origin: 0 50%; transform: scaleX(0); }
+/* dokunma bölgeleri: solu önceki, sağı sonraki */
+.dokun-alan { position: absolute; z-index: 4; top: 110px; bottom: 130px; width: 34%; }
+.dokun-alan.sol { left: 0; } .dokun-alan.sag { right: 0; width: 66%; }
+.slayt-ok { display: none; }
+.sayac-slayt { display: none; }
+.giris-not { display: none; position: absolute; z-index: 5; right: var(--kenar); bottom: calc(96px + env(safe-area-inset-bottom)); display: flex; align-items: center; gap: 8px;
+  font: 700 12px/1 var(--govde); letter-spacing: .14em; text-transform: uppercase; color: rgba(255, 245, 230, .75); }
+.giris-not i { width: 22px; height: 34px; border: 2px solid currentColor; border-radius: 12px; position: relative; }
+.giris-not i::after { content: ""; position: absolute; left: 50%; top: 6px; width: 4px; height: 7px; margin-left: -2px; border-radius: 2px; background: currentColor; animation: tekerlek 1.4s ease-in-out infinite; }
+@keyframes tekerlek { 0% { transform: translateY(0); opacity: 1; } 100% { transform: translateY(12px); opacity: 0; } }
 
 /* Sarı eğik şerit */
 .serit { position: relative; z-index: 5; margin: -40px -30px 0; background: var(--hardal); border-block: var(--cizgi); transform: rotate(-2.4deg); padding: 16px 0 14px; box-shadow: 0 6px 0 var(--kofte); }
 .serit .kayan-grup span { font: 850 clamp(24px, 3.6vw, 44px)/1 var(--baslik); letter-spacing: -.02em; padding-right: 24px; }
 .serit .yildiz { color: var(--kirmizi); font-size: .8em; padding-right: 24px; }
-
-/* Mutfak videosu */
-.mutfak { position: relative; background: #140b09; color: var(--krem); padding: clamp(100px, 13vw, 170px) var(--kenar); display: grid; gap: 40px; align-items: center; overflow: hidden; }
-.mutfak .kucuk { color: var(--hardal); }
-.mutfak h2 { font-size: clamp(46px, 11vw, 132px); margin-top: 12px; }
-.mutfak h2 em { font-style: normal; color: var(--hardal); }
-.mutfak p.not { margin-top: 18px; color: #d9c6b3; max-width: 34ch; }
-.video-kart { position: relative; justify-self: center; width: min(78vw, 420px); aspect-ratio: 9 / 16; border-radius: 30px; overflow: hidden; border: 3px solid var(--krem); box-shadow: 10px 10px 0 var(--kirmizi); background: #000; }
-.video-kart video, .video-kart img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
-.video-kart .etiket { position: absolute; left: 14px; bottom: 14px; z-index: 2; padding: 8px 12px; border-radius: 999px; background: rgba(20, 11, 9, .72); color: var(--krem); font: 700 12px/1 var(--govde); letter-spacing: .12em; text-transform: uppercase; -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); }
 
 /* Karavan */
 .karavan { position: relative; background: #bfe3f7; color: var(--kofte); padding: clamp(100px, 13vw, 160px) 0 clamp(90px, 11vw, 140px); overflow: hidden; }
@@ -151,7 +144,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 .etiket-1983 small { display: block; font: 700 11px/1.2 var(--govde); letter-spacing: .14em; text-transform: uppercase; margin-top: 4px; }
 
 /* Çapraz kayan bantlar */
-.capraz { position: relative; height: clamp(170px, 24vw, 280px); background: linear-gradient(#140b09 50%, var(--kirmizi) 50%); overflow: hidden; }
+.capraz { position: relative; height: clamp(170px, 24vw, 280px); background: linear-gradient(var(--krem) 50%, var(--kirmizi) 50%); overflow: hidden; }
 .bant { position: absolute; left: -6%; right: -6%; top: 50%; border-block: var(--cizgi); padding: 14px 0 12px; }
 .bant .kayan-grup span { font: 850 clamp(26px, 4.4vw, 54px)/1 var(--baslik); letter-spacing: -.02em; padding-right: 22px; }
 .bant .yildiz { padding-right: 22px; font-size: .8em; }
@@ -238,16 +231,22 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   body { font-size: 18px; }
   .ust nav .yazi { display: inline-flex; }
   .ust .logo img { height: 58px; }
-  .giris { height: 230vh; }
-  .giris-sabit { grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); grid-template-rows: 1fr auto; column-gap: 3vw; padding-top: 110px; }
-  .giris-bas { grid-column: 1; grid-row: 1; align-self: center; }
-  .giris-alt { display: block; margin-top: 28px; }
-  .giris h1 { font-size: min(10.5vw, 190px); }
-  .burger-alan { grid-column: 2; grid-row: 1 / 3; }
-  .giris-dip { display: flex; grid-column: 1; justify-content: flex-start; }
-  .giris-sonra { display: none; }
-  .mutfak { grid-template-columns: 1.1fr .9fr; gap: 6vw; }
-  .mutfak h2 { font-size: min(7.6vw, 124px); }
+  .giris { min-height: 640px; }
+  /* geniş ekranda dikey video sağda büyük bir kartta, arkada aynı karenin bulanık ışığı */
+  .slayt-medya { left: auto; right: 6vw; top: 104px; bottom: 56px; width: auto; aspect-ratio: 9 / 16; border-radius: 34px; border: 3px solid rgba(255, 245, 230, .9); box-shadow: 16px 16px 0 var(--kirmizi); }
+  .slayt-medya::after { background: linear-gradient(180deg, rgba(15, 8, 7, 0) 70%, rgba(15, 8, 7, .45) 100%); }
+  .slayt-arka { display: block; position: absolute; inset: -10%; background-size: cover; background-position: center; filter: blur(60px) saturate(1.3) brightness(.55); transform: scale(1.1); }
+  .slayt-yazi { left: 6vw; right: auto; width: 46vw; top: 50%; bottom: auto; transform: translateY(-58%); }
+  .slayt-baslik { font-size: min(6.2vw, 116px); }
+  .giris-dugmeler { left: 6vw; bottom: 64px; }
+  .cubuklar { left: 6vw; right: auto; width: 34vw; top: 116px; }
+  .dokun-alan { display: none; }
+  .slayt-ok { display: grid; place-items: center; position: absolute; z-index: 6; bottom: 64px; width: 54px; height: 54px; border-radius: 50%; border: 2px solid rgba(255, 245, 230, .5); color: var(--krem);
+    transition: background .25s, border-color .25s; }
+  .slayt-ok:hover { background: rgba(255, 245, 230, .12); border-color: var(--krem); }
+  .slayt-ok.onceki { left: calc(6vw + 330px); } .slayt-ok.sonraki { left: calc(6vw + 394px); }
+  .slayt-ok svg { width: 22px; height: 22px; }
+  .giris-not { display: none; }
   .karavan-ray { overflow: visible; scroll-snap-type: none; justify-content: center; }
   .karavan-ray figure { flex-basis: min(26vw, 380px); }
   .karavan-ray figure:nth-child(2) { margin-top: 70px; }
@@ -271,9 +270,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 }
 @media (hover: none) { .imlec { display: none !important; } }
 @media (prefers-reduced-motion: reduce) {
-  .js .giris-bas, .js .giris-alt { visibility: visible; }
-  .giris { height: auto; }
-  .giris-sabit { position: relative; }
+  .giris-not i::after { animation: none; }
 }
 </style>
 </head>
@@ -291,34 +288,48 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 </header>
 
 <main>
-  <section class="giris" aria-labelledby="giris-baslik">
-    <div class="giris-sabit">
-      <div class="giris-bas">
-        <p class="kucuk">Adapazarı · 1983'ten beri</p>
-        <h1 class="b" id="giris-baslik"><span class="satir">Kat kat</span><span class="satir vurgu">Beytuş.</span></h1>
-        <div class="giris-alt">
-          <p class="alt-yazi"><b>%100 dana köfte</b>, <b>Beytuş Burger Sos</b> ve sıcak ekmek. Adapazarı'nda, 1983'ten beri.</p>
-          <div class="dugmeler">
-            <a class="dugme" href="https://beytus.com.tr/menu">Menüye bak</a>
-            <a class="dugme krem" href="#ziyaret">Bizi bul</a>
-          </div>
+  <section class="giris" aria-roledescription="slayt" aria-label="Beytuş Burger tanıtım">
+    <div class="giris-cerceve">
+      <div class="slayt aktif" data-sure="8" aria-label="1 / 3">
+        <div class="slayt-arka" style="background-image:url(video/s1-duble-kapak.webp)"></div>
+        <div class="slayt-medya"><video muted playsinline preload="auto" poster="video/s1-duble-kapak.webp" aria-label="Beytuş duble burger havada katlarına ayrılıp logolu ekmeğin üstüne kapanıyor"><source src="video/s1-duble.mp4" type="video/mp4"></video></div>
+        <div class="slayt-yazi">
+          <p class="kucuk">Adapazarı · 1983'ten beri</p>
+          <h1 class="b slayt-baslik"><span class="satir">Kat kat</span><span class="satir"><em>Beytuş.</em></span></h1>
+          <p class="alt"><b>%100 dana köfte</b>, <b>Beytuş Burger Sos</b> ve sıcak ekmek.</p>
         </div>
       </div>
-      <div class="burger-alan">
-        <div class="burger" role="img" aria-label="Cheddarlı, turşulu, karamelize soğanlı burger; kaydırdıkça katları kapanır">
-          <div class="burger-kamera"><div class="golge" aria-hidden="true"></div><div class="burger-sirt"></div></div>
+      <div class="slayt" data-sure="9" aria-label="2 / 3">
+        <div class="slayt-arka" style="background-image:url(video/s2-mutfak-kapak.webp)"></div>
+        <div class="slayt-medya"><video muted playsinline preload="none" poster="video/s2-mutfak-kapak.webp" aria-label="Izgarada köfte, domates ve soğan dilimleme, burgerin hazırlanışı"><source src="video/s2-mutfak.mp4" type="video/mp4"></video></div>
+        <div class="slayt-yazi">
+          <p class="kucuk">Beytuş mutfağı</p>
+          <p class="b slayt-baslik"><span class="satir">Gerçek burger,</span><span class="satir"><em>gerçek lezzet.</em></span></p>
+          <p class="alt">Izgaradan tezgâha. Beytuş'un Instagram'ından.</p>
         </div>
       </div>
-      <div class="giris-dip" aria-hidden="true"><span class="dip-yazi">Kaydır</span><span class="cizgi"><i></i></span></div>
+      <div class="slayt" data-sure="9" aria-label="3 / 3">
+        <div class="slayt-arka" style="background-image:url(video/s3-karavan-kapak.webp)"></div>
+        <div class="slayt-medya"><video muted playsinline preload="none" poster="video/s3-karavan-kapak.webp" aria-label="Beytuş Burger karavanı fuar alanının üstünden uçuyor, sonra fuarda burger pişiyor"><source src="video/s3-karavan.mp4" type="video/mp4"></video></div>
+        <div class="slayt-yazi">
+          <p class="kucuk">Beytuş karavanı</p>
+          <p class="b slayt-baslik"><span class="satir">Yollarda</span><span class="satir"><em>Beytuş.</em></span></p>
+          <p class="alt">Fuarlarda, festivallerde, yollarda.</p>
+        </div>
+      </div>
+      <div class="cubuklar" role="tablist" aria-label="Slaytlar">
+        <button role="tab" aria-label="1. slayt"><i></i></button><button role="tab" aria-label="2. slayt"><i></i></button><button role="tab" aria-label="3. slayt"><i></i></button>
+      </div>
+      <button class="dokun-alan sol" aria-label="Önceki slayt"></button>
+      <button class="dokun-alan sag" aria-label="Sonraki slayt"></button>
+      <button class="slayt-ok onceki" aria-label="Önceki slayt"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button>
+      <button class="slayt-ok sonraki" aria-label="Sonraki slayt"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button>
+      <div class="giris-dugmeler">
+        <a class="dugme" href="https://beytus.com.tr/menu">Menüye bak</a>
+        <a class="dugme krem" href="#ziyaret">Bizi bul</a>
+      </div>
     </div>
   </section>
-  <div class="giris-sonra">
-    <p class="alt-yazi"><b>%100 dana köfte</b>, <b>Beytuş Burger Sos</b> ve sıcak ekmek. Adapazarı'nda, 1983'ten beri.</p>
-    <div class="dugmeler">
-      <a class="dugme" href="https://beytus.com.tr/menu">Menüye bak</a>
-      <a class="dugme krem" href="#ziyaret">Bizi bul</a>
-    </div>
-  </div>
 
   <div class="serit kayan" data-kayan="-1" data-hiz="60" aria-hidden="true"><div class="kayan-ic"><div class="kayan-grup">
     <span>%100 dana köfte</span><i class="yildiz">✺</i><span>Beytuş Burger Sos</span><i class="yildiz">✺</i><span>1983'ten beri</span><i class="yildiz">✺</i><span>Adapazarı</span><i class="yildiz">✺</i>
@@ -334,18 +345,6 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
       <div class="cerceve"><img src="img/neon-720.webp" alt="Beytuş Burger neon tabelası" width="720" height="1280" loading="lazy"></div>
       <div class="etiket-1983" aria-hidden="true">1983<small>Adapazarı</small></div>
     </figure>
-  </section>
-
-  <section class="mutfak" aria-labelledby="mutfak-baslik">
-    <div>
-      <p class="kucuk">Beytuş mutfağı</p>
-      <h2 class="b" id="mutfak-baslik">Gerçek burger,<br><em>gerçek lezzet.</em></h2>
-      <p class="not">Izgaradan tezgâha kısa bir an. Beytuş'un Instagram'ından.</p>
-    </div>
-    <div class="video-kart">
-      <video muted loop playsinline preload="none" poster="video/mutfak-kapak.webp" data-oto aria-label="Izgarada köfte, domates ve soğan dilimleme, burgerin hazırlanışı"><source src="video/mutfak.mp4" type="video/mp4"></video>
-      <span class="etiket">@beytusburger</span>
-    </div>
   </section>
 
   <div class="capraz" aria-hidden="true">
@@ -392,7 +391,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
       <p>Fuarlarda, festivallerde, yollarda: Beytuş Burger karavanı.</p>
     </div>
     <div class="karavan-ray" tabindex="0" aria-label="Beytuş Burger karavanı">
-      <figure><video muted loop playsinline preload="none" poster="video/karavan-kapak.webp" data-oto aria-label="Beytuş Burger karavanı fuar alanının üstünden uçuyor, sonra fuarda burger pişiyor"><source src="video/karavan.mp4" type="video/mp4"></video><figcaption>Tarım fuarında</figcaption></figure>
+      <figure><img src="img/karavan-fuar-720.webp" alt="Beytuş Burger karavanı fuar alanının üstünden uçuyor (Instagram düzenlemesi)" width="720" height="1280" loading="lazy"><figcaption>Tarım fuarında</figcaption></figure>
       <figure><img src="img/karavan-gece-720.webp" alt="Eskişehir Gastro Fest'te gece, Beytuş Burger karavanı" width="720" height="1280" loading="lazy"><figcaption>Eskişehir Gastro Fest</figcaption></figure>
       <figure><img src="img/karavan-yol-720.webp" alt="Yolda Beytuş Burger karavanı" width="720" height="1280" loading="lazy"><figcaption>Yolda</figcaption></figure>
     </div>
