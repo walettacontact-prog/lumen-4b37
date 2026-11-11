@@ -214,8 +214,8 @@
   // ---------- Giriş hareketi ----------
   function girisOyna() {
     var tl = gsap.timeline();
-    tl.fromTo(".ust .logo, .ust nav", { y: -30, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.7, ease: "power3.out", stagger: 0.08 }, 0.1)
-      .fromTo(".vurus.v0 > *", { y: 34, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 1, ease: "expo.out", stagger: 0.08 }, 0.15);
+    // kart yazıları ve burgerin düşüşü burger3d.js'de
+    tl.fromTo(".ust .logo, .ust nav", { y: -30, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.7, ease: "power3.out", stagger: 0.08 }, 0.1);
     return tl;
   }
 

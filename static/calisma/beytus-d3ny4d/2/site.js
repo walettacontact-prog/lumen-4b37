@@ -1,5 +1,5 @@
 // Beytuş Burger deneme sayfası.
-// Giriş: Instagram hikâyesi gibi slayt — Beytuş'un üç gerçek videosu, üstte dolan çubuklar, dokun/kaydır ile geçiş.
+// Giriş: arkada iki dev kayan yazı, ortada Beytuş'un dikey videosu. Sonra kaydırdıkça üst üste binen üç sahne (hikâye, mutfak, karavan).
 // Kayan şeritler kaydırma hızıyla hızlanır, yukarı kaydırınca ters akar. Videolar yalnız ekrandayken oynar.
 // Kütüphaneler: GSAP + ScrollTrigger, Lenis (yalnız fareyle yumuşak kaydırma).
 (function () {
@@ -118,104 +118,36 @@
   }
 
   // =====================================================================
-  // Giriş slaytı: üç video; çubuk dolunca sonrakine geçer. Telefonda solu/sağı dokun, yana kaydır, basılı tut = dur.
+  // Giriş: kaydırınca video kartı döner ve büyür, yazılar yukarı süzülür
   // =====================================================================
-  function slaytKur() {
-    var cerceve = $(".giris-cerceve"), slaytlar = $$(".slayt"), cubuklar = $$(".cubuklar button"), n = slaytlar.length;
-    var videolarS = slaytlar.map(function (sl) { return $("video", sl); });
-    var aktif = 0, dolum = null, kilit = false, durdu = false, ekranda = true;
-    videolarS.forEach(function (v) { if (v) v.loop = true; });
+  function girisKur() {
+    var st = { trigger: ".giris", start: "top top", end: "bottom top", scrub: true };
+    gsap.to(".giris-video", { rotation: 7, scale: 1.08, yPercent: 10, ease: "none", scrollTrigger: st });
+    gsap.fromTo(".giris-yazi, .giris-yan", { yPercent: 0, opacity: 1 }, { yPercent: -30, opacity: 0.2, ease: "none", immediateRender: false, scrollTrigger: st }); // görünürlük girişte açılır
+    gsap.to(".dev-yazilar", { yPercent: -40, ease: "none", scrollTrigger: st });
+  }
 
-    function hazirla(i) { var v = videolarS[i]; if (v && v.preload !== "auto") { v.preload = "auto"; v.load(); } }
-    function oynat(i) { var v = videolarS[i]; if (!v) return; try { v.currentTime = 0; } catch (e) {} var p = v.play(); if (p && p.catch) p.catch(function () {}); }
-    function cubukGuncelle(i) {
-      cubuklar.forEach(function (c, k) { var ic = $("i", c); gsap.killTweensOf(ic); gsap.set(ic, { scaleX: k < i ? 1 : 0 }); c.setAttribute("aria-selected", k === i ? "true" : "false"); });
-    }
-    function baslat(i) {
-      var sure = Number(slaytlar[i].dataset.sure) || 8;
-      if (dolum) dolum.kill();
-      dolum = gsap.fromTo($("i", cubuklar[i]), { scaleX: 0 }, { scaleX: 1, duration: sure, ease: "none", onComplete: function () { git(i + 1, 1); } });
-      if (durdu || !ekranda) dolum.pause();
-      hazirla((i + 1) % n);
-    }
-    function yaziGir(sl) {
-      var tl = gsap.timeline();
-      tl.fromTo($$(".slayt-baslik .harf", sl), { yPercent: 120, rotation: 8 }, { yPercent: 0, rotation: 0, duration: 1, ease: "expo.out", stagger: 0.028 }, 0)
-        .fromTo($$(".slayt-yazi .kucuk, .slayt-yazi .alt", sl), { y: 22, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.8, ease: "power3.out", stagger: 0.08 }, 0.15);
-      return tl;
-    }
-    function yaricap() { return innerWidth >= 900 ? 34 : 0; }
-    function git(i, yon) {
-      i = (i + n) % n;
-      if (i === aktif || kilit) return;
-      kilit = true;
-      var eskiNo = aktif, eski = slaytlar[eskiNo], yeni = slaytlar[i], r = yaricap();
-      yon = yon || (i > eskiNo ? 1 : -1);
-      eski.classList.remove("aktif"); eski.classList.add("cikiyor"); yeni.classList.add("aktif");
-      cubukGuncelle(i); oynat(i);
-      var tl = gsap.timeline({ onComplete: function () {
-        eski.classList.remove("cikiyor"); var v = videolarS[eskiNo]; if (v) v.pause();
-        gsap.set([$(".slayt-medya", eski)].concat($$(".slayt-yazi > *", eski)), { clearProps: "all" });
-        kilit = false;
-      } });
-      // yeni video perde gibi açılır ve yakından uzaklaşır; eskisi geri çekilir
-      tl.fromTo($(".slayt-medya", yeni), { clipPath: yon > 0 ? "inset(100% 0% 0% 0% round " + r + "px)" : "inset(0% 0% 100% 0% round " + r + "px)" },
-          { clipPath: "inset(0% 0% 0% 0% round " + r + "px)", duration: 1, ease: "expo.inOut", clearProps: "clipPath" }, 0)
-        .fromTo($(".slayt-medya video", yeni), { scale: 1.3 }, { scale: 1, duration: 1.7, ease: "expo.out" }, 0.1)
-        .to($(".slayt-medya", eski), { scale: 0.9, autoAlpha: 0.3, duration: 1, ease: "expo.inOut" }, 0)
-        .to($$(".slayt-yazi > *", eski), { y: -36, autoAlpha: 0, duration: 0.45, ease: "power2.in", stagger: 0.04 }, 0)
-        .fromTo($(".slayt-arka", yeni), { autoAlpha: 0 }, { autoAlpha: 1, duration: 1.1 }, 0)
-        .add(yaziGir(yeni), 0.42);
-      aktif = i;
-      baslat(i);
-    }
-    function dur(d) {
-      durdu = d;
-      if (!dolum) return;
-      var v = videolarS[aktif];
-      if (d || !ekranda) { dolum.pause(); if (v) v.pause(); }
-      else { dolum.resume(); if (v) { var p = v.play(); if (p && p.catch) p.catch(function () {}); } }
-    }
-
-    cubuklar.forEach(function (c, k) { c.addEventListener("click", function () { git(k); }); });
-    var ok1 = $(".slayt-ok.onceki"), ok2 = $(".slayt-ok.sonraki");
-    if (ok1) ok1.addEventListener("click", function () { git(aktif - 1, -1); });
-    if (ok2) ok2.addEventListener("click", function () { git(aktif + 1, 1); });
-
-    // Telefonda: dokun (sol/sağ), yana kaydır, basılı tut
-    var basla = null;
-    $$(".dokun-alan").forEach(function (b) {
-      b.style.touchAction = "pan-y";
-      b.addEventListener("pointerdown", function (e) { basla = { x: e.clientX, y: e.clientY, t: Date.now(), sol: b.classList.contains("sol") }; dur(true); });
-      b.addEventListener("pointercancel", function () { basla = null; dur(false); });
-      b.addEventListener("pointerup", function (e) {
-        if (!basla) return;
-        var dx = e.clientX - basla.x, dy = e.clientY - basla.y, sure = Date.now() - basla.t, sol = basla.sol;
-        basla = null; dur(false);
-        if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy)) git(aktif + (dx < 0 ? 1 : -1), dx < 0 ? 1 : -1);
-        else if (sure < 280 && Math.abs(dx) < 10) git(aktif + (sol ? -1 : 1), sol ? -1 : 1);
-      });
+  // =====================================================================
+  // Sahneler: her sahne yapışık; bir sonraki gelirken önceki küçülür ve kararır, videosu durur
+  // =====================================================================
+  function sahnelerKur() {
+    var kap = $(".sahneler"), sahneler = $$(".sahne");
+    if (!kap) return;
+    sahneler.forEach(function (s, i) {
+      var h = function () { return s.offsetHeight; };
+      // sahne ekrana gelirken medya eğik girip düzelir (yapışık olduğu için kutu üzerinden ölçülür)
+      gsap.fromTo($(".sahne-medya", s), { rotation: i % 2 ? -9 : 9, yPercent: 18, scale: 0.86 }, { rotation: i % 2 ? 2 : -2, yPercent: 0, scale: 1, ease: "none",
+        scrollTrigger: { trigger: kap, start: function () { return "top+=" + ((i - 1) * h()) + " top"; }, end: function () { return "top+=" + (i * h()) + " top"; }, scrub: true, invalidateOnRefresh: true } });
+      gsap.fromTo($$(".sahne-yazi > *", s), { y: 50, autoAlpha: 0 }, { y: 0, autoAlpha: 1, ease: "none", stagger: 0.08,
+        scrollTrigger: { trigger: kap, start: function () { return "top+=" + ((i - 0.55) * h()) + " top"; }, end: function () { return "top+=" + ((i - 0.05) * h()) + " top"; }, scrub: true, invalidateOnRefresh: true } });
+      if (i === sahneler.length - 1) return;
+      var ic = $(".sahne-ic", s), kar = $(".karart", s), v = $("video", s);
+      gsap.timeline({ scrollTrigger: { trigger: kap, start: function () { return "top+=" + (i * h()) + " top"; }, end: function () { return "top+=" + ((i + 1) * h()) + " top"; }, scrub: true, invalidateOnRefresh: true,
+          onLeave: function () { if (v) v.pause(); },
+          onEnterBack: function () { if (v) { var p = v.play(); if (p && p.catch) p.catch(function () {}); } } } })
+        .to(ic, { scale: 0.88, yPercent: 3, ease: "none" }, 0)
+        .to(kar, { opacity: 0.7, ease: "none" }, 0);
     });
-    // Ekrandan çıkınca ya da sekme gizlenince durur
-    if ("IntersectionObserver" in window) new IntersectionObserver(function (g) { ekranda = g[0].isIntersecting; dur(durdu); }, { threshold: 0.15 }).observe(cerceve);
-    document.addEventListener("visibilitychange", function () { ekranda = !document.hidden; dur(durdu); });
-
-    // Kaydırınca giriş, kart gibi küçülüp geri çekilir
-    gsap.fromTo(cerceve, { scale: 1, borderRadius: 0 }, { scale: 0.88, borderRadius: 40, yPercent: 8, ease: "none",
-      scrollTrigger: { trigger: ".giris", start: "top top", end: "bottom top", scrub: true } });
-
-    return {
-      ilk: function () {
-        var r = yaricap();
-        cubukGuncelle(0); oynat(0);
-        var tl = yaziGir(slaytlar[0]);
-        tl.fromTo($(".slayt-medya", slaytlar[0]), { clipPath: "inset(100% 0% 0% 0% round " + r + "px)" },
-            { clipPath: "inset(0% 0% 0% 0% round " + r + "px)", duration: 1.2, ease: "expo.inOut", clearProps: "clipPath" }, 0)
-          .fromTo($(".slayt-medya video", slaytlar[0]), { scale: 1.35 }, { scale: 1, duration: 1.9, ease: "expo.out" }, 0.1);
-        baslat(0);
-        return tl;
-      }
-    };
   }
 
   // =====================================================================
@@ -239,14 +171,6 @@
         yPercent: 0, rotation: 0, duration: 1, ease: "expo.out", stagger: 0.045, scrollTrigger: { trigger: el, start: "top 85%" }
       });
     });
-    gsap.from(".hikaye-not, .hikaye .kucuk", { y: 30, autoAlpha: 0, duration: 0.9, ease: "power3.out", stagger: 0.1, scrollTrigger: { trigger: ".hikaye", start: "top 70%" } });
-    gsap.fromTo(".hikaye .cerceve", { rotation: 12, yPercent: 10 }, { rotation: -3, yPercent: -6, ease: "none", scrollTrigger: { trigger: ".hikaye", start: "top bottom", end: "bottom top", scrub: true } });
-    gsap.fromTo(".hikaye figure img", { yPercent: -10 }, { yPercent: 0, ease: "none", scrollTrigger: { trigger: ".hikaye", start: "top bottom", end: "bottom top", scrub: true } });
-    gsap.from(".etiket-1983", { scale: 0, rotation: -60, duration: 0.9, ease: "back.out(2.2)", scrollTrigger: { trigger: ".hikaye figure", start: "top 75%" } });
-
-    // Karavan kartları: yelpaze gibi açılır
-    gsap.from(".karavan-ray figure", { y: 90, rotation: function (k) { return (k - 1) * 9; }, autoAlpha: 0, duration: 1.1, ease: "expo.out", stagger: 0.1, scrollTrigger: { trigger: ".karavan-ray", start: "top 85%" } });
-
     // Menü: masaüstünde kaydırınca kartlar yana akar; telefonda parmakla kaydırılır, ortadaki kart öne çıkar
     var ray = $(".ray"), rayCubuk = $(".ray-cubuk i");
     var mm = gsap.matchMedia();
@@ -308,20 +232,22 @@
   }
 
   // ---------- Giriş hareketi ----------
-  function girisOyna(slayt) {
+  function girisOyna() {
     var tl = gsap.timeline();
-    tl.add(slayt.ilk(), 0)
+    tl.set(".giris-video, .dev-yazilar, .giris-yazi, .giris-yan", { visibility: "visible" }, 0)
+      .fromTo(".dev-yazilar .d1", { xPercent: 40, autoAlpha: 0 }, { xPercent: 0, autoAlpha: 1, duration: 1.6, ease: "expo.out" }, 0)
+      .fromTo(".dev-yazilar .d2", { xPercent: -40, autoAlpha: 0 }, { xPercent: 0, autoAlpha: 1, duration: 1.6, ease: "expo.out" }, 0.08)
+      .fromTo(".video-ic", { yPercent: 60, rotation: 12, scale: 0.7, autoAlpha: 0 }, { yPercent: 0, rotation: -3, scale: 1, autoAlpha: 1, duration: 1.4, ease: "expo.out" }, 0.15)
+      .fromTo(".giris h1 .harf", { yPercent: 118, rotation: 8 }, { yPercent: 0, rotation: 0, duration: 1, ease: "expo.out", stagger: 0.03 }, 0.4)
+      .fromTo(".giris .kucuk, .giris-yan .alt, .giris-yan .dugmeler > *", { y: 24, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.8, ease: "power3.out", stagger: 0.07 }, 0.55)
       .fromTo(".ust .logo, .ust nav", { y: -30, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.7, ease: "power3.out", stagger: 0.08 }, 0.2)
-      .fromTo(".cubuklar", { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.6 }, 0.5)
-      .fromTo(".giris-dugmeler > *", { y: 24, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.8, ease: "power3.out", stagger: 0.07 }, 0.6)
-      .fromTo(".slayt-ok", { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.6 }, 1.2)
-      .fromTo(".serit", { yPercent: 160 }, { yPercent: 0, duration: 1, ease: "expo.out" }, 0.6);
+      .fromTo(".serit", { yPercent: 160 }, { yPercent: 0, duration: 1, ease: "expo.out" }, 0.7);
     return tl;
   }
 
   // ---------- Kurulum ----------
   function kur() {
-    $$(".slayt-baslik").forEach(function (b) {
+    $$(".giris h1").forEach(function (b) {
       b.setAttribute("aria-label", b.textContent.replace(/\s+/g, " ").trim());
       $$(".satir", b).forEach(function (st) { harfle($("em", st) || st); });
     });
@@ -342,14 +268,15 @@
       });
     });
 
-    var slayt = slaytKur();
     if (!azHareket) {
       $$("[data-kayan]").forEach(seritKur);
       seritHizlari();
+      girisKur();
+      sahnelerKur();
       digerleri();
     }
-    if (azHareket || test) { slayt.ilk().progress(1); }
-    else enGec(400, fontlar).then(function () { girisOyna(slayt); });
+    if (azHareket || test) gsap.set(".giris-video, .dev-yazilar, .giris-yazi, .giris-yan", { visibility: "visible" });
+    else enGec(400, fontlar).then(girisOyna);
     fontlar.then(function () { ScrollTrigger.refresh(); });
 
     if (test) {

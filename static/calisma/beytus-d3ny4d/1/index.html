@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#c8261d">
+<meta name="theme-color" content="#ffc43d">
 <meta name="robots" content="noindex">
 <title>Beytuş Burger · 1983'ten beri Adapazarı</title>
 <link rel="preload" href="../ortak/font/unbounded-latin.woff2" as="font" type="font/woff2" crossorigin>
@@ -74,16 +74,22 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 .ust .dugme { min-height: 46px; padding: 0 20px; font-size: 15px; }
 
 /* ---------- Giriş: 3B burger sahnesi — kaydırdıkça dağılır, havada dizilir, yeniden birleşir ---------- */
-.sahne3d { position: relative; height: 470svh; background: var(--krem); }
-.sahne3d-sabit { position: sticky; top: 0; height: 100svh; overflow: hidden; isolation: isolate; }
+.sahne3d { position: relative; height: 480svh; background: var(--hardal); }
+/* stüdyo zemini: renk kaydırdıkça bölüme göre değişir (burger3d.js --zemin ve --zemin-2 verir) */
+.sahne3d-sabit { position: sticky; top: 0; height: 100svh; overflow: hidden; isolation: isolate;
+  background: radial-gradient(85% 62% at 50% 34%, var(--zemin-2, #ffe08f) 0%, var(--zemin, #ffc43d) 70%); }
 .sahne3d-sabit::before { content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
-  background: radial-gradient(70% 52% at 50% 40%, #fff9ef 0%, rgba(255, 249, 239, 0) 60%), radial-gradient(120% 100% at 50% 50%, rgba(245, 227, 198, 0) 55%, #f1dcbc 100%); }
+  background: radial-gradient(130% 110% at 50% 40%, rgba(90, 35, 0, 0) 55%, rgba(90, 35, 0, .16) 100%); }
+.sahne3d-sabit::after { content: ""; position: absolute; inset: 0; z-index: 2; pointer-events: none; opacity: .05; mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
 .sahne3d canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; opacity: 0; transition: opacity .8s ease; }
 .sahne3d.hazir canvas { opacity: 1; }
 .sahne3d .yedek-gorsel { display: none; }
 .sahne3d.yedek .yedek-gorsel { display: block; position: absolute; left: 50%; top: 14%; width: min(80vw, 520px); transform: translateX(-50%); border-radius: 28px; border: var(--cizgi); }
-.vurus { position: absolute; z-index: 3; left: 12px; right: 12px; bottom: calc(14px + env(safe-area-inset-bottom)); padding: 20px 20px 22px; border-radius: 26px;
-  background: rgba(255, 245, 230, .86); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); box-shadow: 0 10px 30px rgba(34, 20, 18, .1); border: 1px solid rgba(34, 20, 18, .08); visibility: hidden; will-change: transform, opacity; }
+.vurus { position: absolute; z-index: 3; left: 12px; right: 12px; bottom: calc(14px + env(safe-area-inset-bottom)); padding: 18px 20px 20px; border-radius: 24px;
+  background: var(--krem); border: var(--cizgi); box-shadow: 5px 5px 0 var(--kofte); visibility: hidden; }
+.vurus .satir { display: block; overflow: hidden; padding: .02em .04em .1em 0; margin-bottom: -.1em; }
+.vurus .satir > span { display: inline-block; will-change: transform; }
 .vurus .no { font: 700 12px/1 var(--govde); letter-spacing: .18em; color: var(--kirmizi); margin-bottom: 10px; }
 .vurus h2, .vurus h1 { font-size: clamp(26px, 7.4vw, 72px); }
 .vurus h1 { font-size: clamp(38px, 11.5vw, 120px); }
@@ -94,8 +100,9 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 .vurus .dugmeler { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
 .vurus .dugme { min-height: 50px; padding: 0 22px; }
 .vurus.v0 { visibility: visible; }
-.sahne3d .ilerle { position: absolute; z-index: 4; left: 50%; top: calc(76px + env(safe-area-inset-top)); width: 96px; height: 4px; margin-left: -48px; border-radius: 4px; background: rgba(34, 20, 18, .12); overflow: hidden; }
-.sahne3d .ilerle i { display: block; height: 100%; background: var(--kirmizi); transform-origin: 0 50%; transform: scaleX(0); }
+.sahne3d .ilerle { position: absolute; z-index: 4; left: 50%; top: calc(80px + env(safe-area-inset-top)); width: 96px; height: 5px; margin-left: -48px; border-radius: 5px; background: rgba(34, 20, 18, .14); overflow: hidden; }
+.sahne3d .ilerle i { display: block; height: 100%; background: var(--kofte); transform-origin: 0 50%; transform: scaleX(0); }
+@media (max-width: 899px) { .sahne3d .ilerle { display: none; } } /* telefonda kartlardaki 01 / 04 yeterli */
 
 /* Mutfak videosu */
 .mutfak { position: relative; background: #140b09; color: var(--krem); padding: clamp(100px, 13vw, 170px) var(--kenar); display: grid; gap: 40px; align-items: center; overflow: hidden; }
@@ -231,9 +238,10 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   body { font-size: 18px; }
   .ust nav .yazi { display: inline-flex; }
   .ust .logo img { height: 58px; }
-  .sahne3d { height: 540vh; }
+  .sahne3d { height: 560vh; }
+  .sahne3d-sabit { background: radial-gradient(70% 80% at 64% 46%, var(--zemin-2, #ffe08f) 0%, var(--zemin, #ffc43d) 72%); }
   .vurus { left: 6vw; right: auto; top: 0; bottom: 0; width: min(40vw, 600px); padding: 0; border: 0; border-radius: 0; background: none; box-shadow: none;
-    -webkit-backdrop-filter: none; backdrop-filter: none; display: flex; flex-direction: column; justify-content: center; }
+    display: flex; flex-direction: column; justify-content: center; }
   .vurus h2 { font-size: min(4.8vw, 84px); }
   .vurus h1 { font-size: min(7.2vw, 124px); }
   .vurus p { font-size: 19px; }
@@ -287,15 +295,15 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
       <div class="ilerle" aria-hidden="true"><i></i></div>
       <div class="vurus v0" data-bas="0" data-son="0.085">
         <p class="kucuk">Adapazarı · 1983'ten beri</p>
-        <h1 class="b">Kat kat<br><em>Beytuş.</em></h1>
+        <h1 class="b"><span class="satir"><span>Kat kat</span></span><span class="satir"><span><em>Beytuş.</em></span></span></h1>
         <p><b>%100 dana köfte</b>, <b>Beytuş Burger Sos</b> ve sıcak ekmek.</p>
         <div class="dugmeler"><a class="dugme" href="https://beytus.com.tr/menu">Menüye bak</a><a class="dugme krem" href="#ziyaret">Bizi bul</a></div>
       </div>
-      <div class="vurus" data-bas="0.13" data-son="0.28"><p class="no">01 / 04</p><h2 class="b">Önce<br><em>katlar.</em></h2><p>Ekmek, sos, marul, domates, köfte, cheddar, soğan, turşu.</p></div>
-      <div class="vurus" data-bas="0.33" data-son="0.47"><p class="no">02 / 04</p><h2 class="b">İki kat<br><em>sulu köfte.</em></h2><p>%100 dana, üstünde eriyen cheddar.</p></div>
-      <div class="vurus" data-bas="0.51" data-son="0.66"><p class="no">03 / 04</p><h2 class="b">Taptaze<br><em>yeşillikler.</em></h2><p>Marul, domates, turşu ve karamelize soğan.</p></div>
-      <div class="vurus" data-bas="0.71" data-son="0.84"><p class="no">04 / 04</p><h2 class="b">Beytuş<br><em>Burger Sos.</em></h2><p>Ve hepsi bir araya gelince…</p></div>
-      <div class="vurus son" data-bas="0.9" data-son="1"><h2 class="b">Tamam,<br><em>işte bu.</em></h2><div class="dugmeler"><a class="dugme kirmizi" href="https://beytus.com.tr/menu">Menüye bak</a></div></div>
+      <div class="vurus" data-bas="0.12" data-son="0.25"><p class="no">01 / 04</p><h2 class="b"><span class="satir"><span>Önce</span></span><span class="satir"><span><em>katlar.</em></span></span></h2><p>Ekmek, marul, domates, iki köfte, cheddar, karamelize soğan, turşu ve sos.</p></div>
+      <div class="vurus" data-bas="0.3" data-son="0.44"><p class="no">02 / 04</p><h2 class="b"><span class="satir"><span>İki kat</span></span><span class="satir"><span><em>sulu köfte.</em></span></span></h2><p>%100 dana, üstünde eriyen cheddar.</p></div>
+      <div class="vurus" data-bas="0.5" data-son="0.61"><p class="no">03 / 04</p><h2 class="b"><span class="satir"><span>Taptaze</span></span><span class="satir"><span><em>yeşillikler.</em></span></span></h2><p>Marul, domates, turşu ve karamelize soğan.</p></div>
+      <div class="vurus" data-bas="0.66" data-son="0.76"><p class="no">04 / 04</p><h2 class="b"><span class="satir"><span>Beytuş</span></span><span class="satir"><span><em>Burger Sos.</em></span></span></h2><p>Ve hepsi bir araya gelince…</p></div>
+      <div class="vurus son" data-bas="0.89" data-son="1"><h2 class="b"><span class="satir"><span>Tamam,</span></span><span class="satir"><span><em>işte bu.</em></span></span></h2><div class="dugmeler"><a class="dugme kirmizi" href="https://beytus.com.tr/menu">Menüye bak</a></div></div>
     </div>
   </section>
 
