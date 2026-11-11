@@ -1,7 +1,7 @@
 // Beytuş 3B burger: koddan modellenmiş katlar (Three.js), kaydırdıkça dağılır, havada dizilir ve yeniden birleşir.
 // Sahne: .sahne3d (uzun bölüm) içinde .sahne3d-sabit (ekrana yapışık). Kaydırma ilerlemesi 0→1 yumuşak takip edilir.
 import * as THREE from "three";
-import { RoomEnvironment } from "./lib3/RoomEnvironment.js";
+import { RoomEnvironment } from "../ortak/lib3/RoomEnvironment.js";
 
 const bolum = document.querySelector(".sahne3d");
 const tuval = document.querySelector(".sahne3d canvas");
@@ -266,7 +266,7 @@ function kur() {
   const golge = new THREE.Mesh(new THREE.PlaneGeometry(9, 9).rotateX(-Math.PI / 2), new THREE.ShadowMaterial({ opacity: 0.2 }));
   golge.receiveShadow = true; kok.add(golge);
 
-  const logoDoku = new THREE.TextureLoader().load("img/logo-320.webp", (t) => { t.colorSpace = THREE.SRGBColorSpace; });
+  const logoDoku = new THREE.TextureLoader().load("../ortak/img/logo-320.webp", (t) => { t.colorSpace = THREE.SRGBColorSpace; });
   // alttan üste: alt ekmek (üstünde Beytuş sos), marul, domates, köfte, cheddar, köfte, cheddar, soğan, turşu, üst ekmek
   const tanim = [altEkmek(), marul(), domates(), kofte(1), cheddar(0.3), kofte(7), cheddar(1.1), sogan(), tursu(), ustEkmek(logoDoku)];
   const bas = [0, 0.03, 0.02, 0.0, 0.0, 0.06, 0.0, 0.035, 0.03, 0.03]; // altındakine gömülme
