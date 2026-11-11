@@ -209,6 +209,16 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 .ray-cubuk { margin: 6px var(--kenar) 0; height: 5px; border-radius: 5px; background: rgba(255, 245, 230, .2); overflow: hidden; }
 .ray-cubuk i { display: block; height: 100%; width: 100%; background: var(--hardal); border-radius: 5px; transform-origin: 0 50%; transform: scaleX(.12); }
 
+/* Burgerler: aşağı kaydırdıkça kartlar yana akar (telefonda da). Bölüm yapışık, uzunluğu JS ile kart dizisi kadar (--yol). */
+.menu { overflow: clip; }
+.menu.akar { height: calc(100svh + var(--yol, 0px)); }
+.menu.akar .menu-ic { position: sticky; top: 0; height: 100svh; min-height: 0; display: flex; flex-direction: column; justify-content: center;
+  padding: calc(64px + env(safe-area-inset-top)) 0 calc(20px + env(safe-area-inset-bottom)); overflow: clip; }
+.menu.akar .ray { overflow: visible; scroll-snap-type: none; width: max-content; padding-top: 26px; padding-bottom: 16px; will-change: transform; }
+.menu.akar .kart { flex-basis: min(74vw, 340px); }
+@media (max-width: 899px) { .menu.akar .kart-foto { aspect-ratio: 16 / 11; } .menu.akar .kart p { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; } }
+@media (max-height: 720px) and (max-width: 899px) { .menu.akar .menu-bas p { display: none; } .menu.akar .kart-foto { aspect-ratio: 16 / 10; } }
+
 /* Kareler: iki sıra kayan fotoğraf */
 .kareler { position: relative; background: #140b09; color: var(--krem); padding: clamp(100px, 13vw, 160px) 0 clamp(90px, 11vw, 140px); overflow: hidden; }
 .kareler-bas { padding: 0 var(--kenar); display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 18px 40px; }
@@ -294,6 +304,8 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   .ray { overflow: visible; scroll-snap-type: none; width: max-content; padding-top: 40px; padding-bottom: 20px; }
   .kart { flex-basis: 360px; }
   .kart-son { flex-basis: 300px; }
+  .menu.akar .menu-ic { padding: 96px 0 40px; }
+  .menu.akar .kart { flex-basis: 360px; }
   .ray-cubuk { display: none; }
 
   .imlec { display: block; position: fixed; z-index: 90; left: 0; top: 0; width: 14px; height: 14px; margin: -7px 0 0 -7px; border-radius: 50%; background: var(--kofte);
@@ -305,9 +317,8 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 /* ===== Sinema teması: gece, film dokusu, sarı vurgu ===== */
 html { background: #0b0605; }
 body { background: #0b0605; color: var(--krem); }
-body::after { content: ""; position: fixed; inset: -50%; z-index: 80; pointer-events: none; opacity: .06; mix-blend-mode: overlay;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
-.ust.dolu { background: rgba(11, 6, 5, .88); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); box-shadow: 0 1px 0 rgba(255, 245, 230, .1); }
+/* film dokusu katmanı kaldırıldı: tüm ekranı her karede karıştırıp telefonu yavaşlatıyordu */
+.ust.dolu { background: rgba(11, 6, 5, .96); box-shadow: 0 1px 0 rgba(255, 245, 230, .1); }
 .dugme { box-shadow: 4px 4px 0 var(--kirmizi); border-color: var(--hardal); }
 .dugme.krem { background: transparent; color: var(--krem); border-color: rgba(255, 245, 230, .8); box-shadow: none; }
 .dugme.kirmizi { background: var(--kirmizi); color: var(--krem); border-color: var(--kirmizi); box-shadow: 4px 4px 0 #000; }
@@ -332,7 +343,7 @@ body::after { content: ""; position: fixed; inset: -50%; z-index: 80; pointer-ev
 .karavan { background: #0b0605; color: var(--krem); }
 .karavan-bas p { color: #cdb9a6; }
 .karavan-ray figure { border: 1px solid rgba(255, 245, 230, .15); box-shadow: 0 30px 70px rgba(0, 0, 0, .6); }
-.karavan-ray figcaption { background: rgba(11, 6, 5, .75); color: var(--krem); border: 1px solid rgba(255, 245, 230, .3); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); }
+.karavan-ray figcaption { background: rgba(11, 6, 5, .75); color: var(--krem); border: 1px solid rgba(255, 245, 230, .3); }
 .karavan .serit2 { background: var(--hardal); color: #0b0605; border-color: #000; }
 .karavan .serit2 .yildiz { color: var(--kirmizi); }
 .kareler { background: #120a08; }
@@ -341,7 +352,7 @@ body::after { content: ""; position: fixed; inset: -50%; z-index: 80; pointer-ev
 .ziyaret .tel { color: var(--hardal); }
 .ziyaret .dev-logo { opacity: .07; }
 .alt-bilgi { background: #060303; }
-.hizli { background: rgba(11, 6, 5, .9); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); }
+.hizli { background: #140b09; }
 
 @media (prefers-reduced-motion: reduce) {
   .js .giris-video, .js .dev-yazilar, .js .giris-yazi, .js .giris-yan { visibility: visible; }

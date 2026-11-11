@@ -39,8 +39,26 @@
         if (g.isIntersecting) { if (v.preload !== "auto") { v.preload = "auto"; v.load(); } var p = v.play(); if (p && p.catch) p.catch(function () {}); }
         else v.pause();
       });
-    }, { threshold: 0.25 });
+    }, { threshold: 0.15 });
     vs.forEach(function (v) { io.observe(v); });
+    // ekrana gelmeden bir buçuk ekran önce yüklemeye başla: sahneye gelince hemen oynasın
+    var yukle = new IntersectionObserver(function (gs) {
+      gs.forEach(function (g) { if (!g.isIntersecting) return; var v = g.target; yukle.unobserve(v); if (v.preload !== "auto") { v.preload = "auto"; v.load(); } });
+    }, { rootMargin: "0px 0px 150% 0px" });
+    vs.forEach(function (v) { yukle.observe(v); });
+    // sayfa yüklenince kalan videoları arka planda sırayla indir (biri bitince öteki): kaydırınca beklemeden oynasın
+    function sirayla() {
+      var kalan = vs.filter(function (v) { return v.preload !== "auto"; });
+      (function sonraki() {
+        var v = kalan.shift(); if (!v) return;
+        if (v.preload === "auto") return sonraki();
+        v.preload = "auto"; v.load();
+        var bitti = false, devam = function () { if (!bitti) { bitti = true; setTimeout(sonraki, 150); } };
+        v.addEventListener("canplaythrough", devam, { once: true }); setTimeout(devam, 6000);
+      })();
+    }
+    var basla = function () { setTimeout(sirayla, 900); };
+    if (document.readyState === "complete") basla(); else window.addEventListener("load", basla);
   }
   videolar();
 
@@ -171,37 +189,25 @@
         yPercent: 0, rotation: 0, duration: 1, ease: "expo.out", stagger: 0.045, scrollTrigger: { trigger: el, start: "top 85%" }
       });
     });
-    // Menü: masaüstünde kaydırınca kartlar yana akar; telefonda parmakla kaydırılır, ortadaki kart öne çıkar
-    var ray = $(".ray"), rayCubuk = $(".ray-cubuk i");
-    var mm = gsap.matchMedia();
-    mm.add("(min-width: 900px)", function () {
+    // Menü: aşağı kaydırdıkça kartlar yana akar (telefonda da); bölüm yapışık kalır, alttaki çubuk ilerlemeyi gösterir
+    var menu = $(".menu"), ray = $(".ray"), rayCubuk = $(".ray-cubuk i");
+    if (menu && ray) {
+      menu.classList.add("akar");
       var mesafe = function () { return Math.max(0, ray.scrollWidth - innerWidth); };
-      var tw = gsap.to(ray, {
+      var yolAyarla = function () { menu.style.setProperty("--yol", Math.round(mesafe() * (innerWidth < 900 ? 0.85 : 1)) + "px"); };
+      yolAyarla();
+      ScrollTrigger.addEventListener("refreshInit", yolAyarla);
+      gsap.to(ray, {
         x: function () { return -mesafe(); }, ease: "none",
-        scrollTrigger: { trigger: ".menu", start: "top top", end: function () { return "+=" + mesafe(); }, pin: true, scrub: 0.6, invalidateOnRefresh: true,
-          onUpdate: function (st) { gsap.to(ray, { skewX: gsap.utils.clamp(-7, 7, st.getVelocity() / -280), duration: 0.35, overwrite: "auto" }); },
+        scrollTrigger: { trigger: menu, start: "top top", end: "bottom bottom", scrub: innerWidth < 900 ? 0.25 : 0.6, invalidateOnRefresh: true,
+          onUpdate: function (st) {
+            if (rayCubuk) rayCubuk.style.transform = "scaleX(" + Math.max(0.08, st.progress).toFixed(3) + ")";
+            gsap.to(ray, { skewX: gsap.utils.clamp(-6, 6, st.getVelocity() / -300), duration: 0.35, overwrite: "auto" });
+          },
           onScrubComplete: function () { gsap.to(ray, { skewX: 0, duration: 0.6, ease: "power3.out" }); } }
       });
-      return function () { tw.kill(); gsap.set(ray, { clearProps: "transform" }); };
-    });
-    mm.add("(max-width: 899px)", function () {
-      var kartlar = $$(".kart, .kart-son", ray), bekliyor = false;
-      function ciz() {
-        bekliyor = false;
-        var orta = innerWidth / 2, maks = Math.max(1, ray.scrollWidth - ray.clientWidth);
-        rayCubuk.style.transform = "scaleX(" + Math.max(0.12, ray.scrollLeft / maks).toFixed(3) + ")";
-        kartlar.forEach(function (k) {
-          var r = k.getBoundingClientRect(), d = (r.left + r.width / 2 - orta) / innerWidth;
-          var a = Math.min(1, Math.abs(d) * 1.4);
-          k.style.transform = "scale(" + (1 - a * 0.07).toFixed(3) + ") rotate(" + (d * 4).toFixed(2) + "deg)";
-        });
-      }
-      var dinle = function () { if (!bekliyor) { bekliyor = true; requestAnimationFrame(ciz); } };
-      ray.addEventListener("scroll", dinle, { passive: true });
-      ciz();
-      return function () { ray.removeEventListener("scroll", dinle); kartlar.forEach(function (k) { k.style.transform = ""; }); };
-    });
-    gsap.from(".ray", { x: 120, autoAlpha: 0, duration: 1.1, ease: "expo.out", scrollTrigger: { trigger: ".ray", start: "top 88%" } });
+      gsap.from($$(".kart, .kart-son", ray), { yPercent: 18, rotation: 3, autoAlpha: 0, duration: 0.9, ease: "expo.out", stagger: 0.06, scrollTrigger: { trigger: menu, start: "top 70%" } });
+    }
 
     // Fotoğraf şeritleri eğik girip düzelir
     gsap.utils.toArray(".foto-kayan").forEach(function (f, k) {
@@ -276,7 +282,7 @@
       digerleri();
     }
     if (azHareket || test) gsap.set(".giris-video, .dev-yazilar, .giris-yazi, .giris-yan", { visibility: "visible" });
-    else enGec(400, fontlar).then(girisOyna);
+    else enGec(120, fontlar).then(girisOyna);
     fontlar.then(function () { ScrollTrigger.refresh(); });
 
     if (test) {

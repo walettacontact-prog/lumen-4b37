@@ -105,6 +105,33 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 .cikartma { position: absolute; z-index: 3; right: -14px; top: 12%; padding: 10px 16px 12px; border-radius: 16px; background: var(--krem); color: var(--kirmizi); border: var(--cizgi);
   box-shadow: 4px 4px 0 var(--kofte); font: 900 clamp(18px, 4.6vw, 26px)/1 var(--baslik); transform: rotate(8deg); white-space: nowrap; }
 
+/* ---------- Kapıdan geçiş: giriş yapışık, kemer büyüyüp ekranı kaplar ---------- */
+.kapi-sahne { position: relative; height: 300svh; background: var(--kirmizi); }
+.kapi-sabit { position: sticky; top: 0; height: 100svh; overflow: clip; transform-origin: 50% 40%; }
+.kapi-sabit .giris { height: 100svh; min-height: 0; padding: calc(84px + env(safe-area-inset-top)) var(--kenar) calc(22px + env(safe-area-inset-bottom)); gap: 20px; align-content: start; }
+.kapi-sabit .giris h1 { font-size: clamp(52px, 15vw, 230px); margin: 8px 0 10px; }
+.kapi-sabit .giris .alt-yazi { font-size: 16px; }
+.kapi-sabit .giris .dugmeler { margin-top: 16px; }
+.kapi-sabit .giris-gorsel { width: auto; height: min(38svh, 420px); }
+.kapi-tam { position: absolute; inset: 0; z-index: 4; opacity: 0; pointer-events: none; overflow: hidden; background: var(--kirmizi-k); }
+.kapi-tam img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 28%; transform-origin: 50% 40%; will-change: transform; }
+.kapi-tam::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(20, 6, 4, .82) 0%, rgba(20, 6, 4, 0) 58%); opacity: var(--golge, 0); }
+.kapi-yazi { position: absolute; z-index: 5; left: var(--kenar); right: var(--kenar); top: calc(92px + env(safe-area-inset-top)); color: var(--krem); pointer-events: none; } /* üstte: sıradaki bölüm alttan binerken yazı görünür kalır */
+.kapi-yazi .b { font-size: clamp(50px, 14vw, 200px); line-height: .95; }
+.kapi-yazi .satir { display: block; overflow: hidden; padding: .02em .05em .14em 0; margin-bottom: -.14em; }
+.kapi-yazi .satir > span { display: inline-block; transform: translateY(115%); }
+.kapi-yazi .satir:last-child { color: var(--hardal); }
+.kapi-perde { position: absolute; inset: 0; z-index: 6; background: #160604; opacity: 0; pointer-events: none; }
+.kapi-sahne + .serit { margin-top: calc(-100svh - 40px); }
+
+/* ---------- Burger katı gibi bölüm kenarları: eriyen cheddar, sos damlası, kıvrık marul ---------- */
+.kenar { position: relative; z-index: 6; height: 0; pointer-events: none; }
+.kenar svg { position: absolute; left: 0; width: 100%; overflow: visible; }
+.kenar.damla svg { top: -3px; height: 190px; filter: drop-shadow(0 4px 0 rgba(34, 20, 18, .9)); }
+.kenar.peynir-serit { transform: rotate(-2.4deg); margin: 0 -30px; }
+.kenar.peynir-serit svg { top: -6px; }
+.kenar.marul svg { top: -46px; height: 96px; filter: drop-shadow(0 5px 0 rgba(34, 20, 18, .85)); }
+
 /* Mutfak videosu */
 .mutfak { position: relative; background: #140b09; color: var(--krem); padding: clamp(100px, 13vw, 170px) var(--kenar); display: grid; gap: 40px; align-items: center; overflow: hidden; }
 .mutfak .kucuk { color: var(--hardal); }
@@ -186,6 +213,16 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 .ray-cubuk { margin: 6px var(--kenar) 0; height: 5px; border-radius: 5px; background: rgba(255, 245, 230, .2); overflow: hidden; }
 .ray-cubuk i { display: block; height: 100%; width: 100%; background: var(--hardal); border-radius: 5px; transform-origin: 0 50%; transform: scaleX(.12); }
 
+/* Burgerler: aşağı kaydırdıkça kartlar yana akar (telefonda da). Bölüm yapışık, uzunluğu JS ile kart dizisi kadar (--yol). */
+.menu { overflow: clip; }
+.menu.akar { height: calc(100svh + var(--yol, 0px)); }
+.menu.akar .menu-ic { position: sticky; top: 0; height: 100svh; min-height: 0; display: flex; flex-direction: column; justify-content: center;
+  padding: calc(64px + env(safe-area-inset-top)) 0 calc(20px + env(safe-area-inset-bottom)); overflow: clip; }
+.menu.akar .ray { overflow: visible; scroll-snap-type: none; width: max-content; padding-top: 26px; padding-bottom: 16px; will-change: transform; }
+.menu.akar .kart { flex-basis: min(74vw, 340px); }
+@media (max-width: 899px) { .menu.akar .kart-foto { aspect-ratio: 16 / 11; } .menu.akar .kart p { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; } }
+@media (max-height: 720px) and (max-width: 899px) { .menu.akar .menu-bas p { display: none; } .menu.akar .kart-foto { aspect-ratio: 16 / 10; } }
+
 /* Kareler: iki sıra kayan fotoğraf */
 .kareler { position: relative; background: #140b09; color: var(--krem); padding: clamp(100px, 13vw, 160px) 0 clamp(90px, 11vw, 140px); overflow: hidden; }
 .kareler-bas { padding: 0 var(--kenar); display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 18px 40px; }
@@ -242,6 +279,15 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   .giris { grid-template-columns: 1.12fr .88fr; align-items: center; align-content: center; gap: 4vw; padding-top: 120px; padding-bottom: 140px; }
   .giris h1 { font-size: min(12vw, 210px); }
   .giris-gorsel { width: min(36vw, 540px); }
+  .kapi-sabit .giris { padding: 110px 6vw 60px; align-content: center; }
+  .kapi-sabit .giris h1 { font-size: min(11vw, 200px); }
+  .kapi-sabit .giris .alt-yazi { font-size: 19px; }
+  .kapi-sabit .giris-gorsel { width: auto; height: min(70vh, 660px); }
+  .kapi-sahne { height: 300vh; }
+  .kapi-sahne + .serit { margin-top: calc(-100vh - 40px); }
+  .kapi-yazi { left: 6vw; top: 120px; }
+  .kenar.damla svg { height: 240px; }
+  .kenar.marul svg { top: -60px; height: 124px; }
   .rozet { left: -48px; }
   .mutfak { grid-template-columns: 1.1fr .9fr; gap: 6vw; }
   .karavan-ray { overflow: visible; scroll-snap-type: none; justify-content: center; }
@@ -259,6 +305,8 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   .ray { overflow: visible; scroll-snap-type: none; width: max-content; padding-top: 40px; padding-bottom: 20px; }
   .kart { flex-basis: 360px; }
   .kart-son { flex-basis: 300px; }
+  .menu.akar .menu-ic { padding: 96px 0 40px; }
+  .menu.akar .kart { flex-basis: 360px; }
   .ray-cubuk { display: none; }
 
   .imlec { display: block; position: fixed; z-index: 90; left: 0; top: 0; width: 14px; height: 14px; margin: -7px 0 0 -7px; border-radius: 50%; background: var(--kofte);
@@ -267,6 +315,8 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 }
 @media (hover: none) { .imlec { display: none !important; } }
 @media (prefers-reduced-motion: reduce) {
+  .kapi-sahne { height: auto; } .kapi-sabit { position: relative; height: auto; } .kapi-sabit .giris { height: auto; min-height: 100svh; }
+  .kapi-tam, .kapi-yazi, .kapi-perde { display: none; } .kapi-sahne + .serit { margin-top: -40px; }
   .isinlar, .rozet svg { animation: none; }
   .js .giris-yazi, .js .giris-gorsel { visibility: visible; }
   .giris-not i::after { animation: none; }
@@ -287,6 +337,8 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 </header>
 
 <main>
+  <div class="kapi-sahne">
+  <div class="kapi-sabit">
   <section class="giris" aria-labelledby="giris-baslik">
     <div class="isinlar" aria-hidden="true"></div>
     <div class="giris-yazi">
@@ -309,10 +361,16 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
       <div class="cikartma" aria-hidden="true">%100 dana!</div>
     </div>
   </section>
+  <div class="kapi-tam" aria-hidden="true"><img src="../ortak/img/kapi-1400.webp" alt="" width="1400" height="1866" loading="lazy" decoding="async"></div>
+  <p class="kapi-yazi"><span class="b"><span class="satir"><span>Buyrun,</span></span><span class="satir"><span>afiyet olsun.</span></span></span></p>
+  <div class="kapi-perde" aria-hidden="true"></div>
+  </div>
+  </div>
 
   <div class="serit kayan" data-kayan="-1" data-hiz="60" aria-hidden="true"><div class="kayan-ic"><div class="kayan-grup">
     <span>%100 dana köfte</span><i class="yildiz">✺</i><span>Beytuş Burger Sos</span><i class="yildiz">✺</i><span>1983'ten beri</span><i class="yildiz">✺</i><span>Adapazarı</span><i class="yildiz">✺</i>
   </div></div></div>
+  <div class="kenar damla peynir-serit" data-renk="#ffc43d" data-adet="16" aria-hidden="true"></div>
 
   <section class="acilir hikaye" id="hikaye" aria-labelledby="hikaye-baslik">
     <div>
@@ -326,6 +384,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
     </figure>
   </section>
 
+  <div class="kenar damla" data-renk="#fff5e6" data-adet="12" aria-hidden="true"></div>
   <section class="mutfak" aria-labelledby="mutfak-baslik">
     <div>
       <p class="kucuk">Beytuş mutfağı</p>
@@ -347,6 +406,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
     </div></div></div>
   </div>
 
+  <div class="kenar marul" aria-hidden="true"></div>
   <section class="menu" id="menu" aria-labelledby="menu-baslik">
     <div class="menu-ic">
       <div class="menu-bas">
@@ -422,6 +482,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
       <a class="dugme krem" href="https://www.instagram.com/beytusburger/">Instagram</a>
     </div>
   </section>
+  <div class="kenar damla" data-renk="#ffc43d" data-adet="14" aria-hidden="true"></div>
 </main>
 
 <footer class="alt-bilgi">

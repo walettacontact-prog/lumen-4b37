@@ -74,14 +74,16 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 .ust .dugme { min-height: 46px; padding: 0 20px; font-size: 15px; }
 
 /* ---------- Giriş: 3B burger sahnesi — kaydırdıkça dağılır, havada dizilir, yeniden birleşir ---------- */
-.sahne3d { position: relative; height: 480svh; background: var(--hardal); }
+.sahne3d { position: relative; height: 560svh; background: var(--hardal); }
+/* son ekranda sıradaki şerit ve hikâye sahnenin üstüne kart gibi biner; sahne hafif küçülüp kararır */
+.sahne3d + .serit { margin-top: calc(-100svh - 40px); }
+.sahne3d-perde { position: absolute; inset: 0; z-index: 6; background: #1a0b05; opacity: 0; pointer-events: none; }
+.sahne3d-sabit { transform-origin: 50% 30%; }
 /* stüdyo zemini: renk kaydırdıkça bölüme göre değişir (burger3d.js --zemin ve --zemin-2 verir) */
 .sahne3d-sabit { position: sticky; top: 0; height: 100svh; overflow: hidden; isolation: isolate;
   background: radial-gradient(85% 62% at 50% 34%, var(--zemin-2, #ffe08f) 0%, var(--zemin, #ffc43d) 70%); }
 .sahne3d-sabit::before { content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
   background: radial-gradient(130% 110% at 50% 40%, rgba(90, 35, 0, 0) 55%, rgba(90, 35, 0, .16) 100%); }
-.sahne3d-sabit::after { content: ""; position: absolute; inset: 0; z-index: 2; pointer-events: none; opacity: .05; mix-blend-mode: multiply;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
 .sahne3d canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; opacity: 0; transition: opacity .8s ease; }
 .sahne3d.hazir canvas { opacity: 1; }
 .sahne3d .yedek-gorsel { display: none; }
@@ -185,6 +187,16 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 .ray-cubuk { margin: 6px var(--kenar) 0; height: 5px; border-radius: 5px; background: rgba(255, 245, 230, .2); overflow: hidden; }
 .ray-cubuk i { display: block; height: 100%; width: 100%; background: var(--hardal); border-radius: 5px; transform-origin: 0 50%; transform: scaleX(.12); }
 
+/* Burgerler: aşağı kaydırdıkça kartlar yana akar (telefonda da). Bölüm yapışık, uzunluğu JS ile kart dizisi kadar (--yol). */
+.menu { overflow: clip; }
+.menu.akar { height: calc(100svh + var(--yol, 0px)); }
+.menu.akar .menu-ic { position: sticky; top: 0; height: 100svh; min-height: 0; display: flex; flex-direction: column; justify-content: center;
+  padding: calc(64px + env(safe-area-inset-top)) 0 calc(20px + env(safe-area-inset-bottom)); overflow: clip; }
+.menu.akar .ray { overflow: visible; scroll-snap-type: none; width: max-content; padding-top: 26px; padding-bottom: 16px; will-change: transform; }
+.menu.akar .kart { flex-basis: min(74vw, 340px); }
+@media (max-width: 899px) { .menu.akar .kart-foto { aspect-ratio: 16 / 11; } .menu.akar .kart p { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; } }
+@media (max-height: 720px) and (max-width: 899px) { .menu.akar .menu-bas p { display: none; } .menu.akar .kart-foto { aspect-ratio: 16 / 10; } }
+
 /* Kareler: iki sıra kayan fotoğraf */
 .kareler { position: relative; background: #140b09; color: var(--krem); padding: clamp(100px, 13vw, 160px) 0 clamp(90px, 11vw, 140px); overflow: hidden; }
 .kareler-bas { padding: 0 var(--kenar); display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 18px 40px; }
@@ -238,7 +250,8 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   body { font-size: 18px; }
   .ust nav .yazi { display: inline-flex; }
   .ust .logo img { height: 58px; }
-  .sahne3d { height: 560vh; }
+  .sahne3d { height: 620vh; }
+  .sahne3d + .serit { margin-top: calc(-100vh - 40px); }
   .sahne3d-sabit { background: radial-gradient(70% 80% at 64% 46%, var(--zemin-2, #ffe08f) 0%, var(--zemin, #ffc43d) 72%); }
   .vurus { left: 6vw; right: auto; top: 0; bottom: 0; width: min(40vw, 600px); padding: 0; border: 0; border-radius: 0; background: none; box-shadow: none;
     display: flex; flex-direction: column; justify-content: center; }
@@ -262,6 +275,8 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   .ray { overflow: visible; scroll-snap-type: none; width: max-content; padding-top: 40px; padding-bottom: 20px; }
   .kart { flex-basis: 360px; }
   .kart-son { flex-basis: 300px; }
+  .menu.akar .menu-ic { padding: 96px 0 40px; }
+  .menu.akar .kart { flex-basis: 360px; }
   .ray-cubuk { display: none; }
 
   .imlec { display: block; position: fixed; z-index: 90; left: 0; top: 0; width: 14px; height: 14px; margin: -7px 0 0 -7px; border-radius: 50%; background: var(--kofte);
@@ -293,6 +308,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
       <canvas aria-hidden="true"></canvas>
       <img class="yedek-gorsel" src="../ortak/img/urun-8-800.webp" alt="Cheese Burger" width="800" height="534">
       <div class="ilerle" aria-hidden="true"><i></i></div>
+      <div class="sahne3d-perde" aria-hidden="true"></div>
       <div class="vurus v0" data-bas="0" data-son="0.085">
         <p class="kucuk">Adapazarı · 1983'ten beri</p>
         <h1 class="b"><span class="satir"><span>Kat kat</span></span><span class="satir"><span><em>Beytuş.</em></span></span></h1>

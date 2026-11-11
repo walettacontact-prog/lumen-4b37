@@ -40,8 +40,26 @@
         if (g.isIntersecting) { if (v.preload !== "auto") { v.preload = "auto"; v.load(); } var p = v.play(); if (p && p.catch) p.catch(function () {}); }
         else v.pause();
       });
-    }, { threshold: 0.25 });
+    }, { threshold: 0.15 });
     vs.forEach(function (v) { io.observe(v); });
+    // ekrana gelmeden bir buçuk ekran önce yüklemeye başla: sahneye gelince hemen oynasın
+    var yukle = new IntersectionObserver(function (gs) {
+      gs.forEach(function (g) { if (!g.isIntersecting) return; var v = g.target; yukle.unobserve(v); if (v.preload !== "auto") { v.preload = "auto"; v.load(); } });
+    }, { rootMargin: "0px 0px 150% 0px" });
+    vs.forEach(function (v) { yukle.observe(v); });
+    // sayfa yüklenince kalan videoları arka planda sırayla indir (biri bitince öteki): kaydırınca beklemeden oynasın
+    function sirayla() {
+      var kalan = vs.filter(function (v) { return v.preload !== "auto"; });
+      (function sonraki() {
+        var v = kalan.shift(); if (!v) return;
+        if (v.preload === "auto") return sonraki();
+        v.preload = "auto"; v.load();
+        var bitti = false, devam = function () { if (!bitti) { bitti = true; setTimeout(sonraki, 150); } };
+        v.addEventListener("canplaythrough", devam, { once: true }); setTimeout(devam, 6000);
+      })();
+    }
+    var basla = function () { setTimeout(sirayla, 900); };
+    if (document.readyState === "complete") basla(); else window.addEventListener("load", basla);
   }
   videolar();
 
@@ -122,10 +140,8 @@
   // Kaydırmaya bağlı diğer hareketler
   // =====================================================================
   function digerleri() {
-    var girisST = { trigger: ".giris", start: "top top", end: "bottom top", scrub: true };
-    gsap.to(".giris-yazi", { yPercent: -16, ease: "none", scrollTrigger: girisST });
-    gsap.to(".kemer img", { yPercent: 9, ease: "none", scrollTrigger: girisST });
-    gsap.to(".giris-gorsel", { rotation: 4, y: 50, ease: "none", scrollTrigger: girisST });
+    kapidanGecis();
+    kenarlar();
 
     // Bölümler yuvarlak köşeli kart gibi açılarak gelir
     $$(".acilir").forEach(function (b) {
@@ -156,37 +172,25 @@
     // Karavan kartları: yelpaze gibi açılır
     gsap.from(".karavan-ray figure", { y: 90, rotation: function (k) { return (k - 1) * 9; }, autoAlpha: 0, duration: 1.1, ease: "expo.out", stagger: 0.1, scrollTrigger: { trigger: ".karavan-ray", start: "top 85%" } });
 
-    // Menü: masaüstünde kaydırınca kartlar yana akar; telefonda parmakla kaydırılır, ortadaki kart öne çıkar
-    var ray = $(".ray"), rayCubuk = $(".ray-cubuk i");
-    var mm = gsap.matchMedia();
-    mm.add("(min-width: 900px)", function () {
+    // Menü: aşağı kaydırdıkça kartlar yana akar (telefonda da); bölüm yapışık kalır, alttaki çubuk ilerlemeyi gösterir
+    var menu = $(".menu"), ray = $(".ray"), rayCubuk = $(".ray-cubuk i");
+    if (menu && ray) {
+      menu.classList.add("akar");
       var mesafe = function () { return Math.max(0, ray.scrollWidth - innerWidth); };
-      var tw = gsap.to(ray, {
+      var yolAyarla = function () { menu.style.setProperty("--yol", Math.round(mesafe() * (innerWidth < 900 ? 0.85 : 1)) + "px"); };
+      yolAyarla();
+      ScrollTrigger.addEventListener("refreshInit", yolAyarla);
+      gsap.to(ray, {
         x: function () { return -mesafe(); }, ease: "none",
-        scrollTrigger: { trigger: ".menu", start: "top top", end: function () { return "+=" + mesafe(); }, pin: true, scrub: 0.6, invalidateOnRefresh: true,
-          onUpdate: function (st) { gsap.to(ray, { skewX: gsap.utils.clamp(-7, 7, st.getVelocity() / -280), duration: 0.35, overwrite: "auto" }); },
+        scrollTrigger: { trigger: menu, start: "top top", end: "bottom bottom", scrub: innerWidth < 900 ? 0.25 : 0.6, invalidateOnRefresh: true,
+          onUpdate: function (st) {
+            if (rayCubuk) rayCubuk.style.transform = "scaleX(" + Math.max(0.08, st.progress).toFixed(3) + ")";
+            gsap.to(ray, { skewX: gsap.utils.clamp(-6, 6, st.getVelocity() / -300), duration: 0.35, overwrite: "auto" });
+          },
           onScrubComplete: function () { gsap.to(ray, { skewX: 0, duration: 0.6, ease: "power3.out" }); } }
       });
-      return function () { tw.kill(); gsap.set(ray, { clearProps: "transform" }); };
-    });
-    mm.add("(max-width: 899px)", function () {
-      var kartlar = $$(".kart, .kart-son", ray), bekliyor = false;
-      function ciz() {
-        bekliyor = false;
-        var orta = innerWidth / 2, maks = Math.max(1, ray.scrollWidth - ray.clientWidth);
-        rayCubuk.style.transform = "scaleX(" + Math.max(0.12, ray.scrollLeft / maks).toFixed(3) + ")";
-        kartlar.forEach(function (k) {
-          var r = k.getBoundingClientRect(), d = (r.left + r.width / 2 - orta) / innerWidth;
-          var a = Math.min(1, Math.abs(d) * 1.4);
-          k.style.transform = "scale(" + (1 - a * 0.07).toFixed(3) + ") rotate(" + (d * 4).toFixed(2) + "deg)";
-        });
-      }
-      var dinle = function () { if (!bekliyor) { bekliyor = true; requestAnimationFrame(ciz); } };
-      ray.addEventListener("scroll", dinle, { passive: true });
-      ciz();
-      return function () { ray.removeEventListener("scroll", dinle); kartlar.forEach(function (k) { k.style.transform = ""; }); };
-    });
-    gsap.from(".ray", { x: 120, autoAlpha: 0, duration: 1.1, ease: "expo.out", scrollTrigger: { trigger: ".ray", start: "top 88%" } });
+      gsap.from($$(".kart, .kart-son", ray), { yPercent: 18, rotation: 3, autoAlpha: 0, duration: 0.9, ease: "expo.out", stagger: 0.06, scrollTrigger: { trigger: menu, start: "top 70%" } });
+    }
 
     // Fotoğraf şeritleri eğik girip düzelir
     gsap.utils.toArray(".foto-kayan").forEach(function (f, k) {
@@ -214,6 +218,78 @@
         d.addEventListener("pointerleave", function () { qx(0); qy(0); });
       });
     }
+  }
+
+  // =====================================================================
+  // Kapıdan geçiş: kemerin yerinden başlayan tam ekran fotoğraf, kırpma alanı büyüyerek ekranı kaplar
+  // =====================================================================
+  function kapidanGecis() {
+    var sahne = $(".kapi-sahne"), sabit = $(".kapi-sabit"), tam = $(".kapi-tam"), kemer = $(".kemer");
+    if (!sahne || !tam || !kemer) return;
+    var resim = $("img", tam), perde = $(".kapi-perde"), olcu = null, d = { p: 0 };
+    var yavas = gsap.parseEase("power2.inOut");
+    function olc() {
+      var r = kemer.getBoundingClientRect(), s = sabit.getBoundingClientRect();
+      olcu = { t: r.top - s.top, l: r.left - s.left, r: s.right - r.right, b: s.bottom - r.bottom, w: r.width };
+    }
+    function ciz() {
+      if (!olcu) olc();
+      var p = d.p, e = yavas(Math.min(1, p / 0.62)), k = 1 - e, ust = (olcu.w / 2) * k, alt = 32 * k;
+      tam.style.clipPath = "inset(" + (olcu.t * k).toFixed(1) + "px " + (olcu.r * k).toFixed(1) + "px " + (olcu.b * k).toFixed(1) + "px " + (olcu.l * k).toFixed(1) + "px round " + ust.toFixed(1) + "px " + ust.toFixed(1) + "px " + alt.toFixed(1) + "px " + alt.toFixed(1) + "px)";
+      tam.style.opacity = Math.min(1, p / 0.05).toFixed(3);
+      resim.style.transform = "scale(" + (1 + 0.14 * e).toFixed(4) + ")";
+      tam.style.setProperty("--golge", Math.min(1, Math.max(0, (p - 0.5) / 0.25)).toFixed(3));
+    }
+    var tl = gsap.timeline({ defaults: { ease: "none" }, scrollTrigger: { trigger: sahne, start: "top top", end: "bottom bottom", scrub: 0.4, invalidateOnRefresh: true,
+      onRefreshInit: function () { tam.style.clipPath = ""; }, onRefresh: function () { olc(); ciz(); } } });
+    // kaydırma boyu: 0–.5 kapı açılır ve yazı gelir, .5–1 sıradaki bölüm sahnenin üstüne biner
+    tl.to(d, { p: 1, duration: 0.5, onUpdate: ciz }, 0)
+      .to(".giris-yazi", { xPercent: -22, opacity: 0, duration: 0.18, ease: "power2.in" }, 0)
+      .to(".rozet", { xPercent: -170, yPercent: 60, opacity: 0, duration: 0.2, ease: "power2.in" }, 0.01)
+      .to(".cikartma", { xPercent: 160, yPercent: -140, opacity: 0, duration: 0.2, ease: "power2.in" }, 0.01)
+      .fromTo(".kapi-yazi .satir > span", { yPercent: 115, y: 0 }, { yPercent: 0, duration: 0.1, stagger: 0.04, ease: "expo.out" }, 0.33)
+      .to(sabit, { scale: 0.9, borderRadius: 36, duration: 0.5 }, 0.5)
+      .to(perde, { opacity: 0.6, duration: 0.5 }, 0.5);
+    ciz();
+  }
+
+  // =====================================================================
+  // Bölüm kenarları: damlalar kaydırdıkça uzar, marul dalgalanır (svg ekran genişliğine göre çizilir)
+  // =====================================================================
+  function kenarlar() {
+    var ns = "http://www.w3.org/2000/svg";
+    var rasgele = function (n) { var x = Math.sin(n * 127.1 + 311.7) * 43758.5453; return x - Math.floor(x); };
+    $$(".kenar.damla").forEach(function (el, k) {
+      var renk = el.dataset.renk || "#ffc43d", adet = Number(el.dataset.adet) || 12, W = 1000, H = 190;
+      var svg = document.createElementNS(ns, "svg"); svg.setAttribute("viewBox", "0 0 " + W + " " + H); svg.setAttribute("preserveAspectRatio", "xMidYMin slice");
+      var bant = document.createElementNS(ns, "rect"); bant.setAttribute("width", W); bant.setAttribute("height", "22"); bant.setAttribute("fill", renk); svg.appendChild(bant);
+      var damlalar = [];
+      for (var i = 0; i < adet; i++) {
+        var r = function (m) { return rasgele(k * 97 + i * 13 + m); };
+        var x = (i + 0.5) * (W / adet) + (r(1) - 0.5) * (W / adet) * 0.5, w = 16 + r(2) * 30, L = 34 + r(3) * 110;
+        var yol = document.createElementNS(ns, "path");
+        yol.setAttribute("d", "M" + (x - w / 2 - 8) + ",18 Q" + (x - w / 2) + ",20 " + (x - w / 2) + ",30 L" + (x - w / 2) + "," + L + " A" + (w / 2) + "," + (w / 2) + " 0 0 0 " + (x + w / 2) + "," + L + " L" + (x + w / 2) + ",30 Q" + (x + w / 2) + ",20 " + (x + w / 2 + 8) + ",18 Z");
+        yol.setAttribute("fill", renk); svg.appendChild(yol); damlalar.push(yol);
+      }
+      el.appendChild(svg);
+      gsap.fromTo(damlalar, { scaleY: 0.2 }, { scaleY: function (i) { return 0.75 + rasgele(k * 31 + i) * 0.6; }, transformOrigin: "50% 0%", ease: "none", stagger: 0.015,
+        scrollTrigger: { trigger: el, start: "top 95%", end: "top 25%", scrub: 0.6 } });
+    });
+    $$(".kenar.marul").forEach(function (el) {
+      var W = 1400, H = 124, svg = document.createElementNS(ns, "svg");
+      svg.setAttribute("viewBox", "0 0 " + W + " " + H); svg.setAttribute("preserveAspectRatio", "none");
+      function yaprak(renk, kayma, genlik, siklik) { // kıvrık kenarlı marul yaprağı şeridi
+        var d = "M-60," + H, n = 160;
+        for (var i = 0; i <= n; i++) { var x = -60 + (i / n) * (W + 120), y = 30 + Math.sin(x / siklik + kayma) * genlik + Math.sin(x / (siklik * 0.37) + kayma * 2) * genlik * 0.45; d += " L" + x.toFixed(1) + "," + y.toFixed(1); }
+        d += " L" + (W + 60) + ",84"; for (var m = n; m >= 0; m--) { var x2 = -60 + (m / n) * (W + 120), y2 = 84 + Math.sin(x2 / (siklik * 0.8) + kayma + 1) * genlik * 0.5; d += " L" + x2.toFixed(1) + "," + y2.toFixed(1); }
+        var yol = document.createElementNS(ns, "path"); yol.setAttribute("d", d + " Z"); yol.setAttribute("fill", renk); return yol;
+      }
+      var arka = yaprak("#5d9e2b", 0, 13, 22), on = yaprak("#8fcf4a", 2, 10, 17);
+      svg.appendChild(arka); svg.appendChild(on); el.appendChild(svg);
+      var st = { trigger: el, start: "top bottom", end: "bottom top", scrub: 0.5 };
+      gsap.fromTo(arka, { x: -40 }, { x: 40, ease: "none", scrollTrigger: st });
+      gsap.fromTo(on, { x: 40, scaleY: 0.85 }, { x: -40, scaleY: 1.1, transformOrigin: "50% 100%", ease: "none", scrollTrigger: st });
+    });
   }
 
   // ---------- Giriş hareketi ----------

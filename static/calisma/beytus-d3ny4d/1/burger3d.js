@@ -133,13 +133,23 @@ async function kur() {
     }
     g.fillStyle = "#e5402c"; g.beginPath(); g.arc(m, m, m * 0.17, 0, 7); g.fill();
   });
-  const tursuDoku = tuvalDoku(256, 256, (g, w) => {
+  const tursuDoku = tuvalDoku(512, 512, (g, w) => {
     const m = w / 2;
-    g.fillStyle = "#4f6a16"; g.fillRect(0, 0, w, w);
-    g.fillStyle = "#8eab3c"; g.beginPath(); g.arc(m, m, m * 0.88, 0, 7); g.fill();
-    g.fillStyle = "#c2d27a"; g.beginPath(); g.arc(m, m, m * 0.52, 0, 7); g.fill();
-    for (let i = 0; i < 10; i++) { const a = (i / 10) * Math.PI * 2; g.fillStyle = "#eef1c9"; g.beginPath(); g.ellipse(m + Math.cos(a) * m * 0.33, m + Math.sin(a) * m * 0.33, 8, 4.5, a, 0, 7); g.fill(); }
+    const gr = g.createRadialGradient(m, m, 0, m, m, m);
+    gr.addColorStop(0, "#cfc77a"); gr.addColorStop(0.42, "#bbb560"); gr.addColorStop(0.78, "#9c9a3e"); gr.addColorStop(0.9, "#77782a"); gr.addColorStop(0.95, "#3c4512"); gr.addColorStop(1, "#28300a");
+    g.fillStyle = gr; g.fillRect(0, 0, w, w);
+    for (let i = 0; i < 260; i++) { // et lifleri
+      const a = ozet(i * 1.3) * Math.PI * 2, r1 = m * (0.1 + ozet(i * 2.1) * 0.5), r2 = r1 + m * (0.08 + ozet(i * 3.7) * 0.2);
+      g.strokeStyle = "rgba(240, 240, 190, " + (0.08 + ozet(i) * 0.12) + ")"; g.lineWidth = 1 + ozet(i * 5) * 2;
+      g.beginPath(); g.moveTo(m + Math.cos(a) * r1, m + Math.sin(a) * r1); g.lineTo(m + Math.cos(a) * r2, m + Math.sin(a) * r2); g.stroke();
+    }
+    for (let i = 0; i < 3; i++) { // üç bölmeli çekirdek yatağı
+      const a = (i / 3) * Math.PI * 2 + 0.5;
+      g.fillStyle = "rgba(236, 238, 190, .55)"; g.beginPath(); g.ellipse(m + Math.cos(a) * m * 0.22, m + Math.sin(a) * m * 0.22, m * 0.2, m * 0.12, a, 0, 7); g.fill();
+      for (let k = 0; k < 5; k++) { g.fillStyle = "#f4f3d0"; g.beginPath(); g.ellipse(m + Math.cos(a + (k - 2) * 0.18) * m * 0.27, m + Math.sin(a + (k - 2) * 0.18) * m * 0.27, 7, 4, a + (k - 2) * 0.18 + 1.57, 0, 7); g.fill(); }
+    }
   });
+  const tursuKabarik = gurultuDoku(128, 6, 3, (v) => { const k = v * 255; return [k, k, k]; });
 
   // ---------- malzemeler ----------
   const M = {
@@ -154,11 +164,11 @@ async function kur() {
     domatesYan: new THREE.MeshPhysicalMaterial({ color: "#c0261b", roughness: 0.25, clearcoat: 0.9, clearcoatRoughness: 0.15 }),
     domatesKesit: new THREE.MeshPhysicalMaterial({ map: domatesDoku, roughness: 0.2, clearcoat: 0.85, clearcoatRoughness: 0.12, emissive: R("#7a0f06"), emissiveIntensity: 0.18 }),
     kofte: new THREE.MeshPhysicalMaterial({ vertexColors: true, bumpMap: kofteKabarik, bumpScale: 7, roughnessMap: kofteKabarik, roughness: 0.92, clearcoat: 0.06, clearcoatRoughness: 0.55 }),
-    cheddar: new THREE.MeshPhysicalMaterial({ color: "#ffb300", roughness: 0.42, clearcoat: 0.25, clearcoatRoughness: 0.3,
-      emissive: R("#ff9500"), emissiveIntensity: 0.22, side: THREE.DoubleSide }),
+    cheddar: new THREE.MeshStandardMaterial({ color: "#c97400", roughness: 0.5, emissive: R("#a84200"), emissiveIntensity: 0.12, envMapIntensity: 0.45, side: THREE.DoubleSide }),
     sogan: new THREE.MeshPhysicalMaterial({ color: "#c27a35", roughness: 0.3, clearcoat: 0.9, clearcoatRoughness: 0.2, emissive: R("#7a3a0c"), emissiveIntensity: 0.22, transmission: 0 }),
-    tursuYan: new THREE.MeshStandardMaterial({ color: "#4f6b17", roughness: 0.38 }),
-    tursuKesit: new THREE.MeshPhysicalMaterial({ map: tursuDoku, roughness: 0.25, clearcoat: 0.7 }),
+    tursuYan: new THREE.MeshPhysicalMaterial({ color: "#34400f", roughness: 0.35, clearcoat: 0.6 }),
+    tursuKesit: new THREE.MeshPhysicalMaterial({ map: tursuDoku, bumpMap: tursuKabarik, bumpScale: 0.6, roughness: 0.22, clearcoat: 0.9, clearcoatRoughness: 0.12,
+      emissive: R("#6b6a1c"), emissiveIntensity: 0.12, emissiveMap: tursuDoku, side: THREE.DoubleSide }),
     kurdan: new THREE.MeshStandardMaterial({ color: "#e6c78d", roughness: 0.7 }),
     temas: new THREE.MeshBasicMaterial({ color: "#2a0e00", alphaMap: temasDoku, transparent: true, opacity: 0.42, depthWrite: false }),
   };
@@ -228,16 +238,22 @@ async function kur() {
     bayrak.position.set(0.08, 0.45, 0.04); bayrak.rotation.z = -0.1; g.add(bayrak);
     return { g, h: 0.665 };
   }
-  function sos() { // Beytuş Burger Sos: kenarlardan süzülen beyaz sos
-    const g = new THREE.Group(), sekil = new THREE.Shape();
-    for (let i = 0; i <= 200; i++) {
-      const a = (i / 200) * Math.PI * 2, r = 0.98 + 0.05 * Math.pow(Math.max(0, Math.sin(a * 5 + 1)), 2) + 0.03 * Math.pow(Math.max(0, Math.sin(a * 9 + 2)), 2) + 0.012 * Math.sin(a * 23);
-      i ? sekil.lineTo(Math.cos(a) * r, Math.sin(a) * r) : sekil.moveTo(Math.cos(a) * r, Math.sin(a) * r);
-    }
-    const geo = new THREE.ExtrudeGeometry(sekil, { depth: 0.02, bevelEnabled: true, bevelThickness: 0.02, bevelSize: 0.035, bevelSegments: 5, curveSegments: 200 });
-    geo.rotateX(-Math.PI / 2); geo.translate(0, 0.02, 0);
+  function sos() { // Beytuş Burger Sos: üst ekmeğin altına sürülmüş tombul, düzensiz krema; kenarlardan damlar
+    const g = new THREE.Group();
+    const kenarR = (a) => 0.9 + 0.09 * Math.pow(Math.max(0, Math.sin(a * 5 + 1)), 2) + 0.06 * Math.pow(Math.max(0, Math.sin(a * 8 + 2.4)), 3) + 0.025 * Math.sin(a * 17);
+    const geo = new THREE.SphereGeometry(1, 160, 40);
     const p = geo.attributes.position;
-    for (let i = 0; i < p.count; i++) { const r = Math.hypot(p.getX(i), p.getZ(i)); if (r > 1.0) p.setY(i, p.getY(i) - Math.pow(r - 1.0, 1.1) * 0.9); } // kenardan süzülür
+    for (let i = 0; i < p.count; i++) {
+      const x = p.getX(i), y = p.getY(i), z = p.getZ(i), a = Math.atan2(z, x), r = Math.hypot(x, z), K = kenarR(a);
+      const kalin = 0.05 * (0.75 + 0.5 * fbm3(x * 2.6 + 3, z * 2.6, 1.7, 3)); // topak topak
+      const rr = r * K;
+      let yy = y * kalin;
+      if (rr > 0.84) { // kenar aşağı süzülür; çıkıntılarda damla gibi uzar (sosa bağlı, ayrı parça değil)
+        const t = (rr - 0.84) / 0.24, damla = Math.pow(Math.max(0, Math.sin(a * 5 + 1)), 6) + 0.8 * Math.pow(Math.max(0, Math.sin(a * 8 + 2.4)), 8);
+        yy -= t * t * (0.05 + damla * 0.16);
+      }
+      p.setXYZ(i, Math.cos(a) * rr, yy, Math.sin(a) * rr);
+    }
     geo.computeVertexNormals();
     const m = new THREE.Mesh(geo, M.sos); m.castShadow = true; m.receiveShadow = true; g.add(m);
     return { g, h: 0.05 };
@@ -327,14 +343,31 @@ async function kur() {
     }
     return { g, h: 0.07 };
   }
-  function tursu() {
+  function tursu() { // tırtıklı kesilmiş turşu dilimleri
     const g = new THREE.Group();
-    for (let i = 0; i < 6; i++) {
-      const a = (i / 5) * Math.PI * 2 + 0.4, merkez = i === 5;
-      const m = new THREE.Mesh(new THREE.CylinderGeometry(0.26, 0.26, 0.035, 48), [M.tursuYan, M.tursuKesit, M.tursuKesit]);
-      m.position.set(merkez ? 0.05 : Math.cos(a) * 0.52, 0.02 + (merkez ? 0.03 : 0), merkez ? 0.02 : Math.sin(a) * 0.52);
-      m.rotation.set((ozet(i * 3) - 0.5) * 0.25, 0, (ozet(i * 5) - 0.5) * 0.25); m.castShadow = true; g.add(m);
-    }
+    const yerler = [[0.42, 0.18, 0.3], [-0.38, 0.32, 0.27], [0.05, -0.44, 0.29], [-0.48, -0.25, 0.25], [0.5, -0.32, 0.24], [0.02, 0.06, 0.28], [0.12, 0.55, 0.23]];
+    yerler.forEach(([x, z, R0], i) => {
+      const geo = new THREE.CircleGeometry(1, 72, 0, Math.PI * 2);
+      // dairenin içine nokta ekleyerek tırtık sırtlarını gösterecek çözünürlük: halka halka
+      const ic = new THREE.RingGeometry(0.001, 1, 72, 10);
+      const pp = ic.attributes.position;
+      for (let k = 0; k < pp.count; k++) {
+        const px = pp.getX(k), py = pp.getY(k), r = Math.hypot(px, py), a = Math.atan2(py, px);
+        const kenar = 1 + 0.035 * Math.sin(a * 26) + 0.02 * (ozet3(i, Math.floor(a * 9), 1) - 0.5); // tırtıklı kenar
+        const sirt = Math.sin(px * R0 * 70 + i) * 0.006 * Math.min(1, r * 3); // paralel tırtık sırtları
+        const kivrim = -0.025 * r * r + 0.01 * Math.sin(a * 2 + i); // hafif kıvrık
+        pp.setXYZ(k, px * kenar * R0, py * kenar * R0, sirt + kivrim);
+      }
+      ic.rotateX(-Math.PI / 2); ic.computeVertexNormals();
+      const uv = ic.attributes.uv; for (let k = 0; k < uv.count; k++) { const px = pp.getX(k), pz = pp.getZ(k); uv.setXY(k, 0.5 + px / (2 * R0 * 1.06), 0.5 - pz / (2 * R0 * 1.06)); }
+      const ust = new THREE.Mesh(ic, M.tursuKesit); ust.castShadow = true; ust.receiveShadow = true;
+      const yan = new THREE.Mesh(new THREE.CylinderGeometry(R0 * 1.0, R0 * 1.0, 0.022, 72, 1, true), M.tursuYan); yan.position.y = -0.011;
+      const dilim = new THREE.Group(); dilim.add(ust); dilim.add(yan);
+      dilim.position.set(x, 0.022 + i * 0.006, z);
+      dilim.rotation.set((ozet(i * 3.1) - 0.5) * 0.3, ozet(i * 7) * 3, (ozet(i * 5.3) - 0.5) * 0.3);
+      g.add(dilim);
+      geo.dispose();
+    });
     return { g, h: 0.05 };
   }
 
@@ -462,10 +495,27 @@ async function kur() {
   boyutla(); addEventListener("resize", boyutla);
 
   // ---------- döngü ----------
-  const durum = { hedef: 0, simdi: 0, inis: false, ezil: 0 };
-  function ilerleme() { const r = bolum.getBoundingClientRect(), yol = bolum.offsetHeight - innerHeight; return sinirla(-r.top / (yol || 1)); }
-  durum.hedef = durum.simdi = ilerleme();
-  addEventListener("scroll", () => { durum.hedef = ilerleme(); }, { passive: true });
+  // Kaydırma bölümlere ayrılır: oturmuş · açık · köfte · yeşillik · sos · son. Bölüm sınırını geçince burger
+  // yay hareketiyle (yavaş başlar, yumuşak durur) o bölümün duruşuna gider; bölüm içinde kaydırmak hafifçe döndürür.
+  // Bölümün son ekranında sıradaki içerik sahnenin üstüne kart gibi biner (çıkış).
+  const DURAK = [0, 0.24, 0.37, 0.56, 0.71, 0.95];
+  const durum = { hedef: 0, simdi: 0, hiz: 0, ic: 0, icY: 0, cikis: 0, inis: false, ezil: 0 };
+  const perde = document.querySelector(".sahne3d-perde");
+  function ilerleme() {
+    const r = bolum.getBoundingClientRect(), yol = bolum.offsetHeight - innerHeight * 2;
+    const p = sinirla(-r.top / (yol || 1)), k = Math.min(DURAK.length - 1, Math.floor(p * DURAK.length));
+    durum.hedef = DURAK[k]; durum.ic = p * DURAK.length - k; durum.cikis = sinirla((-r.top - yol) / innerHeight);
+  }
+  ilerleme(); durum.simdi = durum.hedef;
+  addEventListener("scroll", ilerleme, { passive: true });
+  let sonCikis = -1;
+  function cikisCiz() {
+    const c = Math.round(durum.cikis * 1000) / 1000;
+    if (c === sonCikis) return; sonCikis = c;
+    sabit.style.transform = c > 0 ? "scale(" + (1 - c * 0.08).toFixed(4) + ")" : "";
+    sabit.style.borderRadius = c > 0 ? (c * 36).toFixed(1) + "px" : "";
+    if (perde) perde.style.opacity = (c * 0.55).toFixed(3);
+  }
   let gorunur = true;
   new IntersectionObserver((g) => { gorunur = g[0].isIntersecting; }).observe(bolum);
   const saat = new THREE.Clock();
@@ -477,7 +527,13 @@ async function kur() {
     if (hazirZaman < 0) hazirZaman = zaman;
     const giris = test || azHareket ? 1 : sinirla((zaman - hazirZaman) / 1.5);
     if (giris >= 1 && !girisBitti) { girisBitti = true; if (!test && !azHareket) durum.ezil = 1; }
-    durum.simdi += (durum.hedef - durum.simdi) * (test ? 1 : 1 - Math.exp(-dt * 7));
+    if (test) { durum.simdi = durum.hedef; durum.hiz = 0; }
+    else { // kritik sönümlü yay: hızlı kaydırınca da aynı yumuşaklıkta gider
+      const w = 5.2, ivme = w * w * (durum.hedef - durum.simdi) - 2 * w * durum.hiz;
+      durum.hiz += ivme * dt; durum.simdi += durum.hiz * dt;
+    }
+    durum.icY += (durum.ic - durum.icY) * (1 - Math.exp(-dt * 5));
+    cikisCiz();
     const p = testP ? +testP[1] : azHareket ? 0 : durum.simdi;
     if (p >= A.kapSon - 0.004 && !durum.inis) { durum.inis = true; durum.ezil = 1; }
     if (p < A.kapSon - 0.03) durum.inis = false;
@@ -486,7 +542,7 @@ async function kur() {
     kok.position.set(c.x, c.ey - c.o * c.s, 0); kok.scale.setScalar(c.s);
     fx += (hx - fx) * 0.05; fy += (hy - fy) * 0.05;
     const don = azHareket ? 0 : zaman * 0.16;
-    donus.rotation.y = -0.6 + p * Math.PI * 1.5 + don + fx * 0.45;
+    donus.rotation.y = -0.6 + p * Math.PI * 1.5 + don + fx * 0.45 + (testP ? 0 : (durum.icY - 0.5) * 0.5);
     donus.rotation.x = fy * 0.12;
     const ez = Math.sin(durum.ezil * Math.PI) * 0.045 * durum.ezil;
     donus.scale.set(1 + ez, 1 - ez * 1.5, 1 + ez);
