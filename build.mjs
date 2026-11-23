@@ -2,7 +2,7 @@
 import { readFileSync, writeFileSync, mkdirSync, readdirSync, cpSync, rmSync, existsSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { SERVICE_ART, SECTOR_ART, SHOWCASE, HERO_ART } from './art.mjs';
+import { SERVICE_ART, SECTOR_ART, HERO_ART } from './art.mjs';
 
 const ROOT = dirname(fileURLToPath(import.meta.url));
 const OUT = join(ROOT, 'dist');
@@ -11,6 +11,9 @@ const NAME = 'Nurettin Ensar Ocakçı';
 const SHORT = 'Ensar Ocakçı';
 const PHONE = { display: '0551 031 96 32', tel: '+905510319632', intl: '+90 551 031 96 32' };
 const WA = 'https://wa.me/905510319632?text=' + encodeURIComponent('Merhaba, web sitenizden ulaşıyorum.');
+const IG = { ad: '@ensarocakcicom', url: 'https://www.instagram.com/ensarocakcicom/' };
+// Kasım kampanyası: 30 Kasım 2026 bitince şerit kendiliğinden kalkar (derlemede ve tarayıcıda)
+const KAMPANYA = { son: '2026-11-30', bitis: '2026-12-01T00:00:00+03:00', wa: 'https://wa.me/905510319632?text=' + encodeURIComponent('Merhaba, Kasım indirimi için yazıyorum.') };
 
 // ---------- Yardımcılar ----------
 
@@ -130,6 +133,7 @@ const ICONS = {
   mesaj: svg('<path d="M20 11.5a8 8 0 0 1-11.6 7.1L4 20l1.4-4.2A8 8 0 1 1 20 11.5Z"/>'),
   tel: svg('<path d="M5 4h3.5l2 5-2.4 1.5a11 11 0 0 0 5.4 5.4L15 13.5l5 2V19a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2Z"/>'),
   ok: svg('<path d="M5 12h14M13 6l6 6-6 6"/>'),
+  ig: svg('<rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r=".9" fill="currentColor" stroke="none"/>'),
 };
 
 // ---------- Logo ----------
@@ -152,10 +156,11 @@ const PERSON = {
   url: SITE + '/',
   image: SITE + '/og.jpg',
   telephone: PHONE.intl,
-  description: 'Tasarım, yazılım ve yapay zekâ üzerine çalışıyor. Kişisel sitesi neo\'da projelerini, yazılarını ve işletmelere verdiği hizmetleri paylaşıyor.',
-  knowsAbout: ['Web tasarım', 'Kurumsal web sitesi', 'Yazılım geliştirme', 'Mobil uygulama geliştirme', 'Yapay zekâ', 'Arama motoru optimizasyonu'],
+  description: 'Sakarya\'da işletmelere web sitesi, sosyal medya yönetimi, QR menü ve e-ticaret kurulumu yapıyor. Kişisel sitesi neo\'da projelerini, yazılarını ve hizmetlerini paylaşıyor.',
+  knowsAbout: ['Web tasarım', 'Kurumsal web sitesi', 'Sosyal medya yönetimi', 'QR menü', 'E-ticaret', 'Yazılım geliştirme', 'Mobil uygulama geliştirme', 'Yapay zekâ', 'Arama motoru optimizasyonu'],
+  workLocation: { '@type': 'Place', name: 'Sakarya', address: { '@type': 'PostalAddress', addressRegion: 'Sakarya', addressCountry: 'TR' } },
   makesOffer: services.map(s => ({ '@type': 'Offer', itemOffered: { '@type': 'Service', name: s.baslik, url: SITE + s.path } })),
-  // sameAs: profil bağlantıları (Instagram, LinkedIn, GitHub) açıldıkça buraya eklenecek
+  sameAs: [IG.url],
 };
 const WEBSITE = {
   '@type': 'WebSite', '@id': SITE_ID, url: SITE + '/', name: NAME,
@@ -214,7 +219,7 @@ ${noindex ? '<meta name="robots" content="noindex">' : `<meta name="robots" cont
 <body>
 <div class="intro" aria-hidden="true">${MARK}</div>
 <a class="skip" href="#icerik">İçeriğe geç</a>
-${top}<header class="top">
+${kampanya()}${top}<header class="top">
   <div class="wrap top-in">
     <a class="brand" href="/">${LOGO}</a>
     <button class="menu-btn" type="button" aria-expanded="false" aria-controls="nav" aria-label="Menü"><span></span><span></span></button>
@@ -237,15 +242,23 @@ ${script}</script>
 `;
 }
 
+function kampanya() {
+  if (today > KAMPANYA.son) return '';
+  return `<div class="kampanya" id="kampanya"><div class="wrap kampanya-in"><p><b>Kasım’a özel indirim.</b> 30 Kasım’a kadar yazan işletmelere web sitesi, sosyal medya ve QR menüde.</p><a href="${KAMPANYA.wa}" rel="noopener" target="_blank">WhatsApp’tan yazın${ICONS.ok}</a></div></div>
+<script>if(Date.now()>=Date.parse('${KAMPANYA.bitis}'))document.getElementById('kampanya').remove()</script>
+`;
+}
+
 function contact() {
   return `<section class="cta" id="iletisim" aria-labelledby="iletisim-baslik">
   <div class="wrap cta-in">
     <div>
       <h2 id="iletisim-baslik">İletişim</h2>
-      <p>WhatsApp'tan yazın ya da arayın.</p>
+      <p>WhatsApp'tan yazın, arayın ya da Instagram'dan mesaj gönderin.</p>
     </div>
     <div class="actions">
       <a class="btn" href="${WA}" rel="noopener" target="_blank">${ICONS.mesaj}WhatsApp'tan yazın</a>
+      <a class="btn btn-ghost" href="${IG.url}" rel="noopener" target="_blank">${ICONS.ig}Instagram</a>
       <a class="cta-num" href="tel:${PHONE.tel}">${PHONE.display}</a>
     </div>
   </div>
@@ -259,11 +272,11 @@ function footer() {
     <div class="foot-grid">
       <div class="foot-about">
         <a class="brand" href="/">${LOGO}</a>
-        <p>neo, Nurettin Ensar Ocakçı'nın kişisel sitesi: projeler, yazılar ve işletmelere verdiği hizmetler.</p>
+        <p>neo, Nurettin Ensar Ocakçı'nın sitesi. Sakarya’da işletmelere web sitesi, sosyal medya yönetimi, QR menü ve e-ticaret.</p>
       </div>
       <div><h2>Hizmetler</h2><ul>${li(services.map(s => [s.path, s.baslik]))}</ul></div>
       <div><h2>Site</h2><ul>${li([['/', 'Ana sayfa'], ...NAV])}</ul></div>
-      <div><h2>İletişim</h2><ul>${li([[WA, 'WhatsApp'], ['tel:' + PHONE.tel, PHONE.display]])}</ul></div>
+      <div><h2>İletişim</h2><ul>${li([[WA, 'WhatsApp'], ['tel:' + PHONE.tel, PHONE.display], [IG.url, 'Instagram']])}</ul></div>
     </div>
     <div class="foot-mark" aria-hidden="true" data-t="${SHORT}"></div>
     <div class="foot-bottom"><span>© ${new Date().getFullYear()} ${NAME}</span><span>neo · ensarocakci.com</span></div>
@@ -275,8 +288,9 @@ function footer() {
 const crumbs = items => `<nav aria-label="Konum"><ol class="crumbs">${items.slice(0, -1).map(([name, path]) =>
   `<li><a href="${path}">${name}</a></li>`).join('')}</ol></nav>`;
 
+const sArt = k => SERVICE_ART[k] || SECTOR_ART[k] || '';
 const serviceCard = s => `<a class="card" href="${s.path}">
-  <span class="card-art" aria-hidden="true">${SERVICE_ART[s.ikon] || ''}</span>
+  <span class="card-art" aria-hidden="true">${sArt(s.ikon)}</span>
   <h3>${esc(s.baslik)}</h3>
   <p>${esc(s.kisa)}</p>
   <span class="go">Detaylı bilgi${ICONS.ok}</span>
@@ -291,9 +305,25 @@ const row = ({ href, n, meta = [], title, desc }) => `<li><a href="${href}">
 const rows = (items, cls = '') => `<ol class="feed${cls ? ' ' + cls : ''}">${items.join('')}</ol>`;
 const postRows = list => list.map((p, i) => row({ href: p.path, n: i + 1, meta: [p.kategori ? `<span class="cat">${esc(p.kategori)}</span>` : '', `<time datetime="${p.tarih}">${trDate(p.tarih)}</time>`].filter(Boolean), title: p.baslik, desc: p.aciklama }));
 const projectRows = list => list.map((p, i) => row({ href: p.path, n: i + 1, meta: [p.etiket, p.durum].filter(Boolean).map(esc), title: p.baslik, desc: p.aciklama }));
+// Ön bilgide çoklu değer: "a|b ;; c|d" → [[a,b],[c,d]]
+const liste2 = v => v.split(';;').map(x => x.split('|').map(y => y.trim())).filter(x => x[0]);
+const projectCard = p => {
+  const [n, l] = (p.vurgu || '').split('|').map(x => x.trim());
+  return `<a class="is" href="${p.path}">
+  <span class="is-tel" aria-hidden="true"><img src="${p.gorsel}" alt="" width="390" height="844" loading="lazy"></span>
+  <span class="is-metin">
+    <span class="meta">${[p.konum, p.etiket].filter(Boolean).map(m => `<span>${esc(m)}</span>`).join('')}</span>
+    <h3>${esc(p.baslik)}</h3>
+    <p>${esc(p.kisa || p.aciklama)}</p>
+    ${n ? `<span class="is-olcum"><b>${esc(n)}</b>${esc(l || '')}</span>` : ''}
+    <span class="go">Projeyi inceleyin${ICONS.ok}</span>
+  </span>
+</a>`;
+};
+const projectCards = list => `<div class="isler">${list.map(projectCard).join('')}</div>`;
 const serviceRows = list => list.map((s, i) => row({ href: s.path, n: i + 1, title: s.baslik, desc: s.kisa }));
 
-// Çalışılan sektörler. Müşteri işleri gösterilmiyor; katalog hazırlanana kadar projeler bölümünü bunlar taşır.
+// Çalışılan sektörler (ana sayfa ve projeler sayfası)
 const SECTORS = [
   ['mobilya', 'Mobilya ve ev eşyası', 'Ürün kataloğu, kampanya sayfaları ve WhatsApp\'tan sipariş.'],
   ['beyaz', 'Beyaz eşya', 'Marka ve modele göre ürün sayfaları; servis ve garanti bilgileri.'],
@@ -306,15 +336,6 @@ const SECTORS = [
 ];
 const sectorTile = ([k, t, d], min) => `<div class="tile"><div class="tile-art" aria-hidden="true">${SECTOR_ART[k] || ''}</div><h3>${t}</h3>${min ? '' : `<p>${d}</p>`}</div>`;
 const tiles = () => `<div class="tiles">${SECTORS.map(sectorTile).join('')}</div>`;
-// Üç biçim: projeler sayfasındaki özet
-const MEDIUMS = [
-  ['web', 'Web siteleri', 'Tanıtım sitesinden çok sayfalı kurumsal siteye; hızlı, mobil uyumlu ve Google\'a hazır.'],
-  ['mobil', 'Mobil uygulamalar', 'iOS ve Android için sipariş, randevu ve sadakat uygulamaları; mağaza yayını dahil.'],
-  ['eticaret', 'E-ticaret', 'Ürün, sepet, ödeme ve kargo akışı; stok ve siparişleri yöneten panelle birlikte.'],
-];
-const mediums = () => `<div class="grid g3">${MEDIUMS.map(([k, t, d]) => `<div class="card"><span class="card-art" aria-hidden="true">${SECTOR_ART[k]}</span><h3>${t}</h3><p>${d}</p></div>`).join('')}</div>`;
-const showcase = () => `<div class="showcase">${SHOWCASE}<span class="badge"><span class="pulse" aria-hidden="true"></span>Katalog hazırlanıyor</span></div>`;
-const KATALOG = `<p class="note"><span class="pulse" aria-hidden="true"></span><span><b>Katalog hazırlanıyor.</b> Tamamlanınca projeler sayfasında yayımlanacak.</span></p>`;
 // Ana sayfadaki hizmet kartları: küçük, sade çizimlerle
 const serviceMini = s => `<a class="card" href="${s.path}">
   <span class="card-art" aria-hidden="true">${SECTOR_ART[s.ikon] || ''}</span>
@@ -364,20 +385,20 @@ const SERVICE_FAQ = [
 function home() {
   return layout({
     path: '/',
-    title: `${NAME} | neo: Web Sitesi, Mobil Uygulama ve Yapay Zekâ`,
-    description: `neo, Nurettin Ensar Ocakçı'nın sitesi. İşletmeler için web sitesi, mobil uygulama, yazılım ve yapay zekâ; çalışılan sektörler ve yazılar.`,
+    title: `Sakarya Web Tasarım, Sosyal Medya ve QR Menü | ${NAME}`,
+    description: `Sakarya’da işletmelere web sitesi, sosyal medya yönetimi, QR menü ve e-ticaret. Tasarımdan yayına tek kişiyle çalışırsınız: Nurettin Ensar Ocakçı.`,
     ld: [{ '@type': 'WebPage', '@id': SITE + '/#webpage', url: SITE + '/', name: 'neo · ' + NAME, isPartOf: { '@id': SITE_ID }, about: { '@id': PERSON_ID }, inLanguage: 'tr-TR' }],
     top: ticker(),
     body: `<section class="hero">
   <div class="hero-main">
   <div class="wrap hero-grid">
     <div>
-      <p class="eyebrow">${NAME}</p>
-      <h1>Web sitesi, mobil uygulama ve yapay zekâ.</h1>
-      <p class="lead">İşletmeler için tasarlıyor ve geliştiriyorum.</p>
+      <p class="eyebrow">Sakarya · ${NAME}</p>
+      <h1>Sakarya’da işletmelere web sitesi, sosyal medya ve QR menü.</h1>
+      <p class="lead">Tasarımdan yayına tek kişiyle çalışırsınız. İnternetten satışa geçmek isteyen işletmelere e-ticaret kurulumu da yapıyorum.</p>
       <div class="actions">
         <a class="btn" href="${WA}" rel="noopener" target="_blank">${ICONS.mesaj}WhatsApp'tan yazın</a>
-        <a class="btn btn-ghost" href="#hizmetler">Hizmetler</a>
+        <a class="btn btn-ghost" href="${IG.url}" rel="noopener" target="_blank">${ICONS.ig}Instagram</a>
       </div>
     </div>
     <div class="cover">${MARK}${HERO_ART}</div>
@@ -389,19 +410,25 @@ function home() {
 <section class="section" id="hizmetler">
   <div class="wrap">
     <div class="sec-head"><div><h2 class="h2">Hizmetler</h2></div><a class="more" href="/hizmetler/">Tümü${ICONS.ok}</a></div>
-    <div class="grid g4">${services.map(serviceMini).join('')}</div>
+    <div class="grid g3">${services.slice(0, 6).map(serviceMini).join('')}</div>
   </div>
 </section>
 
 <section class="section alt" id="projeler">
   <div class="wrap">
-    <div class="sec-head"><div><h2 class="h2">Çalıştığım sektörler</h2></div><a class="more" href="/projeler/">Projeler${ICONS.ok}</a></div>
-    <div class="tiles tiles-min">${SECTORS.map(x => sectorTile(x, true)).join('')}</div>
-    ${KATALOG}
+    <div class="sec-head"><div><h2 class="h2">Son işler</h2><p>Yayındaki sitelerden; ölçümler Google’ın kendi testinden.</p></div><a class="more" href="/projeler/">Tüm projeler${ICONS.ok}</a></div>
+    ${projectCards(projects)}
   </div>
 </section>
 
-<section class="section" id="yazilar">
+<section class="section">
+  <div class="wrap">
+    <div class="sec-head"><div><h2 class="h2">Çalıştığım sektörler</h2></div></div>
+    <div class="tiles tiles-min">${SECTORS.map(x => sectorTile(x, true)).join('')}</div>
+  </div>
+</section>
+
+<section class="section alt" id="yazilar">
   <div class="wrap">
     <div class="sec-head"><div><h2 class="h2">Yazılar</h2></div><a class="more" href="/yazilar/">Tümü${ICONS.ok}</a></div>
     ${rows(postRows(posts.slice(0, 6)), 'feed-min')}
@@ -415,7 +442,7 @@ function projectsIndex() {
   return layout({
     path: '/projeler/',
     title: `Projeler | ${SHORT}`,
-    description: `Nurettin Ensar Ocakçı'nın çalıştığı sektörler ve kendi projeleri. Müşteri işlerinin kataloğu hazırlanıyor.`,
+    description: `Nurettin Ensar Ocakçı'nın yaptığı web siteleri: Sakarya Gülten Spot, Fırtına Klima & Kombi ve çalışılan sektörler. Ölçümler Google Lighthouse'tan.`,
     ld: [{
       '@type': 'CollectionPage', url: SITE + '/projeler/', name: 'Projeler', isPartOf: { '@id': SITE_ID }, inLanguage: 'tr-TR',
       about: SECTORS.map(([, t]) => ({ '@type': 'Thing', name: t })),
@@ -424,20 +451,18 @@ function projectsIndex() {
   <div class="wrap">
     ${crumbs(items)}
     <h1>Projeler</h1>
-    <p class="lead">Web siteleri, mobil uygulamalar ve e-ticaret; farklı sektörlerden işletmeler için. İşlerin kataloğu hazırlanıyor; yayına girene kadar burada ne yaptığım ve hangi sektörlerde çalıştığım var.</p>
+    <p class="lead">Yayındaki sitelerden seçilenler. Her projede ihtiyacın ne olduğu, neler yapıldığı ve sonucun Google’ın testindeki karşılığı yazılı.</p>
   </div>
 </section>
 <section class="section">
   <div class="wrap">
-    ${showcase()}
-    ${mediums()}
+    ${projectCards(projects)}
   </div>
 </section>
 <section class="section alt">
   <div class="wrap">
     <div class="sec-head"><div><h2 class="h2">Çalıştığım sektörler</h2><p>Her sektörün kendi ihtiyacı var; aşağıda her birinde neye odaklanıldığı yazılı.</p></div></div>
     ${tiles()}
-    ${KATALOG}
   </div>
 </section>`,
   });
@@ -460,9 +485,13 @@ function projectPage(p) {
     ${crumbs(items)}
     <h1>${esc(p.baslik)}</h1>
     <p class="lead">${esc(p.aciklama)}</p>
-    <div class="meta">${[p.etiket, p.durum, trDate(p.tarih)].filter(Boolean).map(m => `<span>${esc(m)}</span>`).join('')}</div>
+    <div class="meta">${[p.konum, p.etiket, p.durum].filter(Boolean).map(m => `<span>${esc(m)}</span>`).join('')}</div>
+    ${p.adres ? `<div class="actions"><a class="btn" href="${p.adres}" rel="noopener" target="_blank">Siteyi açın${ICONS.ok}</a></div>` : ''}
   </div>
 </section>
+${p.baglantilar ? `<div class="wrap"><div class="menuler">${liste2(p.baglantilar).map(([ad, url, not]) => `<a class="menu-kart" href="${url}" rel="noopener" target="_blank"><span><b>${esc(ad)}</b><small>${esc(not || '')}</small></span><span class="go">Menüyü açın${ICONS.ok}</span></a>`).join('')}</div></div>` : ''}
+${p.galeri ? `<div class="wrap"><div class="tel-galeri">${liste2(p.galeri).map(([src, alt]) => `<figure><span class="tg-tel"><img src="${src}" alt="${esc(alt || '')}" width="390" height="844" loading="lazy"></span><figcaption>${esc(alt || '')}</figcaption></figure>`).join('')}</div></div>` : ''}
+${p.genis ? `<div class="wrap"><figure class="shot"><img src="${p.genis}" alt="${esc(p.baslik)} sitesinin bilgisayardaki görünümü" width="1440" height="900"></figure></div>` : ''}
 <div class="wrap article">
   <div class="prose">${p.html}</div>
   <aside class="side"><div class="side-in">${tocBox(p.toc)}${contactBox()}</div></aside>
@@ -480,8 +509,8 @@ function servicesIndex() {
   const items = [['Ana sayfa', '/'], ['Hizmetler', '/hizmetler/']];
   return layout({
     path: '/hizmetler/',
-    title: `Hizmetler: Web Tasarım, Yazılım, Mobil Uygulama | ${SHORT}`,
-    description: `Nurettin Ensar Ocakçı'nın işletmelere verdiği hizmetler: web tasarım, işletmeye özel yazılım, iOS ve Android mobil uygulama ve yapay zekâ uygulamaları.`,
+    title: `Hizmetler: Web Tasarım, Sosyal Medya, QR Menü ve E-ticaret | ${SHORT}`,
+    description: `Sakarya’da işletmelere web tasarım, sosyal medya yönetimi, QR menü ve e-ticaret; ayrıca işletmeye özel yazılım, mobil uygulama ve yapay zekâ uygulamaları.`,
     ld: [{ '@type': 'CollectionPage', url: SITE + '/hizmetler/', name: 'Hizmetler', isPartOf: { '@id': SITE_ID }, inLanguage: 'tr-TR' }, crumbsLd(items), ...faqLd(SERVICE_FAQ.map(([q, a]) => ({ q, a })))],
     body: `<section class="page-head">
   <div class="wrap">
@@ -518,7 +547,7 @@ function servicePage(s) {
     title: `${s.seo || s.baslik} | ${SHORT}`,
     description: s.aciklama,
     ld: [
-      { '@type': 'Service', '@id': SITE + s.path + '#hizmet', name: s.baslik, serviceType: s.baslik, description: s.aciklama, url: SITE + s.path, provider: { '@id': PERSON_ID }, areaServed: { '@type': 'Country', name: 'Türkiye' } },
+      { '@type': 'Service', '@id': SITE + s.path + '#hizmet', name: s.baslik, serviceType: s.baslik, description: s.aciklama, url: SITE + s.path, provider: { '@id': PERSON_ID }, areaServed: [{ '@type': 'AdministrativeArea', name: 'Sakarya' }, { '@type': 'Country', name: 'Türkiye' }] },
       { '@type': 'WebPage', url: SITE + s.path, name: s.baslik, isPartOf: { '@id': SITE_ID }, mainEntity: { '@id': SITE + s.path + '#hizmet' }, inLanguage: 'tr-TR', dateModified: modified(s) },
       crumbsLd(items), ...faqLd(s.faq),
     ],
@@ -529,7 +558,7 @@ function servicePage(s) {
       <h1>${esc(s.baslik)}</h1>
       <p class="lead">${esc(s.aciklama)}</p>
     </div>
-    <div class="head-art" aria-hidden="true">${SERVICE_ART[s.ikon] || ''}</div>
+    <div class="head-art" aria-hidden="true">${sArt(s.ikon)}</div>
   </div>
 </section>
 <div class="wrap article">

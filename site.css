@@ -276,3 +276,52 @@ a.card:hover .go svg{transform:translateX(3px)}
 .notfound p{margin:16px 0 32px;color:var(--mute)}
 
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important;animation:none!important}.intro{display:none}}
+
+/* Kasım kampanyası şeridi (30 Kasım 2026'da kalkar) */
+.kampanya{background:var(--ink);color:#d9d8d3;font-size:15px;line-height:1.5}
+.kampanya-in{display:flex;align-items:center;justify-content:space-between;gap:10px 24px;min-height:46px;padding-top:10px;padding-bottom:10px}
+.kampanya b{color:#fff;font-weight:600}
+.kampanya a{display:inline-flex;align-items:center;gap:8px;color:#fff;font-weight:500;text-decoration:none;white-space:nowrap}
+.kampanya a svg{width:16px;height:16px;transition:transform .2s}
+.kampanya a:hover svg{transform:translateX(3px)}
+@media (max-width:760px){.kampanya-in{flex-direction:column;align-items:flex-start}.kampanya{font-size:14px}}
+
+/* Proje kartları: telefon görseli, kısa bilgi ve ölçüm */
+.isler{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.is{display:grid;grid-template-columns:minmax(0,190px) minmax(0,1fr);gap:clamp(20px,3vw,36px);align-items:center;padding:clamp(18px,2.4vw,28px);border:1px solid var(--line);border-radius:20px;background:#fff;color:var(--text);text-decoration:none;transition:border-color .2s}
+.is:hover{border-color:var(--ink)}
+.is-tel{display:block;overflow:hidden;aspect-ratio:390/600;padding:6px;border-radius:30px;background:var(--ink);box-shadow:0 30px 60px -36px rgba(17,17,18,.5)}
+.is-tel img{display:block;width:100%;height:auto;border-radius:24px}
+.is-metin{display:flex;flex-direction:column;gap:10px}
+.is .meta{display:flex;flex-wrap:wrap;gap:6px 14px;color:var(--mute);font-size:14.5px}
+.is h3{font-size:clamp(22px,2.2vw,28px);letter-spacing:-.03em}
+.is p{color:var(--mute);font-size:15.5px;line-height:1.6}
+.is-olcum{display:flex;align-items:baseline;gap:12px;margin-top:6px;padding-top:14px;border-top:1px solid var(--line);color:var(--mute);font-size:15px}
+.is-olcum b{color:var(--ink);font-size:44px;font-weight:600;letter-spacing:-.05em;line-height:1}
+.is .go{display:inline-flex;align-items:center;gap:8px;color:var(--ink);font-size:15px;font-weight:500}
+.is .go svg{width:16px;height:16px;transition:transform .2s}
+.is:hover .go svg{transform:translateX(3px)}
+@media (max-width:980px){.isler{grid-template-columns:1fr}}
+@media (max-width:520px){.is{grid-template-columns:minmax(0,120px) minmax(0,1fr)}.is p{display:none}.is-olcum b{font-size:34px}}
+
+/* Proje sayfası: geniş ekran görüntüsü */
+.shot{margin:0 0 8px;overflow:hidden;border:1px solid var(--line);border-radius:20px;background:var(--soft);box-shadow:0 50px 100px -60px rgba(17,17,18,.45)}
+.shot img{display:block;width:100%;height:auto}
+.page-head .actions{margin-top:28px}
+
+/* Proje sayfası: menü bağlantıları ve telefon ekranı galerisi */
+.menuler{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-bottom:28px}
+.menu-kart{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:20px 22px;border:1px solid var(--line);border-radius:var(--r);background:#fff;color:var(--ink);text-decoration:none;transition:border-color .2s}
+.menu-kart:hover{border-color:var(--ink)}
+.menu-kart b{display:block;font-size:18px;font-weight:600;letter-spacing:-.02em}
+.menu-kart small{display:block;margin-top:2px;color:var(--mute);font-size:14.5px}
+.menu-kart .go{display:inline-flex;align-items:center;gap:6px;font-size:15px;font-weight:500;white-space:nowrap}
+.menu-kart .go svg{width:16px;height:16px;transition:transform .2s}
+.menu-kart:hover .go svg{transform:translateX(3px)}
+.tel-galeri{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:16px;padding-bottom:8px}
+.tel-galeri figure{margin:0}
+.tg-tel{display:block;padding:5px;border-radius:26px;background:var(--ink);box-shadow:0 30px 60px -40px rgba(17,17,18,.5)}
+.tg-tel img{display:block;width:100%;height:auto;border-radius:21px}
+.tel-galeri figcaption{margin-top:10px;color:var(--mute);font-size:13.5px;text-align:center}
+@media (max-width:900px){.menuler{grid-template-columns:1fr}.tel-galeri{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media (max-width:520px){.tel-galeri{grid-template-columns:repeat(2,minmax(0,1fr))}}

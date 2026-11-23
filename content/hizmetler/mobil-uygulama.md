@@ -6,7 +6,7 @@ kisa: iOS ve Android için uygulamalar; tasarımdan App Store ve Google Play yay
 ikon: mobil
 one: iOS ve Android, tek kod tabanı | Bildirimler ve yönetim paneli | App Store ve Google Play yayını
 ilgili: Mobil uygulama
-sira: 3
+sira: 7
 tarih: 2026-10-17
 ---
 Mobil uygulama, müşterilerinizin sizi cebinde taşımasını sağlar. Ancak her işletmenin uygulamaya ihtiyacı yoktur; bazen iyi bir mobil uyumlu web sitesi aynı işi çok daha düşük maliyetle görür. Bu yüzden önce uygulamanın gerçekten gerekip gerekmediğini konuşuyoruz.

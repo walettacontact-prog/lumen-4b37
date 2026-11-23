@@ -6,7 +6,7 @@ kisa: Randevu, sipariş, stok veya müşteri takibi gibi işinize özel web yaz�
 ikon: kod
 one: Randevu, sipariş ve stok takibi | Yönetim panelleri | Raporlama ve entegrasyonlar
 ilgili: Müşteri kazanma
-sira: 2
+sira: 6
 tarih: 2026-10-17
 ---
 Birçok işletme günlük işlerini Excel dosyaları, defterler ve WhatsApp mesajları arasında yürütür. İş büyüdükçe bu düzen zorlaşır: bilgi dağılır, aynı iş iki kez yapılır, hatalar artar. İşletmenize özel bir yazılım bu işleri tek bir yerde toplar.

@@ -1,11 +1,12 @@
 ---
 baslik: Hakkında
 seo: Nurettin Ensar Ocakçı Kimdir?
-aciklama: Nurettin Ensar Ocakçı; tasarım, yazılım ve yapay zekâ üzerine çalışıyor. neo, projelerini, yazılarını ve hizmetlerini topladığı kişisel sitesi.
-giris: Tasarım, yazılım ve yapay zekâ üzerine çalışıyor. neo, kişisel sitesi.
+aciklama: Nurettin Ensar Ocakçı; Sakarya'da işletmelere web sitesi, sosyal medya yönetimi, QR menü ve e-ticaret kurulumu yapıyor. neo, projelerini, yazılarını ve hizmetlerini topladığı sitesi.
+giris: Sakarya'da işletmelere web sitesi, sosyal medya ve QR menü. neo, kişisel sitesi.
 tarih: 2026-10-17
+guncelleme: 2026-11-22
 ---
-Nurettin Ensar Ocakçı; tasarım, yazılım ve yapay zekâ alanlarında çalışıyor. Web siteleri, mobil uygulamalar ve arayüzler üzerinde çalışıyor; bugüne kadar farklı sektörlerden işletmelerle işler yaptı.
+Nurettin Ensar Ocakçı; Sakarya'da işletmelere web sitesi, sosyal medya yönetimi, QR menü ve e-ticaret kurulumu yapıyor. Tasarımı da yazılımı da kendisi yapıyor; bugüne kadar farklı sektörlerden işletmelerle işler yaptı. Bazıları [projeler](/projeler/) sayfasında.
 
 ## neo nedir?
 
@@ -20,10 +21,13 @@ Yapılan her işte üç şeye önem verilir: sayfaların hızlı açılması, ar
 ## Odak alanları
 
 - [Web tasarım ve kurumsal web siteleri](/hizmetler/web-tasarim/)
+- [Sosyal medya yönetimi](/hizmetler/sosyal-medya-yonetimi/)
+- [QR menü](/hizmetler/qr-menu/)
+- [E-ticaret kurulumu](/hizmetler/e-ticaret/)
 - [İşletmelere özel yazılımlar](/hizmetler/yazilim-gelistirme/)
 - [Mobil uygulamalar](/hizmetler/mobil-uygulama/)
 - [Yapay zekâ uygulamaları](/hizmetler/yapay-zeka/)
 
 ## İletişim
 
-Bir iş ya da sorunuz varsa [WhatsApp'tan yazabilir](https://wa.me/905510319632) veya [0551 031 96 32](tel:+905510319632) numarasından arayabilirsiniz.
+Bir iş ya da sorunuz varsa [WhatsApp'tan yazabilir](https://wa.me/905510319632), [0551 031 96 32](tel:+905510319632) numarasından arayabilir ya da [Instagram'dan](https://www.instagram.com/ensarocakcicom/) mesaj gönderebilirsiniz.
